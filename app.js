@@ -1,5 +1,7 @@
 import express, { json } from "express";
-const port = 3001;
+import "dotenv/config";
+import { port } from "./config/config.js";
+import connectDB from "./config/db.js";
 
 const app = express();
 
@@ -7,7 +9,17 @@ app.get("/", (request, response) => {
   response.send("hello!");
 });
 
-console.log("starting...");
-app.listen(port, () => {
-  console.log("listening on port: ", port);
-});
+const startServer = async () => {
+  try {
+    await connectDB();
+
+    console.log("Trying to start server on port: ", port);
+    app.listen(port, () => {
+      console.log("listening on port: ", port);
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+startServer();
