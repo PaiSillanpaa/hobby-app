@@ -2,13 +2,13 @@ import express, { json } from "express";
 import "dotenv/config";
 import { port } from "./config/config.js";
 import connectDB from "./config/db.js";
+import userRouter from "./routes/userRouter.js";
 
 const app = express();
+app.use(express.json());
+app.use(userRouter);
 
-app.get("/", (request, response) => {
-  response.send("hello!");
-});
-
+//funktio tietokantaan yhdistämiseen ja serverin käynnistykseen
 const startServer = async () => {
   try {
     await connectDB();
@@ -18,7 +18,8 @@ const startServer = async () => {
       console.log("listening on port: ", port);
     });
   } catch (error) {
-    console.error(error);
+    console.error(error.msg);
+    process.exit(1);
   }
 };
 
