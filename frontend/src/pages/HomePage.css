@@ -1,0 +1,49 @@
+.homepage-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  min-height: 100vh;
+  color: #073B3A;
+  background-color: white;
+  text-align: center;
+    width: 100vw; /* täsmälleen viewport leveys */
+  overflow-x: hidden; /* estää karusellin puskemisen ulos */
+}
+
+.box-container{
+    border: 1px solid #073B3A;
+    border-radius: 10px;
+}
+
+.image-subtitle{
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.subtitle-subtitle{
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.big-image {
+    width: 335px;
+    border-radius: 10px;
+}
+
+.image-wrapper{
+  display: inline-block;
+  position: relative;
+  overflow: hidden;    
+  margin: 10px 10px 10px 10px;      /* tärkeä, jotta shadow näkyy vain kuvan päällä */
+  border-radius: 10px; 
+}
+
+.image-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  box-shadow: inset 0 4px 10px rgba(0,0,0,0.5);
+  pointer-events: none;      /* jotta shadow ei estä klikkauksia */
+}
