@@ -27,6 +27,7 @@ export default function Carousel() {
         slidesPerView="auto" // näyttää useamman kerralla responsiivisesti
         grabCursor={true}   // mahdollistaa dragin hiirellä/peukalolla
         autoplay={{ delay: 3000, disableOnInteraction: false }}
+        allowTouchMove={true}
         className="carousel"
       >
         {slides.map((slide, index) => (
