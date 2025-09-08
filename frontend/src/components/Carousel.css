@@ -1,11 +1,11 @@
 /* Wrapper koko karusellille */
 .carousel-wrapper {
-  margin-top: 10px;
   overflow-x: hidden; /* scroll ei näy, drag toimii silti */
   padding: 20px 0;
   width: 100%;
   box-sizing: border-box;
   touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Swiper-elementti */
