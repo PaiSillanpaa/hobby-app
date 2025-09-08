@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "title": "Sailing",
+    "image": "sailing.png",
+    "infoLink": "/info/sailing",
+    "coords": [60.1699, 24.9384],
+    "location": "Helsinki, Eteläsatama",
+    "description": "Sailing in the beautiful waters of the Helsinki archipelago. A popular activity for all levels of sailors."
+  },
+  {
+    "id": 2,
+    "title": "Painting",
+    "image": "painting.png",
+    "infoLink": "/info/painting",
+    "coords": [60.1947, 24.9417],
+    "location": "Helsinki, Kallio",
+    "description": "Explore your creativity at painting workshops in Kallio, Helsinki. A vibrant area for artists and hobbyists alike."
+  },
+  {
+    "id": 3,
+    "title": "Basketball",
+    "image": "basketball.png",
+    "infoLink": "/info/basketball",
+    "coords": [60.1890, 24.9265],
+    "location": "Helsinki, Pasilan urheiluhalli",
+    "description": "Join a game of basketball at Pasilan sports hall. A great place for both casual and competitive players."
+  },
+  {
+    "id": 4,
+    "title": "Guitar",
+    "image": "guitar.png",
+    "infoLink": "/info/guitar",
+    "coords": [60.1680, 24.9380],
+    "location": "Helsinki, Kamppi",
+    "description": "Learn to play the guitar in one of Helsinki's many music schools located in Kamppi, the heart of the city."
+  }
+]
