@@ -1,15 +1,19 @@
+/* Wrapper koko karusellille */
 .carousel-wrapper {
-  overflow-x: auto;
+  margin-top: 10px;
+  overflow-x: hidden; /* scroll ei näy, drag toimii silti */
   padding: 20px 0;
   width: 100%;
   box-sizing: border-box;
 }
 
+/* Swiper-elementti */
 .carousel {
   display: flex;
   gap: 12px;
 }
 
+/* Yksittäinen kortti */
 .carousel-box {
   border: 1px solid #073B3A;
   border-radius: 8px;
@@ -17,17 +21,29 @@
   padding: 12px;
   display: flex;
   flex-direction: column;
-  cursor: pointer;
+  cursor: grab; /* drag-kursor */
   flex-shrink: 0;
-  width: 170px;
+  width: 170px; /* default leveys mobiilissa */
   height: 292px;
   transition: transform 0.15s;
 }
 
-.carousel-box:hover {
-  transform: scale(1.05);
+.carousel-box:active {
+  cursor: grabbing;
+  border: 1px solid #073B3A;
 }
 
+.carousel-box:hover {
+  transform: scale(1.05);
+  border: 1px solid #073B3A;
+}
+
+.carousel-box:focus {
+  outline: none; /* estää oletus-focusin */
+}
+
+
+/* Kortin sisältö */
 .carousel-content {
   display: flex;
   flex-direction: column;
@@ -36,6 +52,7 @@
   overflow: hidden;
 }
 
+/* Kuva kortissa */
 .carousel-image {
   width: 100%;
   height: 225px;
@@ -44,6 +61,7 @@
   margin-bottom: 8px;
 }
 
+/* Footer kortissa (otsikko) */
 .carousel-footer {
   display: flex;
   align-items: center;
@@ -55,12 +73,6 @@
   font-family: 'Kanit', sans-serif;
   font-weight: 500;
   font-size: 16px;
-  color: #073B3A;
-}
-
-.carousel-icon {
-  width: 36px;
-  height: 36px;
   color: #073B3A;
 }
 

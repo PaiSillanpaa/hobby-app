@@ -1,33 +1,47 @@
-import { useNavigate } from "react-router-dom";
-import Info from "../assets/Info.png"
+import React from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules";
+
+import "swiper/css";
+
+import sailingImg from "../assets/sailing.png";
+import paintingImg from "../assets/painting.png";
+import basketballImg from "../assets/basketball.png";
+import guitarImg from "../assets/guitar.png";
+
 import "./Carousel.css";
 
-export default function Carousel({ items }) {
-  const navigate = useNavigate();
+export default function Carousel() {
+  const slides = [
+    { image: sailingImg, title: "Sailing" },
+    { image: paintingImg, title: "Painting" },
+    { image: basketballImg, title: "Basketball" },
+    { image: guitarImg, title: "Guitar" },
+  ];
 
   return (
     <div className="carousel-wrapper">
-      <div className="carousel">
-        {items.map((item, index) => (
-          <div
-            key={index}
-            className="carousel-box"
-            onClick={() => navigate(item.infoLink)}
-          >
-            <div className="carousel-content">
-              <img
-                src={item.image}
-                alt={item.title}
-                className="carousel-image"
-              />
-              <div className="carousel-footer">
-                <span className="carousel-title">{item.title}</span>
-                <img src={Info} className="carousel-icon" />
+      <Swiper
+        modules={[Autoplay]}
+        spaceBetween={40}
+        slidesPerView="auto" // näyttää useamman kerralla responsiivisesti
+        grabCursor={true}   // mahdollistaa dragin hiirellä/peukalolla
+        autoplay={{ delay: 3000, disableOnInteraction: false }}
+        className="carousel"
+      >
+        {slides.map((slide, index) => (
+          <SwiperSlide key={index} style={{ width: "170px" }}> {/* width CSS:n mukaan */}
+            <div className="carousel-box">
+              <div className="carousel-content">
+                <img src={slide.image} alt={slide.title} className="carousel-image" />
+                <div className="carousel-footer">
+                  <span className="carousel-title">{slide.title}</span>
+                </div>
               </div>
             </div>
-          </div>
+          </SwiperSlide>
         ))}
-      </div>
+      </Swiper>
     </div>
   );
 }

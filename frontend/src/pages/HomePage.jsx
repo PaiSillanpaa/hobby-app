@@ -2,18 +2,9 @@ import Navbar from "../components/NavBar";
 import homepage from "../assets/homepage.png"
 import "./HomePage.css"
 import Search from "../components/Search";
-import sailingImg from "../assets/sailing.png";
-import paintingImg from "../assets/painting.png";
-import basketballImg from "../assets/basketball.png";
-import guitarImg from "../assets/guitar.png";
 import Carousel from "../components/Carousel";
 
-const carouselItems = [
-  { image: sailingImg, title: "Sailing", infoLink: "/info/sailing" },
-  { image: paintingImg, title: "Painting", infoLink: "/info/painting" },
-  { image: basketballImg, title: "Basketball", infoLink: "/info/basketball" },
-  { image: guitarImg, title: "Guitar", infoLink: "/info/guitar" },
-];
+
 
 export default function HomePage() {
 
@@ -28,13 +19,13 @@ export default function HomePage() {
         <Search></Search>
       </div>
       <div>
-        <Carousel items={carouselItems} />
+        <Carousel></Carousel>
       </div>
       <div>
-        <Carousel items={carouselItems} />
+        <Carousel></Carousel>
       </div>
       <div>
-        <Carousel items={carouselItems} />
+        <Carousel></Carousel>
       </div>
       <Navbar></Navbar>
     </div>
