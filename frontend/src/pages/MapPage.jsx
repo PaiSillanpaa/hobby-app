@@ -4,6 +4,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import hobbies from "../data/hobbies.json";
 import "./MapPage.css";
+import NavBar from "../components/NavBar";
 
 const MapPage = () => {
   const [userLocation, setUserLocation] = useState(null);
@@ -143,6 +144,7 @@ const MapPage = () => {
           ))}
         </div>
       </div>
+      <NavBar></NavBar>
     </div>
   );
 };
