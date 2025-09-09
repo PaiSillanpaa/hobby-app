@@ -1,4 +1,4 @@
-import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 
@@ -19,6 +19,8 @@ export default function Carousel() {
     { image: guitarImg, title: "Guitar" },
   ];
 
+  const navigate = useNavigate();
+
   return (
     <div className="carousel-wrapper">
       <Swiper
@@ -33,7 +35,7 @@ export default function Carousel() {
         {slides.map((slide, index) => (
           <SwiperSlide key={index} style={{ width: "170px" }}> {/* width CSS:n mukaan */}
             <div className="carousel-box">
-              <div className="carousel-content">
+              <div className="carousel-content" onClick={() => navigate(`/${slide.title}`)}>
                 <img src={slide.image} alt={slide.title} className="carousel-image" />
                 <div className="carousel-footer">
                   <span className="carousel-title">{slide.title}</span>

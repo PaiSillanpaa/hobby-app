@@ -5,6 +5,7 @@ import LogIn from "./pages/Login";
 import Register from "./pages/Register";
 import HomePage from "./pages/HomePage";
 import MapPage from "./pages/MapPage";
+import HobbyPage from "./pages/HobbyPage";
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/homepage" element={<HomePage />} />
         <Route path="/map" element={<MapPage />} />
+        <Route path="/:title" element={<HobbyPage />} />
       </Routes>
     </Router>
   );
