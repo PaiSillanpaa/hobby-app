@@ -51,7 +51,7 @@
 }
 
 .search-content {
-  background: #fff;
+  background: linear-gradient(#073B3A, #13A19E);
   padding: 20px;
   border-radius: 12px;
   width: 80%;
@@ -68,7 +68,7 @@
   font-size: 16px;
 }
 
-.close-button {
+.continue-button {
   padding: 8px;
   border: none;
   border-radius: 8px;

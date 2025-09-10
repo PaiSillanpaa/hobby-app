@@ -5,6 +5,7 @@ import mapIcon from "../assets/map.png";
 import profileIcon from "../assets/profile.png";
 import "./Navbar.css";
 import { useNavigate } from "react-router-dom";
+import SearchModal from "./SearchModal";
 
 export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -14,21 +15,11 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Modal / popup for Search */}
       {searchOpen && (
-        <div className="search-modal">
-          <div className="search-content">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="search-input"
-            />
-            <button onClick={toggleSearch} className="close-button">
-              Close
-            </button>
-          </div>
-        </div>
+        <SearchModal searchOpen={searchOpen} toggleSearch={toggleSearch} />
       )}
+
+
 
       {/* Navbar */}
       <nav className="navbar">
