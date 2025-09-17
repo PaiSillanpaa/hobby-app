@@ -1,15 +1,18 @@
 import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
+import { Navigation, Pagination } from "swiper/modules";
 
 import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+
+import "./Carousel.css";
 
 import sailingImg from "../assets/sailing.png";
 import paintingImg from "../assets/painting.png";
 import basketballImg from "../assets/basketball.png";
 import guitarImg from "../assets/guitar.png";
 
-import "./Carousel.css";
 
 export default function Carousel() {
   const slides = [
@@ -22,29 +25,27 @@ export default function Carousel() {
   const navigate = useNavigate();
 
   return (
-    <div className="carousel-wrapper">
       <Swiper
-        modules={[Autoplay]}
+        modules={[Navigation, Pagination]}
         spaceBetween={40}
-        slidesPerView="auto" // näyttää useamman kerralla responsiivisesti
-        grabCursor={true}   // mahdollistaa dragin hiirellä/peukalolla
-        autoplay={{ delay: 3000, disableOnInteraction: false }}
-        allowTouchMove={true}
-        className="carousel"
+        slidesPerView={3}
+        navigation
+        pagination={{ clickable: true }}
+        loop={true}
       >
         {slides.map((slide, index) => (
-          <SwiperSlide key={index} style={{ width: "170px" }}> {/* width CSS:n mukaan */}
-            <div className="carousel-box">
-              <div className="carousel-content" onClick={() => navigate(`/${slide.title}`)}>
+          <SwiperSlide key={index} style={{ width: "170px" }}>
+            <div className="card" onClick={() => navigate(`/${slide.title}`)}>
+              <div className="carousel-content">
                 <img src={slide.image} alt={slide.title} className="carousel-image" />
                 <div className="carousel-footer">
                   <span className="carousel-title">{slide.title}</span>
+                  <img src="../assets/Info.png" className="info-image"></img>
                 </div>
               </div>
             </div>
           </SwiperSlide>
         ))}
       </Swiper>
-    </div>
   );
 }

@@ -12,6 +12,8 @@ const MapPage = () => {
   const [map, setMap] = useState(null);
   const [selectedHobby, setSelectedHobby] = useState(null);
 
+  //Jos käyttäjä ei anna sijaintitietoja asetetaan default Rauttis
+
   // Käyttäjän sijainti
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -21,11 +23,16 @@ const MapPage = () => {
           lon: position.coords.longitude,
         });
       },
-      (error) => console.error("Geolocation error:", error)
+      (error) => {
+        console.error("Geolocation error:", error);
+        setUserLocation({
+          lat: 60.1699,  // Helsingin Rautatieaseman leveysaste
+          lon: 24.9384,  // Helsingin Rautatieaseman pituusaste
+        });}
     );
   }, []);
 
-  // Etäisyys Haversine
+  // Etäisyys
   const getDistance = (lat1, lon1, lat2, lon2) => {
     const R = 6371;
     const dLat = ((lat2 - lat1) * Math.PI) / 180;

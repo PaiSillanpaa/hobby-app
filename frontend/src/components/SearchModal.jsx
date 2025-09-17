@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./SearchModal.css"; // tyylit erillisessä tiedostossa
+import "./SearchModal.css";
 
 const SearchModal = ({ searchOpen, toggleSearch }) => {
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ const SearchModal = ({ searchOpen, toggleSearch }) => {
     if (selectedGroups.length) queryParams.append("group", selectedGroups.join(","));
     if (selectedThemes.length) queryParams.append("theme", selectedThemes.join(","));
     toggleSearch(); // Sulkee modaalin
-    navigate(`/results?${queryParams.toString()}`); // Navigoi tulossivulle
+    navigate(`/results?${queryParams.toString()}`); // Navigoi tulossivulle eli category sivulle, joka on esim taide, urheilu, art sport etch
   };
 
   return (
