@@ -9,7 +9,8 @@ import star from "../assets/star.png";
 
 export default function HobbyPage() {
   const { title } = useParams();
-  const hobby = hobbies.find(h => h.title === title);
+  const { company } = useParams();
+  const hobby = hobbies.find(h => h.title === title && h.company === company);
 
   return (
     <div className="hobbypage-container">

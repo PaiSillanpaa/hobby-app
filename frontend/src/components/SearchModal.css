@@ -1,10 +1,11 @@
 
 .search-modal { /* TODO : THIS CONTAINER TO THE CENTER */
-  top: 0px;
-  left: 0px;
+ /* Tämä varmistaa, että modal on aina viewportin päällä */
+  top: 15%;
+  left: 50%;
+  transform: translate(-50%, -50%); 
   width: 354px;
-  height: 100%;
-  max-height: 200px;
+  max-height: 20%;
   display: flex;
   border-radius: 10px;
   justify-content: center;
@@ -15,6 +16,8 @@
 }
 
 .search-content {
+  max-height: calc(80vh - 50px); /* Vähennä tilaa navbarille, esim 50px */
+  overflow-y: auto; /* Sisällön scrollaus */
   background: linear-gradient(#073B3A, #13A19E);
   color: white;
   padding: 2rem;

@@ -1,4 +1,4 @@
-.hobbypage-container{
+.categorypage-container{
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -8,7 +8,7 @@
   color: #073B3A;
   background-color: white;
   text-align: center;
-  width: 100vw;
+  max-width: 100vw;
   overflow-x: hidden; /* estää karusellin puskemisen ulos */
 }
 

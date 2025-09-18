@@ -5,6 +5,7 @@ import "leaflet/dist/leaflet.css";
 import hobbies from "../data/hobbies.json";
 import "./MapPage.css";
 import NavBar from "../components/NavBar";
+import Carousel from "../components/Carousel";
 
 const MapPage = () => {
   const [userLocation, setUserLocation] = useState(null);
@@ -91,67 +92,48 @@ const MapPage = () => {
   if (!userLocation) return <div>Loading your location...</div>;
 
   return (
-    <div id="root">
-      {/* Logo */}
-      <header className="header">
-        <div className="logo">
-          <img src="/assets/logo.png" alt="Logo" />
-        </div>
-      </header>
+    <div className="mappage-container">
+      <div id="root">
 
-      {/* Kartta */}
-      <div className="map-container">
-        <MapContainer
-          center={[userLocation.lat, userLocation.lon]}
-          zoom={13}
-          className="map"
-          whenCreated={setMap}
-        >
-          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        {/* Kartta */}
+        <div className="map-container">
+          <MapContainer
+            center={[userLocation.lat, userLocation.lon]}
+            zoom={13}
+            className="map"
+            whenCreated={setMap}
+          >
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-          {/* Käyttäjä */}
-          <Marker position={[userLocation.lat, userLocation.lon]} icon={userIcon}>
-            <Popup>You are here</Popup>
-          </Marker>
-
-          {/* Harrastukset */}
-          {hobbies.map((business, idx) => (
-            <Marker
-              key={idx}
-              position={business.coords}
-              icon={createHobbyIcon(business.title)}
-            >
-              <Popup open={selectedHobby === business.name}>
-                <h4>{business.name}</h4>
-                <p>{business.description}</p>
-              </Popup>
+            {/* Käyttäjä */}
+            <Marker position={[userLocation.lat, userLocation.lon]} icon={userIcon}>
+              <Popup>You are here</Popup>
             </Marker>
-          ))}
-        </MapContainer>
+
+            {/* Harrastukset */}
+            {hobbies.map((business, idx) => (
+              <Marker
+                key={idx}
+                position={business.coords}
+                icon={createHobbyIcon(business.title)}
+              >
+                <Popup open={selectedHobby === business.name}>
+                  <h4>{business.name}</h4>
+                  <p>{business.description}</p>
+                </Popup>
+              </Marker>
+            ))}
+          </MapContainer>
+        </div>
+
+        {/* Lähimmät harrastukset */}
+        <div className="info-box">
+          <h2>Hobbies in your city</h2>
+          <Carousel city={userLocation ? userLocation.city : "Helsinki"} ></Carousel>
+        </div>
+        <NavBar></NavBar>
       </div>
 
-      {/* Lähimmät harrastukset */}
-      <div className="info-box">
-        <h2>Hobbies close to you</h2>
-        <div className="hobbies-list">
-          {closestHobbies.map((hobby, index) => (
-            <div
-              key={index}
-              className="hobby-item"
-              onClick={() => focusOnHobby(hobby)}
-            >
-              <img
-                src={`/assets/${hobby.image}`}
-                alt={hobby.title}
-                className="hobby-image"
-              />
-              <h3>{hobby.title}</h3>
-              <p>{hobby.distance.toFixed(1)} km</p>
-            </div>
-          ))}
-        </div>
-      </div>
-      <NavBar></NavBar>
     </div>
   );
 };

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./SearchModal.css";
 
-const SearchModal = ({ searchOpen, toggleSearch }) => {
+const SearchModal = ({ searchOpen, setSearchOpen }) => {
   const navigate = useNavigate();
 
   const areaFilters = ["Helsinki", "Espoo", "Vantaa", "Kauniainen", "Lohja"];
@@ -26,8 +26,8 @@ const SearchModal = ({ searchOpen, toggleSearch }) => {
     if (selectedAreas.length) queryParams.append("area", selectedAreas.join(","));
     if (selectedGroups.length) queryParams.append("group", selectedGroups.join(","));
     if (selectedThemes.length) queryParams.append("theme", selectedThemes.join(","));
-    toggleSearch(); // Sulkee modaalin
-    navigate(`/results?${queryParams.toString()}`); // Navigoi tulossivulle eli category sivulle, joka on esim taide, urheilu, art sport etch
+    setSearchOpen(false); // Suljetaan modal
+    navigate(`/results?${queryParams.toString()}`);
   };
 
   return (

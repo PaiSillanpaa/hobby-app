@@ -1,33 +1,28 @@
-/* Root flex layout */
-#root {
+.mappage-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-}
-
-/* Header ja logo */
-.header {
-  padding: 10px;
-  display: flex;
   justify-content: center;
   align-items: center;
-  border-bottom: 1px solid #ddd;
+  padding: 20px;
+  min-height: 100vh;
+  color: #073B3A;
+  background-color: white;
+  text-align: center;
+  max-width: 100vw;
+  overflow-x: hidden; /* estää karusellin puskemisen ulos */
 }
 
-.logo img {
-  max-height: 50px;
-  width: auto;
-}
-
-/* Kartta */
 .map-container {
   display: flex;
   flex: 1 0 auto;
+  border: 1px solid #073B3A;
+  border-radius: 10px;
 }
 
 .map {
+  border-radius: 10px;
   flex: 1;
-  height: 33.33vh; /* mobile-first: 1/3 korkeutta */
+  max-height: 50vh; /* mobile-first: 1/3 korkeutta */
 }
 
 @media (min-width: 768px) {
