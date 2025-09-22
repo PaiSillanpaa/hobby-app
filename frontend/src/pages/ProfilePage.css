@@ -1,0 +1,79 @@
+.profilepage-container {
+  background-color: white;
+  max-width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+}
+.logopicture {
+  margin-top: 100px;
+  margin-bottom: 30px;
+  width: 227px;
+  height: 58.173px;
+}
+
+.image-wrapper-pp {
+  height: 177px;
+  width: 100vw;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: grey;
+  margin-bottom: 50px;
+}
+
+.pp-wrapper {
+  padding: 32px;
+}
+
+
+.profilepicture {
+  background-color: white;
+  border-radius: 100px;
+  width: 86px;
+  height: 86px;
+}
+
+
+.content-wrapper {
+  height: 700px;
+  min-width: 100vw;
+  color: black;
+  font-size: 15px;
+  margin: 0;
+  padding-left: 50px;
+}
+
+.name {
+  flex-direction: column;
+  justify-content: left;
+  margin-bottom: 50px;
+}
+
+.link-list {
+  flex-direction: column;
+  display: flex;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid black;
+  margin: 1rem 0;
+}
+
+.pp-button {
+  font-size: 15px;
+  font-weight: 400;
+  color: black;
+  padding: 0px;
+  max-width: fit-content;
+}
+
+p {
+  margin: 0px;
+}
