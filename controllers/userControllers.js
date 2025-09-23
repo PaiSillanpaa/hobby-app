@@ -4,11 +4,12 @@ import { signJwt, checkJwt } from "../middleware/jwt.js";
 
 // function for registering user
 export const createUser = async (request, response) => {
-  const { username, password1, password2 } = request.body;
+  const { username, password1, password2, screenname } = request.body;
   console.log("username: ", username);
   console.log("password", password1);
+  console.log(screenname);
 
-  if (!username || !password1 || !password2) {
+  if (!username || !screenname || !password1 || !password2) {
     console.log("Error creating user, empty fields!");
     return response.status(400).send("all fields are required!");
   }
@@ -34,6 +35,7 @@ export const createUser = async (request, response) => {
 
     const newUser = new User({
       username: username,
+      screenname: screenname,
       password: hashedPassword,
     });
 

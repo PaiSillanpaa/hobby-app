@@ -27,7 +27,7 @@ export const checkJwt = (request, response, next) => {
 
     next();
   } catch (error) {
-    console.log("jwt verification erro");
+    console.log("jwt verification error");
     return response.status(401).send("jwt verification error");
   }
 };

@@ -6,13 +6,15 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  password: {
+
+  screenname: {
     type: String,
     required: true,
   },
-  creationDate: {
-    type: Date,
-    default: Date.now,
+
+  password: {
+    type: String,
+    required: true,
   },
 });
 

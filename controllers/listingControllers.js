@@ -1,5 +1,4 @@
 import Listing from "../models/listingSchema.js";
-import { checkJwt } from "../middleware/jwt.js";
 
 export const createListing = async (request, response) => {
   const { title, text } = request.body;
@@ -40,5 +39,45 @@ export const getListings = async (request, response) => {
   } catch (error) {
     console.log(error, "error retrieving listings");
     return response.status(500).send("error retrieving listings!");
+  }
+};
+
+export const imageTest = (request, response) => {
+  const { image } = request.body;
+
+  console.log("image file: ");
+
+  return response.send(image);
+};
+
+export const getListingsByTags = async (request, response) => {
+  const { tags } = request.body;
+  const query = {};
+
+  console.log("tags from controller: ", tags);
+
+  if (tags.length < 1) {
+    try {
+      const listings = await Listing.find();
+
+      return response.send(listings);
+    } catch (error) {
+      console.error(error);
+      response.status(401).send("Internal server error");
+    }
+  } else {
+    tags.forEach((tag) => {
+      const [key, value] = Object.entries(tag)[0];
+      query[key] = value;
+    });
+  }
+  try {
+    console.log(query);
+    const listings = await Listing.find(query);
+
+    return response.send(listings);
+  } catch (error) {
+    console.error("internal server erro");
+    return response.status(400).send("internal server error");
   }
 };

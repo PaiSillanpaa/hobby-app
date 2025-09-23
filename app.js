@@ -5,14 +5,16 @@ import connectDB from "./config/db.js";
 import userRouter from "./routes/userRouter.js";
 import listingRouter from "./routes/listingRouter.js";
 import morgan from "morgan";
+import cors from "cors";
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 app.use(morgan("dev"));
 app.use(userRouter);
 app.use(listingRouter);
 
-//funktio tietokantaan yhdistämiseen ja serverin käynnistykseen
+//server start function
 const startServer = async () => {
   try {
     await connectDB();

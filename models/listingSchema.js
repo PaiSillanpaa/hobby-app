@@ -5,19 +5,40 @@ const listingSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  listingText: {
+
+  listingDesc: {
     type: String,
   },
+
+  userId: {
+    type: mongoose.ObjectId,
+    required: true,
+  },
+
+  location: {
+    city: {
+      type: String,
+    },
+    address: {
+      type: String,
+    },
+    coordinate: {
+      type: [Number],
+    },
+  },
+
   views: {
     type: Number,
     default: 0,
   },
-  favourites: {
-    type: Number,
-    default: 0,
+
+  tags: {
+    type: [String],
+    default: [],
   },
-  userId: {
-    type: mongoose.ObjectId,
+
+  image: {
+    type: String,
   },
 });
 
