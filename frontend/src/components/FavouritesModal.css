@@ -1,0 +1,30 @@
+.favourites-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.favourites-card {
+  background-color: white;
+  border: 1px solid #073B3A;
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.favourites-image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
+.favourites-title {
+  font-size: 13px;
+  color: #073B3A;
+  font-weight: 500;
+  margin: 0;
+}

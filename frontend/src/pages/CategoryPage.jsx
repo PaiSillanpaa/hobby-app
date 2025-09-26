@@ -17,7 +17,7 @@ export default function CategoryPage() {
             <img src={`../assets/${hobby.image}`} alt="big-image" className="big-image" />
         </div>
             <h1 className="sport">{hobby.category.toUpperCase()}</h1>
-        </div>
+      </div>
         <p className="text-above">Wanna be part of the team?</p>
       <div>
         <Carousel></Carousel>

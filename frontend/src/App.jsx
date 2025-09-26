@@ -8,6 +8,7 @@ import MapPage from "./pages/MapPage";
 import HobbyPage from "./pages/HobbyPage";
 import CategoryPage from "./pages/CategoryPage";
 import ProfilePage from "./pages/ProfilePage";
+import AdminRoute from "./components/AdminRoute";
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/:title" element={<CategoryPage />} />
         <Route path="/:title/:company" element={<HobbyPage />} />
+        <Route path="/admin" element={<AdminRoute />} />
       </Routes>
     </Router>
   );

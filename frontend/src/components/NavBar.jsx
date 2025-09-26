@@ -13,6 +13,16 @@ export default function Navbar() {
   const toggleSearch = () => setSearchOpen(!searchOpen);
   const navigate = useNavigate();
 
+  const handleProfileClick = () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    navigate("/");
+  } else {
+    navigate("/profile");
+  }
+  };
+
+
   return (
     <>
       {searchOpen && (
@@ -38,7 +48,7 @@ export default function Navbar() {
           <span>Map</span>
         </button>
 
-        <button onClick={() => navigate("/profile")} className="nav-item">
+        <button onClick={handleProfileClick} className="nav-item">
           <img src={profileIcon} alt="Profile" className="nav-icon" />
           <span>Profile</span>
         </button>

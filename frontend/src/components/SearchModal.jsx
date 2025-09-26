@@ -79,7 +79,7 @@ const SearchModal = ({ searchOpen, setSearchOpen }) => {
             </div>
           </div>
 
-          <button onClick={handleContinue} className="continue-button">
+          <button onClick={handleContinue} className="contin-button">
             Continue
           </button>
 
