@@ -1,190 +1,131 @@
 import { useState } from "react";
-import "./AdminView.css"
+import MapComponent from "./MapComponent";
+import "./AdminView.css";
+import "./Form.css";
+import AdminNavBar from "./AdminNavBar";
+import TopBar from "./TopBar";
 
-export default function AdminView() {
-  const [users, setUsers] = useState([
-    { id: 1, username: "user1", email: "user1@example.com" },
-    { id: 2, username: "user2", email: "user2@example.com" },
-  ]);
-  
-  const [hobbies, setHobbies] = useState([
-    { id: 1, name: "Guitar Lessons" },
-    { id: 2, name: "Photography" },
-  ]);
+const AdminView = () => {
+  const [coords, setCoords] = useState([60.1300, 24.9240]); 
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState([]);
+  const [age, setAge] = useState([]);
+  const [company, setCompany] = useState("");
+  const [url, setUrl] = useState("");
+  const [type, setType] = useState("");
+  const [location, setLocation] = useState("");
+  const [description, setDescription] = useState("");
+  const [image, setImage] = useState(null);
 
-  const [newUserName, setNewUserName] = useState("");
-  const [newUserEmail, setNewUserEmail] = useState("");
-  const [newHobbyName, setNewHobbyName] = useState("");
 
-  // Muokkaustilat id:n perusteella (tai null jos ei muokata)
-  const [editingUserId, setEditingUserId] = useState(null);
-  const [editingHobbyId, setEditingHobbyId] = useState(null);
 
-  // Temporary state muokkauksia varten
-  const [editUserName, setEditUserName] = useState("");
-  const [editUserEmail, setEditUserEmail] = useState("");
-  const [editHobbyName, setEditHobbyName] = useState("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  // Lisää käyttäjä
-  const addUser = () => {
-    if (!newUserName || !newUserEmail) return alert("Fill in username and email");
-    const newUser = {
-      id: Date.now(),
-      username: newUserName,
-      email: newUserEmail,
-    };
-    setUsers([...users, newUser]);
-    setNewUserName("");
-    setNewUserEmail("");
-  };
+    // Käytetään FormData, jotta voidaan lähettää myös tiedosto
+    const formData = new FormData();
+    formData.append("id", Date.now());
+    formData.append("title", title);
+    formData.append("category", JSON.stringify(category));
+    formData.append("age", JSON.stringify(age));
+    formData.append("type", type);
+    formData.append("company", company);
+    formData.append("url", url);
+    formData.append("location", location);
+    formData.append("coords", JSON.stringify(coords));
+    formData.append("description", description);
+    if(image) formData.append("image", image);
+    formData.append("status", "active");
 
-  // Poista käyttäjä
-  const deleteUser = (id) => {
-    setUsers(users.filter(user => user.id !== id));
-  };
+    try {
+      const response = await fetch("/api/save-post", {
+        method: "POST",
+        body: formData,
+      });
 
-  // Aloita muokkaus käyttäjälle
-  const startEditUser = (user) => {
-    setEditingUserId(user.id);
-    setEditUserName(user.username);
-    setEditUserEmail(user.email);
-  };
+      if (!response.ok) throw new Error("Tallennus epäonnistui");
 
-  // Peruuta muokkaus käyttäjälle
-  const cancelEditUser = () => {
-    setEditingUserId(null);
-  };
-
-  // Tallenna käyttäjän muokkaus
-  const saveEditUser = () => {
-    setUsers(users.map(user => {
-      if (user.id === editingUserId) {
-        return { ...user, username: editUserName, email: editUserEmail };
-      }
-      return user;
-    }));
-    setEditingUserId(null);
-  };
-
-  // Lisää harrastus
-  const addHobby = () => {
-    if (!newHobbyName) return alert("Fill in hobby name");
-    const newHobby = { id: Date.now(), name: newHobbyName };
-    setHobbies([...hobbies, newHobby]);
-    setNewHobbyName("");
-  };
-
-  // Poista harrastus
-  const deleteHobby = (id) => {
-    setHobbies(hobbies.filter(hobby => hobby.id !== id));
-  };
-
-  // Aloita muokkaus harrastukselle
-  const startEditHobby = (hobby) => {
-    setEditingHobbyId(hobby.id);
-    setEditHobbyName(hobby.name);
-  };
-
-  // Peruuta muokkaus harrastukselle
-  const cancelEditHobby = () => {
-    setEditingHobbyId(null);
-  };
-
-  // Tallenna harrastuksen muokkaus
-  const saveEditHobby = () => {
-    setHobbies(hobbies.map(hobby => {
-      if (hobby.id === editingHobbyId) {
-        return { ...hobby, name: editHobbyName };
-      }
-      return hobby;
-    }));
-    setEditingHobbyId(null);
+      alert("Postaus tallennettu onnistuneesti!");
+      // Tyhjennetään lomake
+      setTitle("");
+      setCategory([]);
+      setAge([]);
+      setType("");
+      setCompany("");
+      setUrl("");
+      setLocation("");
+      setDescription("");
+      setImage(null);
+      setCoords([60.1300, 24.9240]);
+    } catch (err) {
+      console.error(err);
+      alert("Tallenus epäonnistui");
+    }
   };
 
   return (
-    <div className="admin-view">
-      <h1>Admin Panel</h1>
+    <div className="admin-layout">
+      <TopBar></TopBar>
+      <div className="main-area">
+        <AdminNavBar></AdminNavBar>
 
-      <section>
-        <h2>Manage Users</h2>
-        <input 
-          type="text" 
-          placeholder="Username" 
-          value={newUserName} 
-          onChange={e => setNewUserName(e.target.value)} 
-        />
-        <input 
-          type="email" 
-          placeholder="Email" 
-          value={newUserEmail} 
-          onChange={e => setNewUserEmail(e.target.value)} 
-        />
-        <button onClick={addUser}>Add User</button>
+        {/* SISÄLTÖ */}
+        <div className="content">
+          <h1>Add a New Hobby</h1>
+          <form onSubmit={handleSubmit} className="post-form">
+          <small>Hold Ctrl (Windows) / Cmd (Mac) to select multiple options</small>
+            <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
+            
+            <select
+              multiple
+              value={category}
+              onChange={(e) => {
+                const selected = Array.from(e.target.selectedOptions, option => option.value);
+                setCategory(selected);
+              }}
+            >
+              <option value="art">Art</option>
+              <option value="sport">Sport</option>
+              <option value="culture">Culture</option>
+              <option value="cooking">Cooking</option>
+              <option value="handcraft">Handcraft</option>
+              <option value="digital">Digital</option>
+            </select>
+         
+            <input type="text" placeholder="Company" value={company} onChange={(e) => setCompany(e.target.value)} required />
+            <input type="url" placeholder="Website URL" value={url} onChange={(e) => setUrl(e.target.value)} />
 
-        <ul>
-          {users.map(user => (
-            <li key={user.id}>
-              {editingUserId === user.id ? (
-                <>
-                  <input 
-                    type="text" 
-                    value={editUserName} 
-                    onChange={e => setEditUserName(e.target.value)} 
-                  />
-                  <input 
-                    type="email" 
-                    value={editUserEmail} 
-                    onChange={e => setEditUserEmail(e.target.value)} 
-                  />
-                  <button onClick={saveEditUser}>Save</button>
-                  <button onClick={cancelEditUser}>Cancel</button>
-                </>
-              ) : (
-                <>
-                  {user.username} ({user.email}) 
-                  <button onClick={() => startEditUser(user)}>Edit</button>
-                  <button onClick={() => deleteUser(user.id)}>Delete</button>
-                </>
-              )}
-            </li>
-          ))}
-        </ul>
-      </section>
+            <select value={type} onChange={(e) => setType(e.target.value)} required>
+              <option value="">Select Type</option>
+              <option value="solo">Solo</option>
+              <option value="group">Group</option>
+            </select>
 
-      <section>
-        <h2>Manage Hobbies</h2>
-        <input 
-          type="text" 
-          placeholder="Hobby name" 
-          value={newHobbyName} 
-          onChange={e => setNewHobbyName(e.target.value)} 
-        />
-        <button onClick={addHobby}>Add Hobby</button>
+            <select
+              multiple
+              value={age}           // age = array ["kids","adults"]
+              onChange={(e) => {
+                const selected = Array.from(e.target.selectedOptions, option => option.value);
+                setAge(selected);
+              }}
+            >
+              <option value="kids">Kids</option>
+              <option value="young">Young</option>
+              <option value="adults">Adults</option>
+              <option value="seniors">Seniors</option>
+              <option value="family activity">Family Activity</option>
+            </select>
 
-        <ul>
-          {hobbies.map(hobby => (
-            <li key={hobby.id}>
-              {editingHobbyId === hobby.id ? (
-                <>
-                  <input 
-                    type="text" 
-                    value={editHobbyName} 
-                    onChange={e => setEditHobbyName(e.target.value)} 
-                  />
-                  <button onClick={saveEditHobby}>Save</button>
-                  <button onClick={cancelEditHobby}>Cancel</button>
-                </>
-              ) : (
-                <>
-                  {hobby.name}
-                  <button onClick={() => startEditHobby(hobby)}>Edit</button>
-                  <button onClick={() => deleteHobby(hobby.id)}>Delete</button>
-                </>
-              )}
-            </li>
-          ))}
-        </ul>
-      </section>
+            <input type="text" placeholder="City" value={location} onChange={(e) => setLocation(e.target.value)} required />
+            <textarea placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
+            <input type="file" onChange={(e) => setImage(e.target.files[0])} />
+            <MapComponent location={location} setCoords={setCoords} />
+            <button type="submit" className="submit-btn">Add Post</button>
+          </form>
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default AdminView;

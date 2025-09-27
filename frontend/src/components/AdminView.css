@@ -1,19 +1,17 @@
-.admin-view {
-  max-width: 900px;
-  margin: 20px auto;
+.admin-layout {
+  display: flex;
+  height: 100vh;
+  font-family: 'Kanit', sans-serif;
+  font-weight: 400;
+  flex-direction: column;
+}
+
+.main-area {
+  display: flex;
+  overflow: hidden;
+}
+.content {
+  flex: 1;
   padding: 20px;
-  font-family: Arial, sans-serif;
-}
-
-.admin-view section {
-  margin-bottom: 40px;
-}
-
-.admin-view input {
-  margin-right: 10px;
-  padding: 5px;
-}
-
-.admin-view button {
-  margin-left: 5px;
+  overflow-y: auto;
 }
