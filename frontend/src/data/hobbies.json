@@ -9,7 +9,7 @@
     "type": "team",
     "age": ["adults"],
     "coords": [60.1699, 24.9384],
-    "location": "Helsinki",
+    "location": ["Helsinki", "Archipelago 12"],
     "description": "Sailing in the beautiful waters of the Helsinki archipelago.",
     "status": "active"
   },
@@ -23,7 +23,7 @@
     "type": "solo",
     "age": ["seniors"],
     "coords": [60.1947, 24.9417],
-    "location": "Helsinki",
+    "location": ["Helsinki", "Kallio 5"],
     "description": "Explore your creativity at painting workshops in Kallio.",
     "status": "active"
   },
@@ -37,7 +37,7 @@
     "type": "team",
     "age": ["young"],
     "coords": [60.1890, 24.9265],
-    "location": "Helsinki",
+    "location": ["Helsinki", "Pasila 8"],
     "description": "Join a game of basketball at Pasilan sports hall.",
     "status": "pending"
   },
@@ -51,7 +51,7 @@
     "type": "solo",
     "age": ["adults", "young"],
     "coords": [60.1680, 24.9380],
-    "location": "Helsinki",
+    "location": ["Helsinki", "Music Street 3"],
     "description": "Learn to play the guitar in Helsinki's music schools.",
     "status": "active"
   },
@@ -61,11 +61,11 @@
     "title": "Theatre Club",
     "company": "Company5",
     "url": "www.company5.com",
-    "image": "theatre.png",
+    "image": "guitar.png",
     "type": "team",
     "age": ["family"],
     "coords": [60.2050, 24.6559],
-    "location": "Espoo",
+    "location": ["Espoo", "Community 7"],
     "description": "Participate in amateur theatre productions.",
     "status": "deleted"
   },
@@ -79,7 +79,7 @@
     "type": "solo",
     "age": ["adults"],
     "coords": [60.2210, 24.8050],
-    "location": "Espoo",
+    "location": ["Espoo", "Cook Street 2"],
     "description": "Learn to cook authentic Italian meals.",
     "status": "active"
   },
@@ -93,7 +93,7 @@
     "type": "team",
     "age": ["kids"],
     "coords": [60.2940, 25.0370],
-    "location": "Vantaa",
+    "location": ["Vantaa", "Myyrmäki 4"],
     "description": "Join kids' football teams in Myyrmäki.",
     "status": "active"
   },
@@ -107,7 +107,7 @@
     "type": "solo",
     "age": ["seniors", "adults"],
     "coords": [60.3210, 24.9630],
-    "location": "Vantaa",
+    "location": ["Vantaa", "Craft 12"],
     "description": "A calm and social environment for knitting lovers.",
     "status": "pending"
   },
@@ -121,7 +121,7 @@
     "type": "team",
     "age": ["young"],
     "coords": [60.2530, 24.8890],
-    "location": "Kauniainen",
+    "location": ["Kauniainen", "Tech Street 1"],
     "description": "Learn to build games from scratch with Unity and Godot.",
     "status": "active"
   },
@@ -135,7 +135,7 @@
     "type": "solo",
     "age": ["family"],
     "coords": [60.2500, 24.7500],
-    "location": "Lohja",
+    "location": ["Lohja", "City Street 6"],
     "description": "Explore the city while taking amazing photos.",
     "status": "deleted"
   }

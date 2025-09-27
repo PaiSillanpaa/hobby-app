@@ -18,14 +18,16 @@
     "username": "user_mikko",
     "email": "mikko@example.com",
     "password": "$2b$12$Z9pH3wLq7yR8nVb2Tq6sO1cF4gX5uD0mK8eW2rYvNf6hP1sQ3aL6",
-    "rank": "user"
+    "rank": "user",
+    "favoriteHobbies": []
   },
   {
     "id": 4,
     "username": "user_liisa",
     "email": "liisa@example.com",
     "password": "$2b$12$M4rV8eJq1nS6wTz3Pp9kH2bF5cY7uL0xQ3aD8hNfGv9sE6tR1yC2",
-    "rank": "user"
+    "rank": "user",
+    "favoriteHobbies": []
   },
   {
     "id": 5,

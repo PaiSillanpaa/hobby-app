@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
@@ -10,44 +10,52 @@ import "swiper/css/pagination";
 
 import "./Carousel.css";
 
-function getRandomHobbies(array, count) {
-  const shuffled = [...array].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, count);
-}
-
 export default function Carousel({
-    category = null,
+  title = "",
+  category = null,
   city = null,
   age = null,
-  type = null,
-  fallbackCount = 5
+  type = null
 }) {
   const navigate = useNavigate();
 
-const filteredHobbies = useMemo(() => {
-      // Jos ei ole annettu yhtään suodatinta, otetaan satunnaiset 5 harrastusta
-    if (!category && !city && !age && !type) {
-      return getRandomHobbies(hobbies, fallbackCount);
+  const [favorites, setFavorites] = useState([]);
+
+  const handleFavoriteClick = (e, hobby) => {
+    e.stopPropagation(); // estää kortin click-navigaation
+
+    const isAlreadyFavorite = favorites.some(f => f.id === hobby.id);
+
+    if (isAlreadyFavorite) {
+      setFavorites(favorites.filter(f => f.id !== hobby.id));
+      // backend DELETE /favorites/:id
+    } else {
+      setFavorites([...favorites, hobby]);
+      // backend POST /favorites
     }
-const results = hobbies.filter((hobby) => {
-  const matchesCategory = category ? hobby.category === category : true;
-  const matchesCity = city ? hobby.location.toLowerCase().includes(city.toLowerCase()) : true;
-  const matchesAge = age ? hobby.age === age : true;
-  const matchesType = type ? hobby.type === type : true;
+  };
 
-  return matchesCategory && matchesCity && matchesAge && matchesType;
-});
+  const filteredHobbies = useMemo(() => {
+    // Lasketaan match-score jokaiselle harrastukselle
+    const scored = hobbies.map((hobby) => {
+      let score = 0;
+      if (category && hobby.category.includes(category)) score++;
+      if (city && hobby.location.toLowerCase().includes(city.toLowerCase())) score++;
+      if (age && hobby.age.includes(age)) score++;
+      if (type && hobby.type === type) score++;
+      return { ...hobby, score };
+    });
 
+    // Järjestetään pisteiden mukaan laskevasti
+    scored.sort((a, b) => b.score - a.score);
 
-// Jos ei löydy mitään, palautetaan satunnaiset fallbackCount määrän harrastuksia
-if (results.length === 0) {
-  return getRandomHobbies(hobbies, fallbackCount);
-}
-
-return results;
-}, [category, city, age, type]);
+    // Otetaan vain top 5
+    return scored.slice(0, 5);
+  }, [category, city, age, type]);
 
   return (
+    <div className="carousel-wrapper">
+      {title && <h3 className="carousel-title-header">{title}</h3>}
       <Swiper
         modules={[Navigation, Pagination]}
         spaceBetween={40}
@@ -56,19 +64,28 @@ return results;
         pagination={{ clickable: true }}
         loop={true}
       >
-        {filteredHobbies.map((hobby, index) => (
-          <SwiperSlide key={hobby.id || index} style={{ width: "170px" }}>
+        {filteredHobbies.map((hobby) => (
+          <SwiperSlide key={hobby.id} style={{ width: "170px" }}>
             <div className="card" onClick={() => navigate(`/${hobby.title}/${hobby.company}`)}>
               <div className="carousel-content">
                 <img src={`../assets/${hobby.image}`} alt={hobby.title} className="carousel-image" />
+                      {/* Heart button */}
+              {/* Sydän nurkassa */}
+                <img
+                  src={"../assets/Heart.svg"}
+                  alt="favorite"
+                  className={`heart-icon ${favorites.some(f => f.id === hobby.id) ? "filled" : ""}`}
+                  onClick={(e) => { e.stopPropagation(); handleFavoriteClick(hobby); }}
+                />
                 <div className="carousel-footer">
                   <span className="carousel-title">{hobby.title}</span>
-                  <img src="../assets/Info.png" className="info-image"></img>
+                  <img src="../assets/Info.png" className="info-image" />
                 </div>
               </div>
             </div>
           </SwiperSlide>
         ))}
       </Swiper>
+    </div>
   );
 }

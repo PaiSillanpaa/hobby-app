@@ -26,7 +26,7 @@ export default function App() {
         <Route path="/homepage" element={<HomePage />} />
         <Route path="/map" element={<MapPage />} />
         <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/:title" element={<CategoryPage />} />
+        <Route path="/categories" element={<CategoryPage />} />
         <Route path="/:title/:company" element={<HobbyPage />} />
         <Route path="/admin" element={<AdminRoute />} />
         <Route path="/admin/allposts" element={<AllPosts />} />

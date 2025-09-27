@@ -26,7 +26,7 @@ export default function Navbar() {
   return (
     <>
       {searchOpen && (
-        <SearchModal searchOpen={searchOpen} toggleSearch={toggleSearch} />
+        <SearchModal searchOpen={searchOpen} setSearchOpen={setSearchOpen}  toggleSearch={toggleSearch} />
       )}
 
 

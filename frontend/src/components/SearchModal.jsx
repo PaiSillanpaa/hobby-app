@@ -26,8 +26,11 @@ const SearchModal = ({ searchOpen, setSearchOpen }) => {
     if (selectedAreas.length) queryParams.append("area", selectedAreas.join(","));
     if (selectedGroups.length) queryParams.append("group", selectedGroups.join(","));
     if (selectedThemes.length) queryParams.append("theme", selectedThemes.join(","));
-    setSearchOpen(false); // Suljetaan modal
-    navigate(`/results?${queryParams.toString()}`);
+    
+    setSearchOpen(false);
+    
+    // Navigoidaan CategoryPageen filttereiden kanssa
+    navigate(`/categories?${queryParams.toString()}`);
   };
 
   return (
