@@ -32,6 +32,11 @@ const listingSchema = new mongoose.Schema({
     default: 0,
   },
 
+  creationdate: {
+    type: Date,
+    default: Date.now,
+  },
+
   tags: {
     type: [String],
     default: [],
@@ -39,6 +44,11 @@ const listingSchema = new mongoose.Schema({
 
   image: {
     type: String,
+  },
+
+  active: {
+    type: Boolean,
+    default: false,
   },
 });
 

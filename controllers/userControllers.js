@@ -4,12 +4,10 @@ import { signJwt, checkJwt } from "../middleware/jwt.js";
 
 // function for registering user
 export const createUser = async (request, response) => {
-  const { username, password1, password2, screenname } = request.body;
-  console.log("username: ", username);
-  console.log("password", password1);
-  console.log(screenname);
+  const { email, username, password1, password2, rank } = request.body;
+  console.log("password: ", password1);
 
-  if (!username || !screenname || !password1 || !password2) {
+  if (!email || !username || !password1 || !password2) {
     console.log("Error creating user, empty fields!");
     return response.status(400).send("all fields are required!");
   }
@@ -34,9 +32,10 @@ export const createUser = async (request, response) => {
     console.log("hashed password: ", hashedPassword);
 
     const newUser = new User({
+      email: email,
       username: username,
-      screenname: screenname,
       password: hashedPassword,
+      rank: rank,
     });
 
     await newUser.save();
@@ -54,7 +53,7 @@ export const loginUser = async (request, response) => {
   const { username, password } = request.body;
 
   if (!username || !password) {
-    return response.status(400).send("incorrect username or password");
+    return response.status(400).send("Please enter both username and password");
   }
 
   const user = await User.findOne({ username: username }).exec();
@@ -76,4 +75,54 @@ export const loginUser = async (request, response) => {
   console.log("accestoken: ", accessToken);
 
   return response.send(`Logged in as: ${user.username}`);
+};
+
+export const deleteUser = async (request, response) => {
+  const { username } = request.body;
+
+  try {
+    await User.deleteOne({ username: username });
+    return response.status(201).send("User deleted succesfully");
+  } catch (error) {
+    return response.status(500).send(`Error deleting user: ${error}`);
+  }
+};
+
+export const changePassword = async (request, response) => {
+  const { username, currentPassword, newPassword1, newPassword2 } =
+    request.body;
+
+  try {
+    const user = await User.findOne({ username: username });
+
+    if (!user) {
+      return response.status(404).json({ message: "User not found" });
+    }
+
+    const isCorrectPassword = await comparePassword(
+      currentPassword,
+      user.password
+    );
+
+    if (!isCorrectPassword) {
+      return response.status(401).json({ message: "Incorrect password!" });
+    }
+
+    if (newPassword1 !== newPassword2) {
+      return response.status(400).json({ message: "Passwords do not match" });
+    }
+
+    const hashedPassword = await hashPassword(newPassword1);
+
+    await User.findOneAndUpdate(
+      { username: username },
+      { password: hashedPassword }
+    );
+
+    return response
+      .status(201)
+      .json({ message: "password changed successfully" });
+  } catch (error) {
+    return response.status(500).json({ error: "server error" });
+  }
 };
