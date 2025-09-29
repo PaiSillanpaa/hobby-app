@@ -1,7 +1,11 @@
 import Listing from "../models/listingSchema.js";
+import Favourites from "../models/favouritesSchema.js";
+import History from "../models/historySchema.js";
+import User from "../models/userSchema.js";
 
 export const createListing = async (request, response) => {
   const { newListings } = request.body;
+  const { newImages } = request.files;
   const user = request.user;
 
   if (!user) {
@@ -13,23 +17,31 @@ export const createListing = async (request, response) => {
 
   try {
     for (let i = 0; i < newListings.length; i++) {
-      console.log(newListings[0]);
-      const { title, desc, location, tags } = newListings[i];
+      console.log(newListings[i]);
+      const { title, description, location, category, age, type, url } =
+        newListings[i];
 
-      if (!title || !desc) {
+      const image = newImages[i];
+
+      if (!title || !description) {
         console.log("error creating listing, empty fields!");
         return response.status(400).send("Title and description are required!");
       }
 
       const newListing = new Listing({
         listingTitle: title,
-        listingDesc: desc,
-        userId: user.userId,
+        listingDescription: description,
+        userId: user._id,
         location: {
           city: location.city,
           address: location.address,
+          coordinates: location.coords,
         },
-        tags: tags,
+        category: category,
+        age: age,
+        type: type,
+        url: url,
+        image: image,
       });
 
       await newListing.save();
@@ -135,5 +147,85 @@ export const getCategories = async (request, response) => {
   } catch (error) {
     console.error("error, when trying to find front page listings: ", error);
     return response.status(400).send("internal server error");
+  }
+};
+
+export const getFavourites = async (request, response) => {
+  const { username, _id } = request.user;
+
+  if (!username) {
+    return response.status(201).json({ favourites: [] });
+  }
+
+  try {
+    const favourites = await Favourites.find({ userId: _id });
+
+    if (!favourites) {
+      return response.status(204).send({ favourites: [] });
+    }
+
+    return response.status(200).send({ favourites: favourites });
+  } catch (error) {
+    return response
+      .status(500)
+      .send({ message: "error when retrieving favourites" });
+  }
+};
+
+export const setFavourite = async (request, response) => {
+  const { listingId } = request.body;
+  console.log(request.user);
+  const { username } = request.user;
+
+  if (!username || !listingId) {
+    return response.status(401).json({ message: "Unauthorized" });
+  }
+
+  try {
+    const listingToFavourite = await Listing.findOne({ _id: listingId });
+    const user = await User.findOne({ username: username });
+
+    if (!listingToFavourite || !user) {
+      return response
+        .status(404)
+        .json({ message: "could not find user or listing" });
+    }
+
+    const existing = await Favourites.findOne({
+      userId: user._id,
+      listingId: listingToFavourite._id,
+    });
+
+    if (existing) {
+      return response.status(200).send("Already in favourites");
+    }
+
+    const newFavourite = new Favourites({
+      userId: user._id,
+      listingId: listingToFavourite._id,
+    });
+
+    await newFavourite.save();
+
+    return response.status(201).send("added to favourites");
+  } catch (error) {
+    return response.status(500).send("error when applying favourite");
+  }
+};
+
+export const getListingsByUser = async (request, response) => {
+  const { username, _id } = request.user;
+
+  if (!_id) {
+    return response.status(401).send({ message: "Unauthorized" });
+  }
+
+  try {
+    const userListings = await Listing.find({ userId: _id });
+    return response.status(200).send({ userListings: userListings });
+  } catch (error) {
+    return response
+      .status(500)
+      .send({ message: "Error retrieving user listings" });
   }
 };

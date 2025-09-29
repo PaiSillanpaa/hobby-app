@@ -1,4 +1,6 @@
 import User from "../models/userSchema.js";
+import History from "../models/historySchema.js";
+import Favourites from "../models/favouritesSchema.js";
 import { hashPassword, comparePassword } from "../middleware/bcrypt.js";
 import { signJwt, checkJwt } from "../middleware/jwt.js";
 

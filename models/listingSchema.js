@@ -12,6 +12,7 @@ const listingSchema = new mongoose.Schema({
 
   userId: {
     type: mongoose.ObjectId,
+    ref: "User",
     required: true,
   },
 
@@ -22,7 +23,7 @@ const listingSchema = new mongoose.Schema({
     address: {
       type: String,
     },
-    coordinate: {
+    coordinates: {
       type: [Number],
     },
   },
@@ -37,18 +38,31 @@ const listingSchema = new mongoose.Schema({
     default: Date.now,
   },
 
-  tags: {
-    type: [String],
-    default: [],
-  },
-
   image: {
     type: String,
   },
 
   active: {
-    type: Boolean,
-    default: false,
+    type: String,
+    default: "inactive",
+  },
+
+  url: {
+    type: String,
+  },
+
+  category: {
+    type: [String],
+    default: [],
+  },
+
+  age: {
+    type: [String],
+    default: [],
+  },
+
+  type: {
+    type: String,
   },
 });
 
