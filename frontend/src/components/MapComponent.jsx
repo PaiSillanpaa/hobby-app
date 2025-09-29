@@ -14,9 +14,7 @@ const MapComponent = ({ location, setCoords }) => {
 
       try {
         const response = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-            location
-          )}`
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`
         );
 
         if (!response.ok) {
@@ -30,8 +28,14 @@ const MapComponent = ({ location, setCoords }) => {
           const lon = parseFloat(data[0].lon);
           const newCoords = [lat, lon];
 
-          setLocalCoords(newCoords);
-          setCoords(newCoords); // palautetaan parent-komponentille
+          if (
+            !coords ||
+            coords[0] !== newCoords[0] ||
+            coords[1] !== newCoords[1]
+          ) {
+            setLocalCoords(newCoords);
+            setCoords(newCoords);
+          }
         } else {
           setError("Ei löytynyt koordinaatteja annetulle sijainnille");
         }
@@ -44,6 +48,7 @@ const MapComponent = ({ location, setCoords }) => {
 
     fetchCoords();
   }, [location, setCoords]);
+
 
   return (
     <div className="map-component">

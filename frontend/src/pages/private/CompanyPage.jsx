@@ -1,9 +1,9 @@
 import { useState } from "react";
-import MapComponent from "./MapComponent";
-import "./AdminView.css";
-import "./Form.css";
-import AdminNavBar from "./AdminNavBar";
-import TopBar from "./TopBar";
+import MapComponent from "../../components/MapComponent";
+import "../../components/AdminView.css";
+import "../../components/Form.css";
+import AdminNavBar from "../../components/AdminNavBar";
+import TopBar from "../../components/TopBar";
 
 const AdminView = () => {
   const [coords, setCoords] = useState([60.1300, 24.9240]); 

@@ -8,8 +8,13 @@
     "image": "sailing.png",
     "type": "team",
     "age": ["adults"],
-    "coords": [60.1699, 24.9384],
-    "location": ["Helsinki", "Archipelago 12"],
+    "location": [
+      {
+        "city": "Helsinki",
+        "coords": [60.17859942280214, 24.963403005645848],
+        "address": "Hakaniemenranta 17"
+      }
+    ],
     "description": "Sailing in the beautiful waters of the Helsinki archipelago.",
     "status": "active"
   },
@@ -22,8 +27,13 @@
     "image": "painting.png",
     "type": "solo",
     "age": ["seniors"],
-    "coords": [60.1947, 24.9417],
-    "location": ["Helsinki", "Kallio 5"],
+    "location": [
+      {
+        "city": "Helsinki",
+        "coords": [60.180654990191215, 24.911759496026793],
+        "address": "Merikannontie 8"
+      }
+    ],
     "description": "Explore your creativity at painting workshops in Kallio.",
     "status": "active"
   },
@@ -36,8 +46,13 @@
     "image": "basketball.png",
     "type": "team",
     "age": ["young"],
-    "coords": [60.1890, 24.9265],
-    "location": ["Helsinki", "Pasila 8"],
+    "location": [
+      {
+        "city": "Helsinki",
+        "coords": [60.19917321744108, 24.910343289675495],
+        "address": "Ratsastie 10"
+      }
+    ],
     "description": "Join a game of basketball at Pasilan sports hall.",
     "status": "pending"
   },
@@ -50,8 +65,13 @@
     "image": "guitar.png",
     "type": "solo",
     "age": ["adults", "young"],
-    "coords": [60.1680, 24.9380],
-    "location": ["Helsinki", "Music Street 3"],
+    "location": [
+      {
+        "city": "Helsinki",
+        "coords": [60.20611728184733, 24.94107716429286],
+        "address": "Mäkelänkatu 72"
+      }
+    ],
     "description": "Learn to play the guitar in Helsinki's music schools.",
     "status": "active"
   },
@@ -64,8 +84,13 @@
     "image": "guitar.png",
     "type": "team",
     "age": ["family"],
-    "coords": [60.2050, 24.6559],
-    "location": ["Espoo", "Community 7"],
+    "location": [
+      {
+        "city": "Espoo",
+        "coords": [60.214663230217305, 24.782087092084957],
+        "address": "Kilonpurontie 3"
+      }
+    ],
     "description": "Participate in amateur theatre productions.",
     "status": "deleted"
   },
@@ -78,8 +103,13 @@
     "image": "sailing.png",
     "type": "solo",
     "age": ["adults"],
-    "coords": [60.2210, 24.8050],
-    "location": ["Espoo", "Cook Street 2"],
+    "location": [
+      {
+        "city": "Espoo",
+        "coords": [60.22542285209911, 24.70932527624955],
+        "address": "Lippajärventie 1"
+      }
+    ],
     "description": "Learn to cook authentic Italian meals.",
     "status": "active"
   },
@@ -92,8 +122,13 @@
     "image": "basketball.png",
     "type": "team",
     "age": ["kids"],
-    "coords": [60.2940, 25.0370],
-    "location": ["Vantaa", "Myyrmäki 4"],
+    "location": [
+      {
+        "city": "Vantaa",
+        "coords": [60.35296791489873, 25.076738146489998],
+        "address": "Urpiaisentie 14"
+      }
+    ],
     "description": "Join kids' football teams in Myyrmäki.",
     "status": "active"
   },
@@ -106,8 +141,13 @@
     "image": "painting.png",
     "type": "solo",
     "age": ["seniors", "adults"],
-    "coords": [60.3210, 24.9630],
-    "location": ["Vantaa", "Craft 12"],
+    "location": [
+      {
+        "city": "Vantaa",
+        "coords": [60.402537041795995, 25.103444021493633],
+        "address": "Kauppakaari 2"
+      }
+    ],
     "description": "A calm and social environment for knitting lovers.",
     "status": "pending"
   },
@@ -120,8 +160,13 @@
     "image": "guitar.png",
     "type": "team",
     "age": ["young"],
-    "coords": [60.2530, 24.8890],
-    "location": ["Kauniainen", "Tech Street 1"],
+    "location": [
+      {
+        "city": "Kauniainen",
+        "coords": [60.222094589980045, 24.690092830369295],
+        "address": "Glimsintie 1"
+      }
+    ],
     "description": "Learn to build games from scratch with Unity and Godot.",
     "status": "active"
   },
@@ -134,8 +179,13 @@
     "image": "sailing.png",
     "type": "solo",
     "age": ["family"],
-    "coords": [60.2500, 24.7500],
-    "location": ["Lohja", "City Street 6"],
+    "location": [
+      {
+        "city": "Lohja",
+        "coords": [60.2591399349641, 24.09199319758383],
+        "address": "Rovastinkatu 1"
+      }
+    ],
     "description": "Explore the city while taking amazing photos.",
     "status": "deleted"
   }

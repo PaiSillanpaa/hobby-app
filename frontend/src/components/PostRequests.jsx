@@ -33,23 +33,71 @@ export default function PostRequests() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setEditData({ ...editData, [name]: value });
+
+    if (name.startsWith("location.")) {
+      const [, key] = name.split(".");
+      const updatedLocation = [...editData.location];
+      updatedLocation[0] = { ...updatedLocation[0], [key]: value };
+
+      setEditData({ ...editData, location: updatedLocation });
+    } else {
+      setEditData({ ...editData, [name]: value });
+    }
   };
 
   const handleUpdate = async () => {
+    const city = editData.location?.[0]?.city;
+    const address = editData.location?.[0]?.address;
+
+    if (!city || !address) {
+      alert("Anna sekä kaupunki että osoite");
+      return;
+    }
+
+    const fullAddress = `${address}, ${city}`;
+
     try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}`
+      );
+
+      if (!response.ok) throw new Error("Koordinaattien haku epäonnistui");
+
+      const data = await response.json();
+
+      if (data.length === 0) {
+        alert("Koordinaatteja ei löytynyt annetulle osoitteelle");
+        return;
+      }
+
+      const lat = parseFloat(data[0].lat);
+      const lon = parseFloat(data[0].lon);
+
+      const updatedLocation = [...(editData.location || [{}])];
+      updatedLocation[0] = {
+        ...updatedLocation[0],
+        coords: [lat, lon],
+      };
+
+      const updatedEditData = {
+        ...editData,
+        location: updatedLocation,
+      };
+
+      // Lähetetään backendille päivitetty data
       const res = await fetch(`/api/update-post/${editData.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editData),
+        body: JSON.stringify(updatedEditData),
       });
-      if (!res.ok) throw new Error("Update failed");
 
-      setPosts(posts.map(p => (p.id === editData.id ? editData : p)));
+      if (!res.ok) throw new Error("Päivitys epäonnistui");
+
+      setPosts(posts.map(p => (p.id === editData.id ? updatedEditData : p)));
       setEditingId(null);
     } catch (err) {
       console.error(err);
-      alert("Update failed");
+      alert(err.message || "Päivitys epäonnistui");
     }
   };
 
@@ -98,9 +146,17 @@ export default function PostRequests() {
                       onChange={handleChange}
                     />
                     <input
-                      name="location"
-                      value={editData.location}
+                      name="location.city"
+                      value={editData.location?.[0]?.city || ""}
                       onChange={handleChange}
+                      placeholder="City"
+                    />
+
+                    <input
+                      name="location.address"
+                      value={editData.location?.[0]?.address || ""}
+                      onChange={handleChange}
+                      placeholder="Address"
                     />
                     <textarea
                       name="description"
@@ -116,7 +172,7 @@ export default function PostRequests() {
                     onClick={() => handleEditClick(post)}
                   >
                     <p>
-                      {post.company} - {post.location} - {post.title}
+                      {post.company} - {post.title}
                     </p>
                     <div className="actions">
                       <button id="accept-button"

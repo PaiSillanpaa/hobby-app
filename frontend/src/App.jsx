@@ -15,6 +15,8 @@ import Trash from "./components/Trash";
 import ActivePosts from "./components/ActivePosts";
 import PostRequests from "./components/PostRequests";
 import Settings from "./components/Settings";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import CompanyPage from "./pages/private/CompanyPage"
 
 export default function App() {
   return (
@@ -23,18 +25,31 @@ export default function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LogIn />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/homepage" element={<HomePage />} />
+        <Route path="/homepage" element={
+          <ProtectedRoute allowedRanks={["user"]}>
+            <HomePage />
+          </ProtectedRoute>}
+        />
         <Route path="/map" element={<MapPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/categories" element={<CategoryPage />} />
         <Route path="/:title/:company" element={<HobbyPage />} />
-        <Route path="/admin" element={<AdminRoute />} />
+        <Route path="/admin" element={
+          <ProtectedRoute allowedRanks={["admin"]}>
+            <AdminRoute />
+          </ProtectedRoute>}
+        />
         <Route path="/admin/allposts" element={<AllPosts />} />
         <Route path="/admin/activeposts" element={<ActivePosts />} />
         <Route path="/admin/postrequests" element={<PostRequests />} />
         <Route path="/admin/trash" element={<Trash />} />
         <Route path="/admin/users" element={<Users />} />
         <Route path="/admin/settings" element={<Settings />} />
+        <Route path="/company" element={
+          <ProtectedRoute allowedRanks={["company"]}>
+            <CompanyPage />
+          </ProtectedRoute>}
+        />
       </Routes>
     </Router>
   );

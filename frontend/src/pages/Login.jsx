@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
-import MobileAdminRedirectModal from "../components/MobileAdminRedirectModal"; // tämä pitää olla olemassa!
+import MobileAdminRedirectModal from "../components/MobileAdminRedirectModal";
 
 export default function LogIn() {
   const [username, setUsername] = useState("");
@@ -9,35 +9,60 @@ export default function LogIn() {
   const [showMobileAdminModal, setShowMobileAdminModal] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const handleResize = () => {
+      const isMobile = window.innerWidth < 768;
+      const rank = localStorage.getItem("rank");
+      const token = localStorage.getItem("token");
+
+      if (!isMobile && rank === "admin" && token && showMobileAdminModal) {
+        setShowMobileAdminModal(false);
+        navigate("/admin");
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [navigate, showMobileAdminModal]);
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-      // DEV: kovakoodattu admin testikäyttöön
-  if (username === "admin" && password === "admin123") {
-    localStorage.setItem("token", "dev-token");
-    localStorage.setItem("username", "admin");
-    localStorage.setItem("rank", "admin");
-
     const isMobile = window.innerWidth < 768;
 
-    if (isMobile) {
-      setShowMobileAdminModal(true);
-    } else {
-      navigate("/admin");
+
+    //FOR DEV ONLY
+    if (username === "admin" && password === "admin123") {
+      localStorage.setItem("token", "dev-token");
+      localStorage.setItem("username", "admin");
+      localStorage.setItem("rank", "admin");
+
+      if (isMobile) {
+        setShowMobileAdminModal(true);
+      } else {
+        navigate("/admin");
+      }
+      return;
     }
-    return;
-  }
+    //FOR DEV ONLY
+    if (username === "company" && password === "company123") {
+      localStorage.setItem("token", "dev-token");
+      localStorage.setItem("username", "company1");
+      localStorage.setItem("rank", "company");
+
+      if (isMobile) {
+        setShowMobileAdminModal(true);
+      } else {
+        navigate("/company");
+      }
+      return;
+    }
 
     try {
       const res = await fetch("/api/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          username: username,
-          password: password
-        })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
       });
 
       if (!res.ok) {
@@ -47,26 +72,21 @@ export default function LogIn() {
 
       const data = await res.json();
 
-      // Talleta token ja muut tiedot localStorageen
       localStorage.setItem("token", data.token);
       localStorage.setItem("username", data.username);
       localStorage.setItem("rank", data.rank);
 
-      const isMobile = window.innerWidth < 768;
       const isAdminOrCompany = data.rank === "admin" || data.rank === "company";
 
-    if (isAdminOrCompany) {
-      if (isMobile) {
-        setShowMobileAdminModal(true);
+      if (isAdminOrCompany) {
+        if (isMobile) {
+          setShowMobileAdminModal(true);
+        } else {
+          navigate("/admin");
+        }
       } else {
-        // Jos admin desktopilla, ohjataan admin-näkymään
-        navigate("/admin");
+        navigate("/homepage");
       }
-    } else {
-      // Tavallinen käyttäjä ohjataan homepageen
-      navigate("/homepage");
-    }
-
     } catch (err) {
       console.error("Login error:", err.message);
       alert("Kirjautuminen epäonnistui: " + err.message);
@@ -75,7 +95,7 @@ export default function LogIn() {
 
   const handleContinueDesktop = () => {
     setShowMobileAdminModal(false);
-    navigate("/admin"); // voit vaihtaa oikeaan admin/company -näkymään
+    navigate("/admin");
   };
 
   const handleContinueWithoutLogin = () => {
@@ -89,7 +109,9 @@ export default function LogIn() {
   return (
     <div className="form-container">
       <img src={logo} alt="Logo" className="landing-logo" />
-      <p className="landing-subtitle">Let’s find out {"\n"}your next {"\n"}favourite hobby!</p>
+      <p className="landing-subtitle">
+        Let’s find out {"\n"}your next {"\n"}favourite hobby!
+      </p>
 
       <form className="form" onSubmit={handleSubmit}>
         <input
