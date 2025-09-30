@@ -6,9 +6,15 @@ const historySchema = new mongoose.Schema({
     required: true,
   },
 
-  listinId: {
+  listingId: {
     type: mongoose.Schema.Types.ObjectId,
+    ref: "Listing",
     required: true,
+  },
+
+  creationdate: {
+    type: Date,
+    default: Date.now,
   },
 });
 

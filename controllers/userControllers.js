@@ -73,7 +73,7 @@ export const loginUser = async (request, response) => {
     return response.status(400).send("incorrect username or password");
   }
 
-  const accessToken = signJwt(user.username, user._id);
+  const accessToken = signJwt(user.username, user._id, user.email);
   console.log("accestoken: ", accessToken);
 
   return response.send(`Logged in as: ${user.username}`);
@@ -114,11 +114,11 @@ export const changePassword = async (request, response) => {
       return response.status(400).json({ message: "Passwords do not match" });
     }
 
-    const hashedPassword = await hashPassword(newPassword1);
+    const newHashedPassword = await hashPassword(newPassword1);
 
     await User.findOneAndUpdate(
       { username: username },
-      { password: hashedPassword }
+      { password: newHashedPassword }
     );
 
     return response
@@ -127,4 +127,16 @@ export const changePassword = async (request, response) => {
   } catch (error) {
     return response.status(500).json({ error: "server error" });
   }
+};
+
+export const getUserInfo = async (request, response) => {
+  const user = request.user;
+
+  if (!user) {
+    return response(401).json({ message: "unauthorized" });
+  }
+
+  return request
+    .status(200)
+    .json({ userId: user._id, username: user.username, email: user.email });
 };

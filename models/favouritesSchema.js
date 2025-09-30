@@ -12,6 +12,11 @@ const favouritesSchema = mongoose.Schema({
     ref: "User",
     required: true,
   },
+
+  creationdate: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 favouritesSchema.index({ userId: 1, listingId: 1 }, { unique: true });

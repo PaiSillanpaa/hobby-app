@@ -4,52 +4,54 @@ import History from "../models/historySchema.js";
 import User from "../models/userSchema.js";
 
 export const createListing = async (request, response) => {
-  const { newListings } = request.body;
-  const { newImages } = request.files;
+  const { title, description, location, category, age, type, url } =
+    request.body;
+  const image = request.file;
   const user = request.user;
 
   if (!user) {
     return response.status(401).json("unauthorized");
   }
 
-  console.log("new listings: ", newListings);
+  if (!title || !description) {
+    console.log("error creating listing, empty fields!");
+    return response.status(400).send("Title and description are required!");
+  }
+
   console.log("user: ", user);
 
   try {
-    for (let i = 0; i < newListings.length; i++) {
-      console.log(newListings[i]);
-      const { title, description, location, category, age, type, url } =
-        newListings[i];
+    const parsedLocation = JSON.parse(location);
+    const parsedCategory = JSON.parse(category);
+    const parsedAge = JSON.parse(age);
 
-      const image = newImages[i];
+    const base64Image = image ? image.buffer.toString("base64") : null;
 
-      if (!title || !description) {
-        console.log("error creating listing, empty fields!");
-        return response.status(400).send("Title and description are required!");
-      }
+    const newListing = new Listing({
+      listingTitle: title,
+      listingDescription: description,
+      userId: user._id,
+      location: {
+        address: parsedLocation.address,
+        city: parsedLocation.city,
+        coordinates: parsedLocation.coords,
+      },
+      category: parsedCategory,
+      age: parsedAge,
+      type: type,
+      url: url,
+      image: base64Image,
+    });
 
-      const newListing = new Listing({
-        listingTitle: title,
-        listingDescription: description,
-        userId: user._id,
-        location: {
-          city: location.city,
-          address: location.address,
-          coordinates: location.coords,
-        },
-        category: category,
-        age: age,
-        type: type,
-        url: url,
-        image: image,
-      });
+    await newListing.save();
 
-      await newListing.save();
-    }
-    return response.status(201).send("Listing(s) created succesfully!");
+    return response
+      .status(201)
+      .json({ message: "new listing created succesfully!" });
   } catch (error) {
-    console.error("Server error from listing creation: ", error.message);
-    return response.status(500).send("There was an error creating a listing!");
+    return response
+      .status(500)
+      .json({ message: "error when creating a listing" });
   }
 };
 
@@ -77,7 +79,7 @@ export const getInactiveListings = async (request, response) => {
 
 export const getActiveListings = async (request, response) => {
   try {
-    const listings = await Listing.find({ active: true });
+    const listings = await Listing.find({ active: "active" });
 
     return response.json({ activeListings: listings });
   } catch (error) {
@@ -227,5 +229,157 @@ export const getListingsByUser = async (request, response) => {
     return response
       .status(500)
       .send({ message: "Error retrieving user listings" });
+  }
+};
+
+export const addToHistory = async (request, response) => {
+  const { listingId } = request.body;
+  const user = request.user;
+
+  if (!listingId || !user._id) {
+    return response.status(401).json({ message: "Could not add to history" });
+  }
+
+  try {
+    const listingToHistory = await Listing.findOne({ _id: listingId });
+    const currentUser = await User.findOne({ username: user.username });
+
+    if (!listingToHistory || !currentUser) {
+      return response
+        .status(404)
+        .json({ message: "could not find user or listing" });
+    }
+
+    const existing = await History.findOne({
+      userId: user._id,
+      listingId: listingToHistory._id,
+    });
+
+    if (existing) {
+      existing.creationdate = Date.now();
+
+      await existing.save();
+      return response.status(200).send("Updated history");
+    }
+
+    const newHistory = new History({
+      userId: user._id,
+      listingId: listingToHistory._id,
+    });
+
+    await newHistory.save();
+    return response.status(201).send("Added to history");
+  } catch (error) {
+    return response
+      .status(500)
+      .json({ message: "error when adding to history" });
+  }
+};
+
+export const getHistory = async (request, response) => {
+  const user = request.user;
+
+  if (!user) {
+    return response.status(401).json({ message: "unauthorized" });
+  }
+
+  try {
+    const history = await History.find({ userId: user._id })
+      .sort({ creationdate: -1 })
+      .populate("listingId");
+
+    return response.status(200).json({ history: history });
+  } catch (error) {
+    return response
+      .status(500)
+      .json({ message: "error when retrieving history" });
+  }
+};
+
+export const deleteListing = async (request, response) => {
+  const { listingId } = request.body;
+  const user = request.user;
+
+  if (!listingId || !user) {
+    return response
+      .status(401)
+      .json({ message: "unauthorized to delete listing" });
+  }
+
+  try {
+    const currentUser = await User.findOne({ _id: user.id });
+
+    if (!currentUser) {
+      return response.status(401).json({ message: "User not found" });
+    }
+
+    const listing = await Listing.findById(listingId);
+    if (!listing) {
+      return response.status(404).json({ message: "Listing not found" });
+    }
+
+    const isOwner = listing.userId.toString() === user.id;
+    const isAdmin = currentUser.rank === "admin";
+
+    if (!isOwner && !isAdmin) {
+      return response
+        .status(403)
+        .json({ message: "Forbidden: not allowed to delete this listing" });
+    }
+
+    await Listing.deleteOne({ _id: listingId });
+    return response
+      .status(200)
+      .json({ message: "listing deleted successfully!" });
+  } catch (error) {
+    return response.status(500).json({ message: "error deleting listing!" });
+  }
+};
+
+export const updateListing = async (request, response) => {
+  const { title, description, city, address, listingId } = request.body;
+
+  if (!listingId) {
+    return response.status(400).json({ message: "Listing ID is required" });
+  }
+
+  try {
+    const listing = await Listing.findById(listingId);
+    if (!listing) {
+      return response.status(404).json({ message: "Listing not found" });
+    }
+
+    let shouldSave = false;
+
+    if (title?.trim()) {
+      listing.title = title.trim();
+      shouldSave = true;
+    }
+
+    if (description?.trim()) {
+      listing.description = description.trim();
+      shouldSave = true;
+    }
+
+    if (city?.trim()) {
+      listing.location.city = city.trim();
+      shouldSave = true;
+    }
+
+    if (address?.trim()) {
+      listing.location.address = address.trim();
+      shouldSave = true;
+    }
+
+    if (shouldSave) {
+      await listing.save();
+      return response
+        .status(200)
+        .json({ message: "Listing updated successfully" });
+    }
+
+    return response.status(400).json({ message: "No valid fields to update" });
+  } catch (error) {
+    return response.status(500).json({ message: "error updating listing" });
   }
 };
