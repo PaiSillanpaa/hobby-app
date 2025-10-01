@@ -15,9 +15,13 @@ export default function LogIn() {
       const rank = localStorage.getItem("rank");
       const token = localStorage.getItem("token");
 
-      if (!isMobile && rank === "admin" && token && showMobileAdminModal) {
+      if (!isMobile && token && showMobileAdminModal) {
         setShowMobileAdminModal(false);
-        navigate("/admin");
+        if (rank === "admin") {
+          navigate("/admin");
+        } else if (rank === "company") {
+          navigate("/company");
+        }
       }
     };
 
@@ -31,29 +35,17 @@ export default function LogIn() {
     const isMobile = window.innerWidth < 768;
 
 
-    //FOR DEV ONLY
-    if (username === "admin" && password === "admin123") {
-      localStorage.setItem("token", "dev-token");
-      localStorage.setItem("username", "admin");
-      localStorage.setItem("rank", "admin");
+    // FOR DEV ONLY: Handle admin and company login
+    if ((username === "admin" && password === "admin123") || (username === "company" && password === "company123")) {
+      const rank = username === "admin" ? "admin" : "company";
+      localStorage.setItem("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxkZXIiLCJpYXQiOjE3NTkyMzczMzgsImV4cCI6MTc5MDc3MzMzOCwiYXVkIjoid3d3LmV4YW1wbGUuY29tIiwic3ViIjoianJvY2tldEBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoiY29tcGFueTEiLCJ1c2VySWQiOiIxIiwiZW1haWwiOiJjb21wYW55QGV4YW1wbGUuY29tIiwicmFuayI6ImNvbXBhbnkifQ.0VoZhuSm_jGum3sdeWkvc8uUDkzVHSiFmmRJsUhGTRg");
+      localStorage.setItem("username", username);
+      localStorage.setItem("rank", rank);
 
       if (isMobile) {
         setShowMobileAdminModal(true);
       } else {
-        navigate("/admin");
-      }
-      return;
-    }
-    //FOR DEV ONLY
-    if (username === "company" && password === "company123") {
-      localStorage.setItem("token", "dev-token");
-      localStorage.setItem("username", "company1");
-      localStorage.setItem("rank", "company");
-
-      if (isMobile) {
-        setShowMobileAdminModal(true);
-      } else {
-        navigate("/company");
+        navigate(rank === "admin" ? "/admin" : "/company");
       }
       return;
     }
@@ -77,15 +69,12 @@ export default function LogIn() {
       localStorage.setItem("rank", data.rank);
 
       const isAdminOrCompany = data.rank === "admin" || data.rank === "company";
+      const targetPath = data.rank === "admin" ? "/admin" : data.rank === "company" ? "/company" : "/homepage";
 
-      if (isAdminOrCompany) {
-        if (isMobile) {
-          setShowMobileAdminModal(true);
-        } else {
-          navigate("/admin");
-        }
+      if (isMobile && isAdminOrCompany) {
+        setShowMobileAdminModal(true);
       } else {
-        navigate("/homepage");
+        navigate(targetPath);
       }
     } catch (err) {
       console.error("Login error:", err.message);
@@ -95,7 +84,8 @@ export default function LogIn() {
 
   const handleContinueDesktop = () => {
     setShowMobileAdminModal(false);
-    navigate("/admin");
+    const rank = localStorage.getItem("rank");
+    navigate(rank === "admin" ? "/admin" : "/company");
   };
 
   const handleContinueWithoutLogin = () => {

@@ -111,3 +111,7 @@
 #accept-button:hover {
     background-color: #63d277;
 }
+
+.restore-button {
+  margin-right: 10px;
+}

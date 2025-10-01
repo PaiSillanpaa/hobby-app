@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MapComponent from "../../components/MapComponent";
 import "../../components/AdminView.css";
 import "../../components/Form.css";
-import AdminNavBar from "../../components/AdminNavBar";
+import AdminNavBar from "./CompanyNavBar"
 import TopBar from "../../components/TopBar";
+import { fetchUserId } from "../../utils/UserData";
 
 const AdminView = () => {
-  const [coords, setCoords] = useState([60.1300, 24.9240]); 
+  const [coords, setCoords] = useState([60.1300, 24.9240]);
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState([]);
   const [age, setAge] = useState([]);
@@ -17,13 +18,23 @@ const AdminView = () => {
   const [address, setAddress] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userId = await fetchUserId();
+      setUserId(userId);
+    };
+
+    fetchUserData(); // Kutsu asynkronista funktiota
+  }, []);
 
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Käytetään FormData, jotta voidaan lähettää tiedosto
+ 
     const formData = new FormData();
     formData.append("id", Date.now());
     formData.append("title", title);
@@ -35,8 +46,9 @@ const AdminView = () => {
     formData.append("location", JSON.stringify([{ city, address, coords }]));
     formData.append("coords", JSON.stringify(coords));
     formData.append("description", description);
-    if(image) formData.append("image", image);
-    formData.append("status", "active");
+    if (image) formData.append("image", image);
+    formData.append("status", "pending");
+    formData.append("user", userId);
 
     try {
       const response = await fetch("/api/save-post", {
@@ -47,7 +59,6 @@ const AdminView = () => {
       if (!response.ok) throw new Error("Tallennus epäonnistui");
 
       alert("Postaus tallennettu onnistuneesti!");
-      // Tyhjennetään lomake
       setTitle("");
       setCategory([]);
       setAge([]);
@@ -67,25 +78,21 @@ const AdminView = () => {
 
   return (
     <div className="admin-layout">
-      <TopBar></TopBar>
+      <TopBar />
       <div className="main-area">
-        <AdminNavBar></AdminNavBar>
-
-        {/* SISÄLTÖ */}
+        <AdminNavBar />
         <div className="content">
           <h1>Add a New Hobby</h1>
           <form onSubmit={handleSubmit} className="post-form">
-          <small>Hold Ctrl (Windows) / Cmd (Mac) to select multiple options</small>
+            <small>Hold Ctrl (Windows) / Cmd (Mac) to select multiple options</small>
             <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
-            
             <select
               multiple
               value={category}
               onChange={(e) => {
                 const selected = Array.from(e.target.selectedOptions, option => option.value);
                 setCategory(selected);
-              }}
-            >
+              }}>
               <option value="art">Art</option>
               <option value="sport">Sport</option>
               <option value="culture">Culture</option>
@@ -93,24 +100,20 @@ const AdminView = () => {
               <option value="handcraft">Handcraft</option>
               <option value="digital">Digital</option>
             </select>
-         
             <input type="text" placeholder="Company" value={company} onChange={(e) => setCompany(e.target.value)} required />
             <input type="url" placeholder="Website URL" value={url} onChange={(e) => setUrl(e.target.value)} />
-
             <select value={type} onChange={(e) => setType(e.target.value)} required>
               <option value="">Select Type</option>
               <option value="solo">Solo</option>
               <option value="group">Group</option>
             </select>
-
             <select
               multiple
-              value={age}           // age = array ["kids","adults"]
+              value={age}
               onChange={(e) => {
                 const selected = Array.from(e.target.selectedOptions, option => option.value);
                 setAge(selected);
-              }}
-            >
+              }}>
               <option value="kids">Kids</option>
               <option value="young">Young</option>
               <option value="adults">Adults</option>

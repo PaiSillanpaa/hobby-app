@@ -16,7 +16,8 @@
       }
     ],
     "description": "Sailing in the beautiful waters of the Helsinki archipelago.",
-    "status": "active"
+    "status": "active",
+    "userId": "1"
   },
   {
     "id": 2,
@@ -35,7 +36,8 @@
       }
     ],
     "description": "Explore your creativity at painting workshops in Kallio.",
-    "status": "active"
+    "status": "active",
+    "userId": "2"
   },
   {
     "id": 3,
@@ -54,7 +56,8 @@
       }
     ],
     "description": "Join a game of basketball at Pasilan sports hall.",
-    "status": "pending"
+    "status": "pending",
+    "userId": "3"
   },
   {
     "id": 4,
@@ -73,7 +76,8 @@
       }
     ],
     "description": "Learn to play the guitar in Helsinki's music schools.",
-    "status": "active"
+    "status": "active",
+    "userId": "4"
   },
   {
     "id": 5,
@@ -92,14 +96,15 @@
       }
     ],
     "description": "Participate in amateur theatre productions.",
-    "status": "deleted"
+    "status": "deleted",
+    "userId": "5"
   },
   {
     "id": 6,
     "category": ["cooking"],
     "title": "Italian Cooking Class",
-    "company": "Company6",
-    "url": "www.company6.com",
+    "company": "Company1",
+    "url": "www.company1.com",
     "image": "sailing.png",
     "type": "solo",
     "age": ["adults"],
@@ -111,7 +116,8 @@
       }
     ],
     "description": "Learn to cook authentic Italian meals.",
-    "status": "active"
+    "status": "active",
+    "userId": "1"
   },
   {
     "id": 7,
@@ -130,14 +136,15 @@
       }
     ],
     "description": "Join kids' football teams in Myyrmäki.",
-    "status": "active"
+    "status": "active",
+    "userId": "2"
   },
   {
     "id": 8,
     "category": ["handcraft", "art"],
     "title": "Knitting Club",
-    "company": "Company8",
-    "url": "www.company8.com",
+    "company": "Company1",
+    "url": "www.company1.com",
     "image": "painting.png",
     "type": "solo",
     "age": ["seniors", "adults"],
@@ -149,14 +156,15 @@
       }
     ],
     "description": "A calm and social environment for knitting lovers.",
-    "status": "pending"
+    "status": "pending",
+    "userId": "1"
   },
   {
     "id": 9,
     "category": ["digital"],
     "title": "Game Development",
-    "company": "Company9",
-    "url": "www.company9.com",
+    "company": "Company1",
+    "url": "www.company1.com",
     "image": "guitar.png",
     "type": "team",
     "age": ["young"],
@@ -168,7 +176,8 @@
       }
     ],
     "description": "Learn to build games from scratch with Unity and Godot.",
-    "status": "active"
+    "status": "deleted",
+    "userId": "1"
   },
   {
     "id": 10,
@@ -187,6 +196,7 @@
       }
     ],
     "description": "Explore the city while taking amazing photos.",
-    "status": "deleted"
+    "status": "deleted",
+    "userId": "5"
   }
 ]
