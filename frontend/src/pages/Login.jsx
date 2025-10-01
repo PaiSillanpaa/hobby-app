@@ -35,20 +35,27 @@ export default function LogIn() {
     const isMobile = window.innerWidth < 768;
 
 
-    // FOR DEV ONLY: Handle admin and company login
-    if ((username === "admin" && password === "admin123") || (username === "company" && password === "company123")) {
-      const rank = username === "admin" ? "admin" : "company";
-      localStorage.setItem("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxkZXIiLCJpYXQiOjE3NTkzMTQwNjUsImV4cCI6MTc5MDg1MDA2NSwiYXVkIjoid3d3LmV4YW1wbGUuY29tIiwic3ViIjoianJvY2tldEBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoiSm9obiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJyYW5rIjoiYWRtaW4iLCJ1c2VySWQiOiIyMDMxIn0.wsACQypi8DSEf-R7N4jXuml6G3cQO62rkN7cEhtFRcg");
-      localStorage.setItem("username", username);
-      localStorage.setItem("rank", rank);
+  // FOR DEV ONLY: Handle admin and company login
+  if ((username === "admin" && password === "admin123") || (username === "company" && password === "company123") || (username === "user" && password === "user123")) {
+    const rank = username === "admin" ? "admin" : username === "company" ? "company" : "user";
+    
 
+    localStorage.setItem("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxkZXIiLCJpYXQiOjE3NTkzMTQwNjUsImV4cCI6MTc5MDg1MDA2NSwiYXVkIjoid3d3LmV4YW1wbGUuY29tIiwic3ViIjoianJvY2tldEBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoidXNlcl9taWtrbyIsImVtYWlsIjoibWlra29AZXhhbXBsZS5jb20iLCJyYW5rIjoidXNlciIsInVzZXJJZCI6IjMifQ.n1pku0Gbwlv-_xKq_XcKWXhtJ1n-ek-4bbsSCEO0TXs");
+    localStorage.setItem("username", username);
+    localStorage.setItem("rank", rank);
+
+    if (rank === "user") {
+      navigate("/user/homepage");
+    } else {
       if (isMobile) {
         setShowMobileAdminModal(true);
       } else {
         navigate(rank === "admin" ? "/admin" : "/company");
       }
-      return;
     }
+    return;
+  }
+
 
     try {
       const res = await fetch("/api/login", {

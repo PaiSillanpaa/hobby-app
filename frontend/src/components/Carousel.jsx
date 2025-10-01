@@ -1,14 +1,16 @@
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import hobbies from "../data/hobbies.json";
+import { fetchUserId } from "../utils/UserData";
 
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 import "./Carousel.css";
+import { getUserIdFromToken } from "../utils/Token";
 
 export default function Carousel({
   title = "",
@@ -18,25 +20,70 @@ export default function Carousel({
   type = null
 }) {
   const navigate = useNavigate();
-
   const [favorites, setFavorites] = useState([]);
+  const [userId, setUserId] = useState(null);
 
-  const handleFavoriteClick = (e, hobby) => {
-    e.stopPropagation(); // estää kortin click-navigaation
+
+  useEffect(() => {
+    const getUserId = async () => {
+      try {
+        const id = await fetchUserId();
+        setUserId(id);
+
+        const favoritesResponse = await fetch(`/api/get-favorites/${id}`);
+        const favoritesData = await favoritesResponse.json();
+        setFavorites(favoritesData);
+
+        // DEVONLY
+        localStorage.setItem("favorites", JSON.stringify(favoritesData.map(f => f.id)));
+      } catch (err) {
+        console.error("No user found or backend error:", err);
+
+        const id = getUserIdFromToken();
+        setUserId(id);
+
+        // DEV ONLY
+        const savedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
+        setFavorites(savedFavorites);
+      }
+    };
+
+    getUserId();
+  }, []);
+
+  const handleFavoriteClick = async (e, hobby) => {
+    e.stopPropagation();
 
     const isAlreadyFavorite = favorites.some(f => f.id === hobby.id);
+    let updatedFavorites;
 
     if (isAlreadyFavorite) {
-      setFavorites(favorites.filter(f => f.id !== hobby.id));
-      // backend DELETE /favorites/:id
+      updatedFavorites = favorites.filter(f => f.id !== hobby.id);
+
+      try {
+        await fetch(`/api/remove-favorite/${userId}/${hobby.id}`, { method: "DELETE" });
+      } catch (err) {
+        console.error("Error removing favorite:", err);
+      }
     } else {
-      setFavorites([...favorites, hobby]);
-      // backend POST /favorites
+      updatedFavorites = [...favorites, hobby];
+
+      try {
+        await fetch(`/api/add-favorite/${userId}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ hobbyId: hobby.id })
+        });
+      } catch (err) {
+        console.error("Error adding favorite:", err);
+      }
     }
+    // DEV ONLY
+    localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+    setFavorites(updatedFavorites);
   };
 
   const filteredHobbies = useMemo(() => {
-    // Lasketaan match-score jokaiselle harrastukselle
     const scored = hobbies.map((hobby) => {
       let score = 0;
       if (category && hobby.category.includes(category)) score++;
@@ -46,10 +93,7 @@ export default function Carousel({
       return { ...hobby, score };
     });
 
-    // Järjestetään pisteiden mukaan laskevasti
     scored.sort((a, b) => b.score - a.score);
-
-    // Otetaan vain top 5
     return scored.slice(0, 5);
   }, [category, city, age, type]);
 
@@ -69,13 +113,11 @@ export default function Carousel({
             <div className="card" onClick={() => navigate(`/${hobby.title}/${hobby.company}`)}>
               <div className="carousel-content">
                 <img src={`../assets/${hobby.image}`} alt={hobby.title} className="carousel-image" />
-                      {/* Heart button */}
-              {/* Sydän nurkassa */}
                 <img
                   src={"../assets/Heart.svg"}
                   alt="favorite"
                   className={`heart-icon ${favorites.some(f => f.id === hobby.id) ? "filled" : ""}`}
-                  onClick={(e) => { e.stopPropagation(); handleFavoriteClick(hobby); }}
+                  onClick={(e) => { e.stopPropagation(); handleFavoriteClick(e, hobby); }}
                 />
                 <div className="carousel-footer">
                   <span className="carousel-title">{hobby.title}</span>

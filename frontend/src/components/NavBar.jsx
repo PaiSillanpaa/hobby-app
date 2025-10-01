@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import homeIcon from "../assets/home.png";
 import searchIcon from "../assets/search.png";
 import mapIcon from "../assets/map.png";
@@ -6,34 +6,54 @@ import profileIcon from "../assets/profile.png";
 import "./Navbar.css";
 import { useNavigate } from "react-router-dom";
 import SearchModal from "./SearchModal";
+import { fetchUserId } from "../utils/UserData";
+import { getUserIdFromToken } from "../utils/Token";
 
 export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
+  const [userId, setUserId] = useState(null);
 
-  const toggleSearch = () => setSearchOpen(!searchOpen);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const getUserId = async () => {
+      try {
+        const id = await fetchUserId();
+        setUserId(id);
+      } catch (err) {
+        console.error(err);
+        const id = getUserIdFromToken(); // Poista tämä ja seuraava rivi, kun backend on yhdistetty
+        setUserId(id);
+        //setUserId(null); // Tämä käyttöön, kun backend on yhdistetty
+      }
+    };
+
+    getUserId();
+  }, []);
+  
+  const toggleSearch = () => setSearchOpen(!searchOpen);
+
+  const handleNavigation = (page) => {
+    if (userId) {
+      navigate(`/user/${page}`);
+    } else {
+      navigate(`/${page}`);
+    }
+  };
+
   const handleProfileClick = () => {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    navigate("/");
-  } else {
-    navigate("/profile");
-  }
+    handleNavigation("profile");
   };
 
 
   return (
     <>
       {searchOpen && (
-        <SearchModal searchOpen={searchOpen} setSearchOpen={setSearchOpen}  toggleSearch={toggleSearch} />
+        <SearchModal searchOpen={searchOpen} setSearchOpen={setSearchOpen} toggleSearch={toggleSearch} />
       )}
 
-
-
-      {/* Navbar */}
       <nav className="navbar">
-        <button onClick={() => navigate("/homepage")} className="nav-item">
+        <button onClick={() => handleNavigation("homepage")} className="nav-item">
           <img src={homeIcon} alt="Home" className="nav-icon" />
           <span>Home</span>
         </button>
@@ -43,7 +63,7 @@ export default function Navbar() {
           <span>Search</span>
         </button>
 
-        <button onClick={() => navigate("/map")} className="nav-item">
+        <button onClick={() => handleNavigation("map")} className="nav-item">
           <img src={mapIcon} alt="Map" className="nav-icon" />
           <span>Map</span>
         </button>

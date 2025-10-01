@@ -42,22 +42,18 @@ export default function App() {
           <ProtectedRoute allowedRanks={["user"]}>
             <HomePage />
           </ProtectedRoute>} />
-
         <Route path="/user/map" element={
           <ProtectedRoute allowedRanks={["user"]}>
-            <HomePage />
+            <MapPage />
           </ProtectedRoute>} />
-        
         <Route path="/user/categories" element={
           <ProtectedRoute allowedRanks={["user"]}>
-            <ProfilePage />
+            <CategoryPage />
           </ProtectedRoute>} />
-
         <Route path="/user/:title/:company" element={
           <ProtectedRoute allowedRanks={["user"]}>
-            <ProfilePage />
+            <HobbyPage />
           </ProtectedRoute>} />
-
         <Route path="/user/profile" element={
           <ProtectedRoute allowedRanks={["user"]}>
             <ProfilePage />
