@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./Settings.css";
 import TopBar from "./TopBar";
 import AdminNavBar from "./AdminNavBar";
+import { fetchUserId } from "../utils/UserData";
 
 export default function Settings() {
   const [oldPassword, setOldPassword] = useState("");
@@ -10,6 +11,7 @@ export default function Settings() {
   const [message, setMessage] = useState("");
 
   const handleChangePassword = async (e) => {
+    const userId = fetchUserId();
     e.preventDefault();
     if (newPassword !== confirmPassword) {
       setMessage("Passwords do not match!");
@@ -20,7 +22,7 @@ export default function Settings() {
       const res = await fetch("/api/change-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ oldPassword, newPassword }),
+        body: JSON.stringify({ userId, oldPassword, newPassword }),
       });
 
       if (!res.ok) throw new Error("Password change failed");
@@ -40,15 +42,18 @@ export default function Settings() {
       return;
     }
 
+    const userId = fetchUserId();
+
     try {
       const res = await fetch("/api/delete-account", {
         method: "DELETE",
+        body: JSON.stringify({ userId }),
       });
 
       if (!res.ok) throw new Error("Account deletion failed");
 
       alert("Account deleted. Logging out...");
-      window.location.href = "/"; // tai root, riippuen sovelluksesta
+      window.location.href = "/";
     } catch (err) {
       console.error(err);
       alert("Failed to delete account.");

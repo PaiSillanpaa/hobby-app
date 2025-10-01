@@ -38,7 +38,7 @@ export default function LogIn() {
     // FOR DEV ONLY: Handle admin and company login
     if ((username === "admin" && password === "admin123") || (username === "company" && password === "company123")) {
       const rank = username === "admin" ? "admin" : "company";
-      localStorage.setItem("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxkZXIiLCJpYXQiOjE3NTkyMzczMzgsImV4cCI6MTc5MDc3MzMzOCwiYXVkIjoid3d3LmV4YW1wbGUuY29tIiwic3ViIjoianJvY2tldEBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoiY29tcGFueTEiLCJ1c2VySWQiOiIxIiwiZW1haWwiOiJjb21wYW55QGV4YW1wbGUuY29tIiwicmFuayI6ImNvbXBhbnkifQ.0VoZhuSm_jGum3sdeWkvc8uUDkzVHSiFmmRJsUhGTRg");
+      localStorage.setItem("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxkZXIiLCJpYXQiOjE3NTkzMTQwNjUsImV4cCI6MTc5MDg1MDA2NSwiYXVkIjoid3d3LmV4YW1wbGUuY29tIiwic3ViIjoianJvY2tldEBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoiSm9obiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJyYW5rIjoiYWRtaW4iLCJ1c2VySWQiOiIyMDMxIn0.wsACQypi8DSEf-R7N4jXuml6G3cQO62rkN7cEhtFRcg");
       localStorage.setItem("username", username);
       localStorage.setItem("rank", rank);
 
