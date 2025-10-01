@@ -42,7 +42,7 @@ const listingSchema = new mongoose.Schema({
     type: String,
   },
 
-  active: {
+  status: {
     type: String,
     default: "inactive",
   },

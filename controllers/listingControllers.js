@@ -68,7 +68,7 @@ export const getListings = async (request, response) => {
 
 export const getInactiveListings = async (request, response) => {
   try {
-    const listings = await Listing.find({ active: false });
+    const listings = await Listing.find({ status: inactive });
 
     return response.json({ inactiveListings: listings });
   } catch (error) {
@@ -79,7 +79,7 @@ export const getInactiveListings = async (request, response) => {
 
 export const getActiveListings = async (request, response) => {
   try {
-    const listings = await Listing.find({ active: "active" });
+    const listings = await Listing.find({ status: "active" });
 
     return response.json({ activeListings: listings });
   } catch (error) {
@@ -381,5 +381,126 @@ export const updateListing = async (request, response) => {
     return response.status(400).json({ message: "No valid fields to update" });
   } catch (error) {
     return response.status(500).json({ message: "error updating listing" });
+  }
+};
+
+export const setListingActive = async (request, response) => {
+  const { listingId } = request.body;
+  const user = request.user;
+
+  if (!listingId) {
+    return response.status(400).json({ message: "Listing id is required" });
+  }
+
+  if (!user) {
+    return response
+      .status(401)
+      .json({ message: "unauthorized to accept listing" });
+  }
+
+  try {
+    const currentUser = await User.findById(user.id);
+
+    if (!currentUser || currentUser.rank !== "admin") {
+      return response.status(403).json({ message: "unauthorized" });
+    }
+
+    const currentListing = await Listing.findById(listingId);
+
+    if (!currentListing) {
+      return response.status(404).json({ message: "Could not find listing" });
+    }
+
+    currentListing.status = "active";
+
+    await currentListing.save();
+
+    return response
+      .status(200)
+      .json({ message: "Listing accepted successfully!" });
+  } catch (error) {
+    return response
+      .status(500)
+      .json({ message: "error when accepting listing" });
+  }
+};
+
+export const declineListing = async (request, response) => {
+  const { listingId } = request.body;
+
+  const user = request.user;
+
+  if (!listingId) {
+    return response.status(400).json({ message: "Listing id is required" });
+  }
+
+  if (!user) {
+    return response
+      .status(401)
+      .json({ message: "unauthorized to decline listing" });
+  }
+
+  try {
+    const currentUser = await User.findById(user.id);
+
+    if (!currentUser || currentUser.rank !== "admin") {
+      return response.status(403).json({ message: "unauthorized" });
+    }
+
+    const currentListing = await Listing.findById(listingId);
+
+    if (!currentListing) {
+      return response.status(404).json({ message: "Could not find listing" });
+    }
+
+    await Listing.deleteOne({ _id: currentListing._id });
+
+    return response
+      .status(200)
+      .json({ message: "Listing deleted successfully!" });
+  } catch (error) {
+    return response.status(500).send("Error when deleting listing");
+  }
+};
+
+//set listing to trash
+export const setListingDeleted = async (request, response) => {
+  const { listingId } = request.body;
+  const user = request.user;
+
+  if (!listingId) {
+    return response.status(400).json({ message: "Listing id is required" });
+  }
+
+  if (!user) {
+    return response
+      .status(401)
+      .json({ message: "unauthorized to set listing deleted" });
+  }
+
+  try {
+    const currentUser = await User.findById(user.id);
+
+    if (!currentUser || currentUser.rank !== "admin") {
+      return response.status(403).json({ message: "unauthorized" });
+    }
+
+    const currentListing = await Listing.findById(listingId);
+
+    if (!currentListing) {
+      return response.status(404).json({ message: "Could not find listing" });
+    }
+
+    currentListing.status = "deleted";
+
+    await currentListing.save();
+
+    return response
+      .status(200)
+      .json({ message: "Listing set to deleted successfully!" });
+  } catch (error) {
+    return response
+      .status(500)
+      .json({ message: "error when setting listing to deleted" });
   }
 };

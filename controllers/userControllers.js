@@ -133,10 +133,64 @@ export const getUserInfo = async (request, response) => {
   const user = request.user;
 
   if (!user) {
-    return response(401).json({ message: "unauthorized" });
+    return response(403).json({ message: "unauthorized" });
   }
 
   return request
     .status(200)
     .json({ userId: user._id, username: user.username, email: user.email });
+};
+
+export const updateUser = async (request, response) => {
+  const { newUsername, newEmail, newRank, userId } = request.body;
+  const user = request.user;
+
+  if (!user || user.rank !== "admin") {
+    return response
+      .status(401)
+      .json({ message: "unauthorized to update user" });
+  }
+
+  try {
+    const currentUser = await User.findOne({ _id: userId });
+    if (!currentUser) {
+      return response.status(404).json({ message: "Could not find user" });
+    }
+
+    let shouldSave = false;
+
+    if (newUsername?.trim()) {
+      currentUser.username = newUsername.trim();
+      shouldSave = true;
+    }
+
+    if (newEmail?.trim()) {
+      currentUser.email = newEmail.trim();
+      shouldSave = true;
+    }
+
+    if (newRank?.trim()) {
+      if (
+        newRank.toLowerCase() === "admin" ||
+        newRank.toLowerCase() === "company" ||
+        newRank.toLowerCase() === "user"
+      ) {
+        currentUser.rank = newRank.trim();
+        shouldSave = true;
+      }
+    }
+
+    if (shouldSave) {
+      await currentUser.save();
+      return response
+        .status(200)
+        .json({ message: "User updated successfully" });
+    } else {
+      return response
+        .status(400)
+        .json({ message: "No valid fields to update" });
+    }
+  } catch (error) {
+    return response.status(500).json({ message: "error when updating user" });
+  }
 };
