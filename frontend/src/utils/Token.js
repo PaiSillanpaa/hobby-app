@@ -44,3 +44,18 @@ export const getEmailFromToken = () => {
   return null;
 };
 
+export const getUsernameFromToken = () => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    try {
+
+      const decodedToken = parseJwt(token);
+      return decodedToken.username;
+    }
+    catch(error) {
+      console.error("Token decoding failed:", error);
+    }
+  }
+  return null;
+};
+

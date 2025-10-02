@@ -1,4 +1,4 @@
-import { getEmailFromToken, getUserIdFromToken } from "./Token";
+import { getEmailFromToken, getUserIdFromToken, getUsernameFromToken } from "./Token";
 
 export const fetchUserId = async () => {
   try {
@@ -43,5 +43,28 @@ export const fetchUserEmail = async () => {
     }
     
     return userEmailFromToken || null;
+  }
+};
+
+export const fetchUsername = async () => {
+  try {
+    const response = await fetch("/api/me", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (!response.ok) throw new Error("Käyttäjän tunnistus epäonnistui");
+
+    const data = await response.json();
+    return data.user.username;
+  } catch (err) {
+    console.error("Virhe käyttäjätiedon haussa:", err);
+    const usernameFromToken = getUsernameFromToken(); // Tämän haun voi poistaa, kun backend on yhdistetty
+
+    if (!usernameFromToken) {
+      alert("Et ole kirjautunut sisään.");
+    }
+    
+    return usernameFromToken || null;
   }
 };

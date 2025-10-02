@@ -23,15 +23,28 @@ const SearchModal = ({ searchOpen, setSearchOpen }) => {
 
   const handleContinue = () => {
     const queryParams = new URLSearchParams();
-    if (selectedAreas.length) queryParams.append("area", selectedAreas.join(","));
-    if (selectedGroups.length) queryParams.append("group", selectedGroups.join(","));
-    if (selectedThemes.length) queryParams.append("theme", selectedThemes.join(","));
-    
+
+    if (selectedAreas.length > 0) {
+      queryParams.set("area", selectedAreas.join(","));
+    }
+    if (selectedGroups.length > 0) {
+      queryParams.set("group", selectedGroups.join(","));
+    }
+    if (selectedThemes.length > 0) {
+      queryParams.set("theme", selectedThemes.join(","));
+    }
+
     setSearchOpen(false);
-    
-    // Navigoidaan CategoryPageen filttereiden kanssa
-    navigate(`/categories?${queryParams.toString()}`);
+
+    const isLoggedIn = !!localStorage.getItem("token"); 
+    const basePath = isLoggedIn ? "/user/categories" : "/categories";
+
+    const queryString = queryParams.toString();
+    const fullPath = queryString ? `${basePath}?${queryString}` : basePath;
+
+    navigate(fullPath);
   };
+
 
   return (
     searchOpen && (

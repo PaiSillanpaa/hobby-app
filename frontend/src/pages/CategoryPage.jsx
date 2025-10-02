@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import Navbar from "../components/NavBar";
 import Carousel from "../components/Carousel";
 import hobbiesFallback from "../data/hobbies.json";
+import { filterHobbies } from "../utils/FilterHobbies";
 import "./CategoryPage.css";
 
 export default function CategoryPage() {
@@ -12,8 +13,6 @@ export default function CategoryPage() {
   const filterLocation = params.get("area")?.split(",") || [];
   const filterAge = params.get("group")?.split(",") || [];
   const filterCategory = params.get("theme")?.split(",") || [];
-
-  const hasFilters = filterLocation.length || filterAge.length || filterCategory.length;
 
   const [hobbies, setHobbies] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -37,48 +36,11 @@ export default function CategoryPage() {
 
   if (loading) return <p>Loading...</p>;
 
-  // Laske paras osuma filtereille
-  const bestMatchScores = hobbies.map(h => {
-    let score = 0;
-    if (filterLocation.some(loc => loc === h.location[0])) score++;
-    if (filterAge.some(age => h.age.includes(age))) score++;
-    if (filterCategory.some(cat => h.category.includes(cat))) score++;
-    return { hobby: h, score };
+  const { mainHobby, topMatches, carousels } = filterHobbies(hobbies, {
+    location: filterLocation,
+    age: filterAge,
+    category: filterCategory,
   });
-
-  bestMatchScores.sort((a, b) => b.score - a.score);
-  const mainHobby = bestMatchScores[0]?.hobby || (!hasFilters ? hobbies[0] : null);
-
-  // Karusellit
-  const topMatches = bestMatchScores.filter(b => b.score > 0).map(b => b.hobby);
-  
-  // Yksittäisten filttereiden karusellit
-  const carousels = [];
-  if (filterLocation.length) {
-    filterLocation.forEach(loc => {
-      const items = hobbies.filter(h => h.location[0] === loc);
-      if (items.length) carousels.push({ title: loc, items });
-    });
-  }
-  if (filterAge.length) {
-    filterAge.forEach(age => {
-      const items = hobbies.filter(h => h.age.includes(age));
-      if (items.length) carousels.push({ title: age, items });
-    });
-  }
-  if (filterCategory.length) {
-    filterCategory.forEach(cat => {
-      const items = hobbies.filter(h => h.category.includes(cat));
-      if (items.length) carousels.push({ title: cat, items });
-    });
-  }
-
-  // Jos ei filttereitä, fallback 3 karusellia
-  if (!hasFilters) {
-    carousels.push({ title: "Popular Hobbies", items: hobbies.slice(0,5) });
-    carousels.push({ title: "Recommended for You", items: hobbies.slice(5,10) });
-    carousels.push({ title: "Try Something New", items: hobbies.slice(10,15) });
-  }
 
   return (
     <div className="categorypage-container">

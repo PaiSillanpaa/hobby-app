@@ -1,95 +1,106 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/NavBar";
-import OwnHobbiesModal from "../components/OwnHobbiesModal";
 import FavouritesModal from "../components/FavouritesModal";
-import "./ProfilePage.css";
 import Carousel from "../components/Carousel";
+import { fetchUserId, fetchUsername, fetchUserEmail } from "../utils/UserData";
+import { getUserIdFromToken, getUsernameFromToken, getEmailFromToken } from "../utils/Token";
+import "./ProfilePage.css";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
 
+  const [userId, setUserId] = useState(null);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  
-  // Modalin tila: mikä modal on auki? esim "hobbies", "favourites", "changePassword", tai null = kiinni
   const [activeModal, setActiveModal] = useState(null);
 
   useEffect(() => {
-    const storedUsername = localStorage.getItem("username");
-    const storedEmail = localStorage.getItem("email");
-    setUsername(storedUsername || "");
-    setEmail(storedEmail || "");
+    async function loadUserData() {
+      try {
+        const id = await fetchUserId();
+        const name = await fetchUsername();
+        const mail = await fetchUserEmail();
+        setUserId(id);
+        setUsername(name);
+        setEmail(mail);
+      } catch (err) {
+        console.error("Virhe backend-haussa, haetaan tokenista:", err);
+        const tokenId = getUserIdFromToken();
+        const tokenName = getUsernameFromToken();
+        const tokenEmail = getEmailFromToken();
+        if (tokenId) setUserId(tokenId);
+        if (tokenName) setUsername(tokenName);
+        if (tokenEmail) setEmail(tokenEmail);
+      }
+    }
+
+    loadUserData();
   }, []);
 
-  // Sulje modaalit
-  function closeModal() {
-    setActiveModal(null);
-  }
+  const closeModal = () => setActiveModal(null);
 
   return (
     <div className="profilepage-container">
-    <div className="everything-wrapper">
-    <div className="another-w">
-      <div className="image-wrapper-pp">
-        <img src="../assets/guitar.png" alt="instruments" className="bgpicture" />
-      </div>
-      <h1 className="name">{username || "Name"}</h1>
-      <h2 className="email">{email || "xxx@xx.com"}</h2>
-      <div className="content-wrapper">
-        <div className="link-list">
-          <p>History</p>
-          <hr />
-          <button onClick={() => setActiveModal("hobbies")} className="pp-button">
-            Own Hobbies
-          </button>
-          <hr />
-          <button onClick={() => setActiveModal("favourites")} className="pp-button">
-            Favourites
-          </button>
-          <hr />
-          <p>Settings</p>
-          <hr />
-          <button onClick={() => setActiveModal("changePassword")} className="pp-button">
-            Change password
-          </button>
-          <hr />
-          <button
-            onClick={() => {
-              localStorage.clear();
-              navigate("/");
-            }}
-            className="logout-button"
-          >
-            Log out
-          </button>
-          <hr />
+      <div className="everything-wrapper">
+        <div className="another-w">
+          <div className="image-wrapper-pp">
+            <img src="../assets/guitar.png" alt="instruments" className="bgpicture" />
+          </div>
+          <h1 className="name">{username || "Name"}</h1>
+          <h2 className="email">{email || "xxx@xx.com"}</h2>
+
+          <div className="content-wrapper">
+            <div className="link-list">
+              <p>History</p>
+              <hr />
+              <button
+                className="pp-button"
+                onClick={() => setActiveModal("favourites")}
+              >
+                Favourites
+              </button>
+              <hr />
+              <p>Settings</p>
+              <hr />
+              <button
+                className="pp-button"
+                onClick={() => setActiveModal("changePassword")}
+              >
+                Change password
+              </button>
+              <hr />
+              <button
+                className="logout-button"
+                onClick={() => {
+                  localStorage.clear();
+                  navigate("/");
+                }}
+              >
+                Log out
+              </button>
+              <hr />
+            </div>
+          </div>
         </div>
-        </div>
-        </div>
+
         <p className="carousel-text">You might also be interested in</p>
-      <Carousel></Carousel>
+        <Carousel />
       </div>
 
       <Navbar />
 
       {/* Modaalit */}
-    {activeModal === "hobbies" && (
-    <Modal onClose={closeModal}>
-        <OwnHobbiesModal onClose={closeModal} />
-    </Modal>
-    )}
-
-    {activeModal === "favourites" && (
-    <Modal onClose={closeModal}>
-        <FavouritesModal onClose={closeModal} />
-    </Modal>
-    )}
+      {activeModal === "favourites" && (
+        <Modal onClose={closeModal}>
+          <FavouritesModal onClose={closeModal} />
+        </Modal>
+      )}
 
       {activeModal === "changePassword" && (
         <Modal onClose={closeModal}>
           <h2>Change Password</h2>
-          <ChangePasswordForm onClose={closeModal} />
+          <ChangePasswordForm userId={userId} onClose={closeModal} />
         </Modal>
       )}
     </div>
@@ -98,53 +109,42 @@ export default function ProfilePage() {
 
 function Modal({ children, onClose }) {
   return (
-    <div
-      className="modal-overlay"
-      onClick={onClose} // sulje, kun klikkaa taustaa
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100vw",
-        height: "100vh",
-        backgroundColor: "rgba(0,0,0,0.5)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        zIndex: 1000,
-      }}
-    >
-      <div
-        className="modal-content"
-        onClick={(e) => e.stopPropagation()} // estä taustan sulkeutuminen kun klikataan modaalin sisällä
-        style={{
-          backgroundColor: "white",
-          padding: "20px",
-          borderRadius: "8px",
-          maxWidth: "400px",
-          width: "90%",
-        }}
-      >
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         {children}
       </div>
     </div>
   );
 }
 
-function ChangePasswordForm({ onClose }) {
+function ChangePasswordForm({ userId, onClose }) {
   const [oldPass, setOldPass] = useState("");
   const [newPass1, setNewPass1] = useState("");
   const [newPass2, setNewPass2] = useState("");
 
-  const handleSubmit = (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
     if (newPass1 !== newPass2) {
       alert("Uudet salasanat eivät täsmää!");
       return;
     }
-    // TODO: API-kutsu salasanan vaihtoon
-    alert("Salasana vaihdettu (demo)");
-    onClose();
+    try {
+      const res = await fetch(`/api/user/${userId}/change-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ oldPassword: oldPass, newPassword: newPass1 }),
+      });
+
+      if (!res.ok) throw new Error("Salasanan vaihto epäonnistui");
+
+      alert("Salasana vaihdettu!");
+      onClose();
+    } catch (err) {
+      alert(err.message);
+    }
   };
 
   return (
@@ -158,7 +158,7 @@ function ChangePasswordForm({ onClose }) {
           required
         />
       </label>
-      <br />
+
       <label>
         New password:
         <input
@@ -168,7 +168,7 @@ function ChangePasswordForm({ onClose }) {
           required
         />
       </label>
-      <br />
+
       <label>
         Confirm new password:
         <input
@@ -178,7 +178,7 @@ function ChangePasswordForm({ onClose }) {
           required
         />
       </label>
-      <br />
+
       <button type="submit">Change Password</button>
     </form>
   );
