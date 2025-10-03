@@ -57,7 +57,6 @@ const MapComponent = ({ location, setCoords }) => {
       {coords && (
         <div>
           <p><strong>Koordinaatit:</strong> {coords[0]}, {coords[1]}</p>
-          {/* tähän voisi myöhemmin lisätä oikean kartan esim. Leafletillä */}
         </div>
       )}
     </div>

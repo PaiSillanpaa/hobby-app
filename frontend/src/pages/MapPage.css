@@ -28,7 +28,7 @@
 
 @media (min-width: 768px) {
   .map {
-    height: 60vh; /* Asetetaan suurempi korkeus isommilla näytöillä */
+    height: 60vh;
   }
 }
 

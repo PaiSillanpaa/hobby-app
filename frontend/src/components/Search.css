@@ -56,3 +56,10 @@
 .search-input::placeholder{
     color: #073B3A;
 }
+
+
+@media (min-width: 768px) {
+  .search-container {
+    min-width: 95%;
+  }
+}

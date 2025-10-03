@@ -42,21 +42,22 @@
 
 .swiper-slide { display: flex; flex-direction: column; justify-content: start; align-items: center; height: 100%;}
 
-.card {   border: 1px solid #073B3A; color: white; padding: 12px; border-radius: 8px; text-align: center; max-width: 170px; height: 292px; margin: 0 auto; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); backdrop-filter: blur(10px); display: flex; margin-bottom: 40px;}
-
-.swiper-button-next, .swiper-button-prev { color: var(--accent-color); max-height: 3px; max-width: 3px; }
+.card { border: 1px solid #073B3A; color: white; padding: 12px; border-radius: 8px; text-align: center; max-width: 170px; height: 292px; margin: 0 auto; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); backdrop-filter: blur(10px); display: flex; margin-bottom: 40px;}
 
 .swiper-pagination-bullet { background: rgb(117, 117, 117); opacity: 0.5; }
 
 .swiper-pagination-bullet-active { opacity: 1; background: #073B3A; }
 
+.swiper-button-next,
+.swiper-button-prev {
+  display: none;
+}
+
 
 @media (min-width: 768px) {
-  .carousel-box {
-    min-width: 220px;
-  }
-
-  .carousel-image {
-    height: 200px;
+  .swiper-button-next,
+  .swiper-button-prev {
+    display: block;
+    color: #073B3A;
   }
 }

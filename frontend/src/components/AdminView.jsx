@@ -23,7 +23,6 @@ const AdminView = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Käytetään FormData, jotta voidaan lähettää tiedosto
     const formData = new FormData();
     formData.append("id", Date.now());
     formData.append("title", title);
@@ -47,7 +46,6 @@ const AdminView = () => {
       if (!response.ok) throw new Error("Tallennus epäonnistui");
 
       alert("Postaus tallennettu onnistuneesti!");
-      // Tyhjennetään lomake
       setTitle("");
       setCategory([]);
       setAge([]);
@@ -71,7 +69,6 @@ const AdminView = () => {
       <div className="main-area">
         <AdminNavBar></AdminNavBar>
 
-        {/* SISÄLTÖ */}
         <div className="content">
           <h1>Add a New Hobby</h1>
           <form onSubmit={handleSubmit} className="post-form">
@@ -105,7 +102,7 @@ const AdminView = () => {
 
             <select
               multiple
-              value={age}           // age = array ["kids","adults"]
+              value={age}
               onChange={(e) => {
                 const selected = Array.from(e.target.selectedOptions, option => option.value);
                 setAge(selected);

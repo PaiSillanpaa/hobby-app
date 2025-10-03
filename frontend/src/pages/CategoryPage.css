@@ -26,7 +26,7 @@
     display: inline-block;
     position: relative;
     overflow: hidden;    
-    margin: 10px 10px 10px 10px;      /* tärkeä, jotta shadow näkyy vain kuvan päällä */
+    margin: 10px 10px 10px 10px;
     border-radius: 10px; 
 }
 
@@ -35,7 +35,7 @@
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
     box-shadow: inset 0 4px 10px rgba(0,0,0,0.5);
-    pointer-events: none;      /* jotta shadow ei estä klikkauksia */
+    pointer-events: none;
 }
 
 .sport {

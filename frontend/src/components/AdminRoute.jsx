@@ -4,16 +4,14 @@ import AdminView from "./AdminView";
 import MobileAdminRedirectModal from "./MobileAdminRedirectModal";
 
 export default function AdminRoute() {
-  const [isAdmin, setIsAdmin] = useState(null); // Alkuun null -> ei tiedetä vielä
+  const [isAdmin, setIsAdmin] = useState(null);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Tarkista admin-status localStoragesta
     const userRole = localStorage.getItem("rank");
     setIsAdmin(userRole === "admin");
 
-    // Näytön koon kuuntelu
     const handleResize = () => {
       setIsDesktop(window.innerWidth >= 768);
     };
@@ -23,7 +21,6 @@ export default function AdminRoute() {
   }, []);
 
   if (isAdmin === null) {
-    // Odotetaan localStoragen lukemista
     return <div>Loading...</div>;
   }
 
@@ -35,7 +32,6 @@ export default function AdminRoute() {
     return (
       <MobileAdminRedirectModal
         onLogout={() => {
-          // Poista kirjautumistiedot
           localStorage.removeItem("token");
           localStorage.removeItem("username");
           localStorage.removeItem("rank");

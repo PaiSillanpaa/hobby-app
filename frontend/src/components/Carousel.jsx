@@ -43,7 +43,6 @@ export default function Carousel({
     getUserId();
   }, []);
 
-  // Handle clicking on a hobby's favorite button
   const handleFavoriteClick = async (e, hobby) => {
     e.stopPropagation();
     const isAlreadyFavorite = favorites.some(f => f.id === hobby.id);

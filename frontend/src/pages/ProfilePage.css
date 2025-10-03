@@ -60,9 +60,8 @@
   color: #073B3A;
 }
 
-.carousel-text {
-  color: black;
-  text-align: center;
+.carousel-title-header {
+  color: #073B3A;
 }
 
 hr {
@@ -114,14 +113,12 @@ hr {
   margin: 20px;
 }
 
-/* Modaalin otsikko */
 .modal-content h2 {
   margin-top: 0;
   margin-bottom: 15px;
   font-weight: 600;
 }
 
-/* Painikkeet modaalissa */
 .modal-content button {
   margin-top: 20px;
   background-color: transparent;
@@ -138,7 +135,6 @@ hr {
   color: white;
 }
 
-/* Lomakkeen labelit ja inputit modaalissa */
 .modal-content label {
   display: block;
   margin-top: 10px;
@@ -158,7 +154,6 @@ hr {
   box-sizing: border-box;
 }
 
-/* Pienet marginaalit lomake-elementeille */
 .modal-content input,
 .modal-content button {
   margin-top: 5px;

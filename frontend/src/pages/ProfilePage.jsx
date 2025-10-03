@@ -83,14 +83,11 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
-
-        <p className="carousel-text">You might also be interested in</p>
-        <Carousel />
+        <Carousel title="You might also be interested in" />
       </div>
 
       <Navbar />
 
-      {/* Modaalit */}
       {activeModal === "favourites" && (
         <Modal onClose={closeModal}>
           <FavouritesModal onClose={closeModal} />

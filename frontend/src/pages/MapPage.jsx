@@ -11,7 +11,6 @@ import "./MapPage.css";
 
 const MapPage = () => {
   const [userLocation, setUserLocation] = useState(null);
-  const [map, setMap] = useState(null);
   const location = useLocation();
 
   // Hakee käyttäjän sijainnin
@@ -62,7 +61,6 @@ const MapPage = () => {
           center={[userLocation.lat, userLocation.lon]}
           zoom={13}
           className="map"
-          whenCreated={setMap}
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           <Marker position={[userLocation.lat, userLocation.lon]} icon={userIcon}>
@@ -84,13 +82,12 @@ const MapPage = () => {
         </MapContainer>
       </div>
 
-      {/* Varmistetaan, että karuselli näkyy vain /user/map tai /map -sivuilla */}
       {(location.pathname === "/user/map" || location.pathname === "/map") && (
         <div className="info-box">
           <Carousel
             title="Nearby Hobbies"
-            userLocation={userLocation}  // Välitetään koordinaatit Carouselille
-            displayedHobbies={closestHobbies}  // Välitetään lähimmät harrastukset
+            userLocation={userLocation}
+            displayedHobbies={closestHobbies}
           />
         </div>
       )}

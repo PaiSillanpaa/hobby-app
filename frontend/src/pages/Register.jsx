@@ -30,7 +30,6 @@ export default function Register() {
     console.log("Rekisteröinti:", userData);
 
     try {
-      // TODO: vaihda osoite oman backendin mukaan
       const res = await fetch("/api/register", {
         method: "POST",
         headers: {
@@ -43,7 +42,6 @@ export default function Register() {
         throw new Error("Rekisteröinti epäonnistui");
       }
 
-      // 🔸 2. Automaattinen kirjautuminen rekisteröinnin jälkeen
       const loginRes = await fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -60,12 +58,10 @@ export default function Register() {
 
       const loginData = await loginRes.json();
 
-      // 🔸 3. Talletetaan token ja muut tarvittavat tiedot localStorageen
       localStorage.setItem("token", loginData.token);
       localStorage.setItem("username", loginData.username); // valinnainen
       localStorage.setItem("rank", loginData.rank);         // valinnainen
 
-      // Navigoi eteenpäin onnistuneen rekisteröinnin jälkeen
       navigate("/homepage");
 
       setUsername("");
