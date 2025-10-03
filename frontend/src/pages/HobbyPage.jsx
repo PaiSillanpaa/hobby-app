@@ -45,9 +45,8 @@ export default function HobbyPage() {
                 </div>
             </div>
         </div>
-        <p className="text-above">You might also be interested in</p>
       <div>
-        <Carousel></Carousel>
+        <Carousel title="You might also be interested in"></Carousel>
       </div>
       <Navbar></Navbar>
     </div>

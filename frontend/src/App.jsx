@@ -22,20 +22,21 @@ import CompanyPostRequests from "./pages/private/CompanyPostRequests.jsx";
 import CompanyAllPosts from "./pages/private/CompanyAllPosts.jsx"
 import CompanyTrash from "./pages/private/CompanyTrash.jsx"
 import CompanySettings from "./pages/private/CompanySettings.jsx"
+import PublicHomePage from "./pages/public/PublicHomePage.jsx"
 
 export default function App() {
   return (
     <Router>
       <Routes>
-        {/* Julkiset reitit */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LogIn />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/homepage" element={<HomePage />} />
+        <Route path="/homepage" element={<PublicHomePage />} />
         <Route path="/map" element={<MapPage />} />
         <Route path="/categories" element={<CategoryPage />} />
         <Route path="/:title/:company" element={<HobbyPage />} />
         <Route path="/profile" element={<LandingPage />} />
+
 
 
         <Route path="/user/homepage" element={

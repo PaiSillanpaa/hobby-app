@@ -1,7 +1,6 @@
 export const parseJwt = (token) => {
 
   const base64Url = token.split('.')[1];
-
   let decodedBase64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
 
   const padding = decodedBase64.length % 4;
@@ -10,7 +9,6 @@ export const parseJwt = (token) => {
   }
 
   const jsonPayload = atob(decodedBase64);
-
   return JSON.parse(jsonPayload);
 };
 

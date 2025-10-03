@@ -102,7 +102,7 @@
   {
     "id": 6,
     "category": ["cooking"],
-    "title": "Italian Cooking Class",
+    "title": "Cooking Class",
     "company": "Company1",
     "url": "www.company1.com",
     "image": "sailing.png",
@@ -122,7 +122,7 @@
   {
     "id": 7,
     "category": ["sport"],
-    "title": "Football for Kids",
+    "title": "Football",
     "company": "Company7",
     "url": "www.company7.com",
     "image": "basketball.png",
@@ -302,7 +302,7 @@
   {
     "id": 16,
     "category": ["nature", "family"],
-    "title": "Photography",
+    "title": "Nature Photography",
     "company": "NatureShots",
     "url": "www.natureshots.com",
     "image": "guitar.png",

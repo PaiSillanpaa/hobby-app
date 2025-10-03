@@ -14,10 +14,6 @@ export const fetchUserId = async () => {
   } catch (err) {
     console.error("Virhe käyttäjätiedon haussa:", err);
     const userIdFromToken = getUserIdFromToken(); // Tämän haun voi poistaa, kun backend on yhdistetty
-
-    if (!userIdFromToken) {
-      alert("Et ole kirjautunut sisään.");
-    }
     
     return userIdFromToken || null; // Palautetaan null, jos ei löydy
   }
@@ -37,10 +33,6 @@ export const fetchUserEmail = async () => {
   } catch (err) {
     console.error("Virhe käyttäjätiedon haussa:", err);
     const userEmailFromToken = getEmailFromToken(); // Tämän haun voi poistaa, kun backend on yhdistetty
-
-    if (!userEmailFromToken) {
-      alert("Et ole kirjautunut sisään.");
-    }
     
     return userEmailFromToken || null;
   }
@@ -60,10 +52,6 @@ export const fetchUsername = async () => {
   } catch (err) {
     console.error("Virhe käyttäjätiedon haussa:", err);
     const usernameFromToken = getUsernameFromToken(); // Tämän haun voi poistaa, kun backend on yhdistetty
-
-    if (!usernameFromToken) {
-      alert("Et ole kirjautunut sisään.");
-    }
     
     return usernameFromToken || null;
   }
