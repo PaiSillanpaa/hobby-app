@@ -1,0 +1,12 @@
+.carousel-wrapper {
+  position: relative;
+}
+
+.card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card.selected {
+  box-shadow: 0 0 10px 5px rgba(0, 153, 255, 0.8);
+  transform: scale(1.1);
+}

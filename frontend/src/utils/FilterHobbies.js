@@ -1,11 +1,19 @@
+function capitalizeFirstLetter(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 export function filterHobbies(hobbies, filters) {
   const { location = [], age = [], category = [] } = filters;
 
+  const locations = Array.isArray(location) ? location : [location];
+  const ages = Array.isArray(age) ? age : [age];
+  const categories = Array.isArray(category) ? category : [category];
+
   const bestMatchScores = hobbies.map(hobby => {
     let score = 0;
-    if (location.some(loc => loc === hobby.location[0])) score++;
-    if (age.some(a => hobby.age.includes(a))) score++;
-    if (category.some(c => hobby.category.includes(c))) score++;
+    if (locations.some(loc => hobby.location.some(locObj => locObj.city === loc))) score++;
+    if (ages.some(a => hobby.age.includes(a))) score++;
+    if (categories.some(c => hobby.category.includes(c))) score++;
     return { hobby, score };
   });
 
@@ -17,17 +25,17 @@ export function filterHobbies(hobbies, filters) {
 
   const carousels = [];
 
-  location.forEach(loc => {
-    const items = hobbies.filter(h => h.location[0] === loc);
+  locations.forEach(loc => {
+    const items = hobbies.filter(h => h.location.some(locObj => locObj.city === loc));
     if (items.length) carousels.push({ title: loc, items });
   });
 
-  age.forEach(a => {
+  ages.forEach(a => {
     const items = hobbies.filter(h => h.age.includes(a));
     if (items.length) carousels.push({ title: a, items });
   });
 
-  category.forEach(c => {
+  categories.forEach(c => {
     const items = hobbies.filter(h => h.category.includes(c));
     if (items.length) carousels.push({ title: c, items });
   });
@@ -39,4 +47,17 @@ export function filterHobbies(hobbies, filters) {
   }
 
   return { mainHobby, topMatches, carousels };
+}
+export function createFilterTitle(filterLocation, filterAge, filterCategory) {
+  const locationTitle = filterLocation.length > 0 ? capitalizeFirstLetter(filterLocation.join(" - ")) : "";
+  const ageTitle = filterAge.length > 0 ? capitalizeFirstLetter(filterAge.join(" - ")) : "";
+  const categoryTitle = filterCategory.length > 0 ? capitalizeFirstLetter(filterCategory.join(" - ")) : "";
+
+  const titles = [];
+  
+  if (locationTitle) titles.push(locationTitle);
+  if (ageTitle) titles.push(ageTitle);
+  if (categoryTitle) titles.push(categoryTitle);
+
+  return titles;
 }

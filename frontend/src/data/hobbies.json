@@ -198,5 +198,125 @@
     "description": "Explore the city while taking amazing photos.",
     "status": "deleted",
     "userId": "5"
+  },
+  {
+    "id": 11,
+    "category": ["nature"],
+    "title": "Hiking Adventures",
+    "company": "CompanyNature",
+    "url": "www.naturecompany.com",
+    "image": "guitar.png",
+    "type": "solo",
+    "age": ["adults", "young"],
+    "location": [
+      {
+        "city": "Helsinki",
+        "coords": [60.193, 24.949],
+        "address": "Nuuksiontie 84"
+      }
+    ],
+    "description": "Join guided hikes in Nuuksio National Park.",
+    "status": "active",
+    "userId": "7"
+  },
+  {
+    "id": 12,
+    "category": ["sport", "nature"],
+    "title": "Trail Running",
+    "company": "TrailBlazers",
+    "url": "www.trailblazers.com",
+    "image": "guitar.png",
+    "type": "solo",
+    "age": ["adults"],
+    "location": [
+      {
+        "city": "Espoo",
+        "coords": [60.244, 24.753],
+        "address": "Luukintie 30"
+      }
+    ],
+    "description": "Run through scenic nature trails with a group.",
+    "status": "active",
+    "userId": "8"
+  },
+  {
+    "id": 13,
+    "category": ["nature", "team"],
+    "title": "Survival",
+    "company": "WildSkills",
+    "url": "www.wildskills.com",
+    "image": "guitar.png",
+    "type": "team",
+    "age": ["adults", "young"],
+    "location": [
+      {
+        "city": "Vantaa",
+        "coords": [60.312, 25.019],
+        "address": "Metsäpolku 1"
+      }
+    ],
+    "description": "Learn survival skills in a forest environment.",
+    "status": "active",
+    "userId": "9"
+  },
+  {
+    "id": 14,
+    "category": ["art"],
+    "title": "Sculpture",
+    "company": "CompanyArt",
+    "url": "www.sculptart.com",
+    "image": "guitar.png",
+    "type": "solo",
+    "age": ["adults"],
+    "location": [
+      {
+        "city": "Helsinki",
+        "coords": [60.173, 24.941],
+        "address": "Taiteilijantie 2"
+      }
+    ],
+    "description": "Create sculptures with professional guidance.",
+    "status": "active",
+    "userId": "10"
+  },
+  {
+    "id": 15,
+    "category": ["art", "digital"],
+    "title": "Illustration",
+    "company": "PixelArt",
+    "url": "www.pixelart.com",
+    "image": "guitar.png",
+    "type": "solo",
+    "age": ["young"],
+    "location": [
+      {
+        "city": "Espoo",
+        "coords": [60.207, 24.659],
+        "address": "Illustration Ave 3"
+      }
+    ],
+    "description": "Learn digital drawing and design with tablets.",
+    "status": "active",
+    "userId": "11"
+  },
+  {
+    "id": 16,
+    "category": ["nature", "family"],
+    "title": "Photography",
+    "company": "NatureShots",
+    "url": "www.natureshots.com",
+    "image": "guitar.png",
+    "type": "solo",
+    "age": ["family", "adults"],
+    "location": [
+      {
+        "city": "Helsinki",
+        "coords": [60.202, 24.935],
+        "address": "Keskuspuisto entrance"
+      }
+    ],
+    "description": "Capture stunning photos in Helsinki's green areas.",
+    "status": "active",
+    "userId": "12"
   }
 ]

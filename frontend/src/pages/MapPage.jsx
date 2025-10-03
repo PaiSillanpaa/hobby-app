@@ -3,19 +3,18 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import hobbies from "../data/hobbies.json";
-import "./MapPage.css";
 import NavBar from "../components/NavBar";
-import Carousel from "../components/Carousel";
+import NewCarousel from "../components/MapCarousel";
+import { useLocation } from "react-router-dom";
+import "./MapPage.css"
 
 const MapPage = () => {
   const [userLocation, setUserLocation] = useState(null);
   const [closestHobbies, setClosestHobbies] = useState([]);
   const [map, setMap] = useState(null);
   const [selectedHobby, setSelectedHobby] = useState(null);
+  const location = useLocation();
 
-  //Jos käyttäjä ei anna sijaintitietoja asetetaan default Rauttis
-
-  // Käyttäjän sijainti
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -29,13 +28,14 @@ const MapPage = () => {
         setUserLocation({
           lat: 60.1699,  // Helsingin Rautatieaseman leveysaste
           lon: 24.9384,  // Helsingin Rautatieaseman pituusaste
-        });}
+        });
+      }
     );
   }, []);
 
-  // Etäisyys
+  // Etäisyyden laskeminen käyttäjän sijainnista harrastuksiin
   const getDistance = (lat1, lon1, lat2, lon2) => {
-    const R = 6371;
+    const R = 6371; // Maapallon säde kilometreinä
     const dLat = ((lat2 - lat1) * Math.PI) / 180;
     const dLon = ((lon2 - lon1) * Math.PI) / 180;
     const a =
@@ -44,24 +44,24 @@ const MapPage = () => {
         Math.cos((lat2 * Math.PI) / 180) *
         Math.sin(dLon / 2) ** 2;
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
+    return R * c; // Etäisyys kilometreinä
   };
 
-  // Päivitä 2 lähintä harrastusta
+  // Päivitä 5 lähintä harrastusta
   useEffect(() => {
     if (userLocation) {
       const sorted = hobbies
-        .map((h) => ({
-          ...h,
+        .map((hobby) => ({
+          ...hobby,
           distance: getDistance(
             userLocation.lat,
             userLocation.lon,
-            h.coords[0],
-            h.coords[1]
+            hobby.location[0].coords[0], // Koordinaatit
+            hobby.location[0].coords[1]
           ),
         }))
         .sort((a, b) => a.distance - b.distance)
-        .slice(0, 2);
+        .slice(0, 5); // Valitaan vain 5 lähintä harrastusta
       setClosestHobbies(sorted);
     }
   }, [userLocation]);
@@ -82,20 +82,19 @@ const MapPage = () => {
       iconAnchor: [25, 25],
     });
 
-  // Klikki listasta
   const focusOnHobby = (hobby) => {
     if (!map) return;
-    setSelectedHobby(hobby.name);
-    map.setView(hobby.coords, 15);
+    setSelectedHobby(hobby.title);
+    map.setView(hobby.location[0].coords, 15);
   };
+
+  // Tarkistetaan, onko sivu "user/map"
+  const isMapPage = location.pathname === "user/map";
 
   if (!userLocation) return <div>Loading your location...</div>;
 
   return (
     <div className="mappage-container">
-      <div id="root">
-
-        {/* Kartta */}
         <div className="map-container">
           <MapContainer
             center={[userLocation.lat, userLocation.lon]}
@@ -104,21 +103,21 @@ const MapPage = () => {
             whenCreated={setMap}
           >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-
-            {/* Käyttäjä */}
             <Marker position={[userLocation.lat, userLocation.lon]} icon={userIcon}>
               <Popup>You are here</Popup>
             </Marker>
 
-            {/* Harrastukset */}
-            {hobbies.map((business, idx) => (
+            {closestHobbies.map((business, idx) => (
               <Marker
                 key={idx}
-                position={business.coords}
+                position={business.location[0].coords}
                 icon={createHobbyIcon(business.title)}
+                eventHandlers={{
+                  click: () => focusOnHobby(business)
+                }}
               >
-                <Popup open={selectedHobby === business.name}>
-                  <h4>{business.name}</h4>
+                <Popup>
+                  <h4>{business.title}</h4>
                   <p>{business.description}</p>
                 </Popup>
               </Marker>
@@ -126,14 +125,15 @@ const MapPage = () => {
           </MapContainer>
         </div>
 
-        {/* Lähimmät harrastukset */}
         <div className="info-box">
-          <h2>Hobbies in your city</h2>
-          <Carousel city={userLocation ? userLocation.city : "Helsinki"} ></Carousel>
+          <NewCarousel
+            hobbies={closestHobbies}
+            onHobbyClick={focusOnHobby}
+            selectedHobby={selectedHobby}
+            isMapPage={isMapPage} // Tämä kertoo, onko sivu "/map"
+          />
         </div>
-        <NavBar></NavBar>
-      </div>
-
+        <NavBar />
     </div>
   );
 };
