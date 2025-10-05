@@ -1,10 +1,22 @@
 import express from "express";
 import {
   createListing,
-  getListings,
-  imageTest,
+  getAllListings,
+  getInactiveListings,
+  getActiveListings,
+  getDeletedListings,
   getListingsByTags,
   getCategories,
+  getFavourites,
+  getHistory,
+  setFavourite,
+  addToHistory,
+  updateListing,
+  setListingActive,
+  setListingDeleted,
+  setListingInactive,
+  DeleteListing,
+  deleteListing,
 } from "../controllers/listingControllers.js";
 import { get } from "mongoose";
 import { checkJwt } from "../middleware/jwt.js";
@@ -13,15 +25,25 @@ import upload from "../middleware/multer.js";
 const listingRouter = express.Router();
 
 // listing routers
-listingRouter.post(
-  "/listing/create",
-  checkJwt,
-  upload.single("image"),
-  createListing
-);
-listingRouter.post("/image/test", imageTest);
-listingRouter.get("/listing/get", getListings);
-listingRouter.get("/listing/get/tags", getListingsByTags);
-listingRouter.get("/listing/get/categories", getCategories);
+
+listingRouter.get("/all", checkJwt, getAllListings);
+listingRouter.get("/active", checkJwt, getActiveListings);
+listingRouter.get("/inactive", checkJwt, getInactiveListings);
+listingRouter.get("/deleted", checkJwt, getDeletedListings);
+listingRouter.get("/categories", getCategories);
+listingRouter.get("/favourites", checkJwt, getFavourites);
+listingRouter.get("/history", checkJwt, getHistory);
+
+listingRouter.post("/create", checkJwt, upload.single("image"), createListing);
+listingRouter.post("/favourite", checkJwt, setFavourite);
+listingRouter.post("/history", checkJwt, addToHistory);
+listingRouter.post("/tags", getListingsByTags);
+
+listingRouter.put("/:id/update", checkJwt, updateListing);
+listingRouter.patch("/:id/status/active", checkJwt, setListingActive);
+listingRouter.patch("/:id/status/inactive", checkJwt, setListingInactive);
+listingRouter.patch("/:id/status/deleted", checkJwt, setListingDeleted);
+
+listingRouter.delete("/:id/delete", checkJwt, deleteListing);
 
 export default listingRouter;

@@ -6,13 +6,20 @@ import userRouter from "./routes/userRouter.js";
 import listingRouter from "./routes/listingRouter.js";
 import morgan from "morgan";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cookieParser());
+app.use(
+  cors({
+    origin: "http://localhost:3000", // frontend origin
+    credentials: true, // allow cookies
+  })
+);
 app.use(morgan("dev"));
-app.use(userRouter);
-app.use(listingRouter);
+app.use("api/user", userRouter);
+app.use("api/listing", listingRouter);
 
 //server start function
 const startServer = async () => {

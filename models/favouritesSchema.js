@@ -9,7 +9,7 @@ const favouritesSchema = mongoose.Schema({
 
   listingId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "Listing",
     required: true,
   },
 

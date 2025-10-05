@@ -9,27 +9,33 @@ export const createUser = async (request, response) => {
   const { email, username, password1, password2, rank } = request.body;
   console.log("password: ", password1);
 
-  if (!email || !username || !password1 || !password2) {
+  if (!email || !username || !password1 || !password2 || !rank) {
     console.log("Error creating user, empty fields!");
-    return response.status(400).send("all fields are required!");
+    return response.status(400).json({ message: "all fields are required!" });
   }
 
   if (password1 !== password2) {
     console.log("password do not match!");
-    return response.status(400).send("passwords do not match!");
+    return response.status(400).json({ message: "passwords do not match!" });
   }
 
   if (password1.length < 6) {
-    return response.status(400).send("Password must be at least 6 characters");
+    return response
+      .status(400)
+      .json({ message: "Password must be at least 6 characters" });
   }
 
-  const existingUser = await User.findOne({ username }).exec();
-
-  if (existingUser) {
-    return response.status(409).send("Username already taken");
+  if (rank !== "company" && rank !== "user") {
+    return response.status(403).json({ message: "unauthorized" });
   }
 
   try {
+    const existingUser = await User.findOne({ username }).exec();
+
+    if (existingUser) {
+      return response.status(409).json({ message: "Username already taken" });
+    }
+
     const hashedPassword = await hashPassword(password1);
     console.log("hashed password: ", hashedPassword);
 
@@ -43,10 +49,12 @@ export const createUser = async (request, response) => {
     await newUser.save();
 
     console.log("created account: ", username);
-    response.send(`created account: ${username}`);
+    return response
+      .status(201)
+      .json({ message: `created account: ${username}` });
   } catch (error) {
     console.error("Error creating user: ", error.message);
-    response.status(500).send("Server error");
+    return response.status(500).json({ message: "Server error" });
   }
 };
 
@@ -55,47 +63,93 @@ export const loginUser = async (request, response) => {
   const { username, password } = request.body;
 
   if (!username || !password) {
-    return response.status(400).send("Please enter both username and password");
+    return response
+      .status(400)
+      .json({ message: "Please enter both username and password" });
   }
 
-  const user = await User.findOne({ username: username }).exec();
-  console.log("user:", user);
-  console.log("trying to log in user: ", user.username);
+  try {
+    const user = await User.findOne({ username: username }).exec();
+    console.log("user:", user);
 
-  if (!user) {
-    return response.status(400).send("incorrect username or password");
+    if (!user) {
+      return response
+        .status(400)
+        .json({ message: "incorrect username or password" });
+    }
+    console.log("trying to log in user: ", user.username);
+
+    const isCorrectPassword = await comparePassword(password, user.password);
+
+    if (!isCorrectPassword) {
+      console.log("incorrect username or password");
+      return response
+        .status(401)
+        .json({ message: "incorrect username or password" });
+    }
+
+    const accessToken = signJwt(user.username, user._id, user.email, user.rank);
+    console.log("accestoken: ", accessToken);
+
+    response.cookie("token", accessToken, {
+      httpOnly: true, // Prevent access from JS
+      sameSite: "strict", // Prevent CSRF
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
+    });
+
+    return response.status(200).json({
+      message: "Login successful",
+      username: user.username,
+      rank: user.rank,
+    });
+  } catch (error) {
+    return response.status(500).json({ message: "error when logging in user" });
   }
-
-  const isCorrectPassword = await comparePassword(password, user.password);
-
-  if (!isCorrectPassword) {
-    console.log("incorrect username or password");
-    return response.status(400).send("incorrect username or password");
-  }
-
-  const accessToken = signJwt(user.username, user._id, user.email);
-  console.log("accestoken: ", accessToken);
-
-  return response.send(`Logged in as: ${user.username}`);
 };
 
 export const deleteUser = async (request, response) => {
-  const { username } = request.body;
+  const { id } = request.params;
+  const user = request.user;
+
+  if (!id) return response.status(400).json({ message: "no id" });
 
   try {
-    await User.deleteOne({ username: username });
-    return response.status(201).send("User deleted succesfully");
+    const currentUser = await User.findOne({ _id: user.userId });
+
+    if (!currentUser) {
+      return response
+        .status(403)
+        .json({ message: "unauthorized to delete user" });
+    }
+
+    if (currentUser.rank !== "admin" && currentUser._id !== id) {
+      return response
+        .status(403)
+        .json({ message: "unauthorized to delete user" });
+    }
+
+    const userToDelete = await User.findById(id);
+
+    if (!userToDelete) {
+      return response.status(404).json({ message: "User not found" });
+    }
+
+    await User.deleteOne({ _id: id });
+    return response.status(200).json({ message: "User deleted succesfully" });
   } catch (error) {
-    return response.status(500).send(`Error deleting user: ${error}`);
+    return response
+      .status(500)
+      .json({ message: `Error deleting user: ${error}` });
   }
 };
 
 export const changePassword = async (request, response) => {
-  const { username, currentPassword, newPassword1, newPassword2 } =
-    request.body;
+  const { currentPassword, newPassword1, newPassword2 } = request.body;
+
+  const { userId } = request.user;
 
   try {
-    const user = await User.findOne({ username: username });
+    const user = await User.findOne({ _id: userId });
 
     if (!user) {
       return response.status(404).json({ message: "User not found" });
@@ -117,12 +171,12 @@ export const changePassword = async (request, response) => {
     const newHashedPassword = await hashPassword(newPassword1);
 
     await User.findOneAndUpdate(
-      { username: username },
+      { _id: user._id },
       { password: newHashedPassword }
     );
 
     return response
-      .status(201)
+      .status(200)
       .json({ message: "password changed successfully" });
   } catch (error) {
     return response.status(500).json({ error: "server error" });
@@ -133,26 +187,30 @@ export const getUserInfo = async (request, response) => {
   const user = request.user;
 
   if (!user) {
-    return response(403).json({ message: "unauthorized" });
+    return response.status(403).json({ message: "unauthorized" });
   }
 
-  return request
-    .status(200)
-    .json({ userId: user._id, username: user.username, email: user.email });
+  return response.status(200).json({
+    userId: user.userId,
+    username: user.username,
+    email: user.email,
+    rank: user.rank,
+  });
 };
 
 export const updateUser = async (request, response) => {
-  const { newUsername, newEmail, newRank, userId } = request.body;
+  const { newUsername, newEmail, newRank } = request.body;
+  const id = request.params.id;
   const user = request.user;
 
   if (!user || user.rank !== "admin") {
     return response
-      .status(401)
+      .status(403)
       .json({ message: "unauthorized to update user" });
   }
 
   try {
-    const currentUser = await User.findOne({ _id: userId });
+    const currentUser = await User.findOne({ _id: id });
     if (!currentUser) {
       return response.status(404).json({ message: "Could not find user" });
     }
