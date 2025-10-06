@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
+import url from "../data/.env";
 
 export default function Register() {
   const [username, setUsername] = useState("");
@@ -30,7 +31,7 @@ export default function Register() {
     console.log("Rekisteröinti:", userData);
 
     try {
-      const res = await fetch("/api/register", {
+      const res = await fetch(`${url}/api/user/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,7 +43,7 @@ export default function Register() {
         throw new Error("Rekisteröinti epäonnistui");
       }
 
-      const loginRes = await fetch("/api/login", {
+      const loginRes = await fetch(`${url}/api/user/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
