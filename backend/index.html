@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>testi</title>
+  </head>
+  <body>
+    <form>
+      <input id="imageInput" type="file" accept="image/*" />
+      <button type="submit">upload image</button>
+    </form>
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    const handleImageChange = (e) => {
+      const file = e.target.files[0];
+
+      if (file) {
+        const reader = new FileReader();
+
+        // Set up the onloadend callback before calling readAsDataURL
+        reader.onloadend = () => {
+          const base64Image = reader.result; // This is the base64 encoded image
+          console.log(base64Image); // You can send this to your backend to store it in the database
+
+          // Send the base64 string to your backend via Axios
+          axios
+            .post("http://localhost:3001/image/test", {
+              image: base64Image,
+            })
+            .then((response) => {
+              console.log("Image uploaded successfully:", response.data);
+              const imageElement = document.createElement("img");
+              imageElement.src = response.data; // response.data should be the Base64 image string
+              imageElement.style.maxWidth = "300px"; // Optional: set max width for preview
+              document.body.appendChild(imageElement);
+            })
+            .catch((error) => {
+              console.error("Error uploading image:", error);
+            });
+        };
+
+        // Read the file as a data URL (Base64 format)
+        reader.readAsDataURL(file);
+      }
+    };
+
+    const input = document.getElementById("imageInput");
+    input.addEventListener("change", handleImageChange);
+  </script>
+</html>
