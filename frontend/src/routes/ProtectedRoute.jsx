@@ -31,7 +31,7 @@ const ProtectedRoute = ({ children, allowedRanks }) => {
     };
 
     checkUser();  // Käynnistetään käyttäjätarkistus
-  }, [allowedRanks]);  // Tämä ajetaan aina, kun allowedRanks muuttuu
+  }, []);  // Tämä ajetaan aina, kun allowedRanks muuttuu
 
   // Odotetaan, että tarkistus valmistuu
   if (isAuthorized === null) {
