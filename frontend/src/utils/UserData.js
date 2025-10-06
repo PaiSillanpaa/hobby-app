@@ -1,4 +1,4 @@
-/*import { getEmailFromToken, getUserIdFromToken, getUsernameFromToken } from "./Token";
+import { getEmailFromToken, getUserIdFromToken, getUsernameFromToken } from "./Token";
 
 export const fetchUserId = async () => {
   try {
@@ -56,4 +56,3 @@ export const fetchUsername = async () => {
     return usernameFromToken || null;
   }
 };
-*/
