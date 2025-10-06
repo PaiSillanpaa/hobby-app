@@ -2,7 +2,7 @@ import { getEmailFromToken, getUserIdFromToken, getUsernameFromToken } from "./T
 
 export const fetchUserId = async () => {
   try {
-    const response = await fetch("/api/me", {
+    const response = await fetch("/api/user/info", {
       method: "GET",
       credentials: "include", // tärkeää! jotta HttpOnly-cookie menee mukana
     });
@@ -21,7 +21,7 @@ export const fetchUserId = async () => {
 
 export const fetchUserEmail = async () => {
   try {
-    const response = await fetch("/api/me", {
+    const response = await fetch("/api/user/info", {
       method: "GET",
       credentials: "include",
     });
@@ -40,7 +40,7 @@ export const fetchUserEmail = async () => {
 
 export const fetchUsername = async () => {
   try {
-    const response = await fetch("/api/me", {
+    const response = await fetch("/api/user/info", {
       method: "GET",
       credentials: "include",
     });
