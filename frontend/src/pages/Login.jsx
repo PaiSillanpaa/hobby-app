@@ -35,28 +35,6 @@ export default function LogIn() {
     const isMobile = window.innerWidth < 768;
 
 
-  // FOR DEV ONLY: Handle admin and company login
-  if ((username === "admin" && password === "admin123") || (username === "company" && password === "company123") || (username === "user" && password === "user123")) {
-    const rank = username === "admin" ? "admin" : username === "company" ? "company" : "user";
-    
-
-    localStorage.setItem("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxkZXIiLCJpYXQiOjE3NTkzMTQwNjUsImV4cCI6MTc5MDg1MDA2NSwiYXVkIjoid3d3LmV4YW1wbGUuY29tIiwic3ViIjoianJvY2tldEBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoidXNlcl9taWtrbyIsImVtYWlsIjoibWlra29AZXhhbXBsZS5jb20iLCJyYW5rIjoidXNlciIsInVzZXJJZCI6IjMifQ.n1pku0Gbwlv-_xKq_XcKWXhtJ1n-ek-4bbsSCEO0TXs");
-    localStorage.setItem("username", username);
-    localStorage.setItem("rank", rank);
-
-    if (rank === "user") {
-      navigate("/user/homepage");
-    } else {
-      if (isMobile) {
-        setShowMobileAdminModal(true);
-      } else {
-        navigate(rank === "admin" ? "/admin" : "/company");
-      }
-    }
-    return;
-  }
-
-
     try {
       const res = await fetch("/api/user/login", {
         method: "POST",
@@ -71,12 +49,8 @@ export default function LogIn() {
 
       const data = await res.json();
 
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("username", data.username);
-      localStorage.setItem("rank", data.rank);
-
       const isAdminOrCompany = data.rank === "admin" || data.rank === "company";
-      const targetPath = data.rank === "admin" ? "/admin" : data.rank === "company" ? "/company" : "/homepage";
+      const targetPath = data.rank === "admin" ? "/admin" : data.rank === "company" ? "/company" : "/user/homepage";
 
       if (isMobile && isAdminOrCompany) {
         setShowMobileAdminModal(true);
@@ -96,9 +70,6 @@ export default function LogIn() {
   };
 
   const handleContinueWithoutLogin = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("username");
-    localStorage.removeItem("rank");
     setShowMobileAdminModal(false);
     navigate("/homepage");
   };
