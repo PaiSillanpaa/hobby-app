@@ -29,7 +29,10 @@ const listingRouter = express.Router();
 
 listingRouter.get("/all", checkJwt, getAllListings);
 listingRouter.get("/active", checkJwt, getActiveListings);
+
+// tällä saa kaikki aktiiviset ei kirjautuneille
 listingRouter.get("/active2", getAllActive2);
+
 listingRouter.get("/inactive", checkJwt, getInactiveListings);
 listingRouter.get("/deleted", checkJwt, getDeletedListings);
 listingRouter.get("/categories", getCategories);
