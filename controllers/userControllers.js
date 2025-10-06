@@ -25,7 +25,7 @@ export const createUser = async (request, response) => {
       .json({ message: "Password must be at least 6 characters" });
   }
 
-  if (rank !== "company" && rank !== "user") {
+  if (rank !== "company" && rank !== "user" && rank !== "admin") {
     return response.status(403).json({ message: "unauthorized" });
   }
 
@@ -94,8 +94,11 @@ export const loginUser = async (request, response) => {
     response.cookie("token", accessToken, {
       httpOnly: true, // Prevent access from JS
       sameSite: "strict", // Prevent CSRF
-      maxAge: 1000 * 60 * 60 * 24, // 1 day
+      secure: false, // false = http, true = https
+      maxAge: 1000 * 60 * 60 * 1, // 1 hour
     });
+
+    console.log("after cookies");
 
     return response.status(200).json({
       message: "Login successful",
@@ -111,7 +114,11 @@ export const deleteUser = async (request, response) => {
   const { id } = request.params;
   const user = request.user;
 
-  if (!id) return response.status(400).json({ message: "no id" });
+  if (!user) {
+    return response.status(401).json({ message: "Authentication required" });
+  }
+
+  if (!id) return response.status(400).json({ message: "User Id is required" });
 
   try {
     const currentUser = await User.findOne({ _id: user.userId });
@@ -119,13 +126,13 @@ export const deleteUser = async (request, response) => {
     if (!currentUser) {
       return response
         .status(403)
-        .json({ message: "unauthorized to delete user" });
+        .json({ message: "User not found or unauthorized" });
     }
 
-    if (currentUser.rank !== "admin" && currentUser._id !== id) {
+    if (currentUser.rank !== "admin" && !currentUser._id.equals(id)) {
       return response
         .status(403)
-        .json({ message: "unauthorized to delete user" });
+        .json({ message: "You do not have permission to delete this user" });
     }
 
     const userToDelete = await User.findById(id);
@@ -139,7 +146,7 @@ export const deleteUser = async (request, response) => {
   } catch (error) {
     return response
       .status(500)
-      .json({ message: `Error deleting user: ${error}` });
+      .json({ message: "Server error when deleting user" });
   }
 };
 
@@ -147,6 +154,7 @@ export const changePassword = async (request, response) => {
   const { currentPassword, newPassword1, newPassword2 } = request.body;
 
   const { userId } = request.user;
+  console.log(typeof userId);
 
   try {
     const user = await User.findOne({ _id: userId });
@@ -250,5 +258,66 @@ export const updateUser = async (request, response) => {
     }
   } catch (error) {
     return response.status(500).json({ message: "error when updating user" });
+  }
+};
+
+export const getUsers = async (request, response) => {
+  const user = request.user;
+
+  if (!user) {
+    return response.status(403).json({ message: "Unauthorized" });
+  }
+
+  try {
+    const currentUser = await User.findById(user.userId);
+
+    if (!currentUser) {
+      return response.status(400).json({ message: "Could not find user" });
+    }
+
+    if (currentUser.rank !== "admin") {
+      return response
+        .status(403)
+        .json({ message: "Unauthorized to get users" });
+    }
+
+    const users = await User.find({}).select("-password -__v");
+
+    return response.status(200).json({ users });
+  } catch (error) {
+    return response
+      .status(500)
+      .json({ message: "Error when retrieving users" });
+  }
+};
+
+export const logoutUser = async (request, response) => {
+  const user = request.user;
+
+  if (!user) {
+    return response.status(403).json({ message: "Unauthorized" });
+  }
+
+  try {
+    const currentUser = await User.findById(user.userId);
+
+    if (!currentUser) {
+      return response
+        .status(401)
+        .json({ message: "User not found or Forbidden" });
+    }
+
+    response.cookie("token", "", {
+      httpOnly: true, // unaccessable for js
+      secure: false, // false = http, true = https
+      sameSite: "strict",
+      expires: new Date(0), // expires now
+    });
+
+    return response.status(200).json({ message: "Successfully logged out" });
+  } catch (error) {
+    return response
+      .status(500)
+      .json({ message: "Error when logging out user" });
   }
 };

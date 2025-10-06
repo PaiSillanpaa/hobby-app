@@ -15,7 +15,6 @@ import {
   setListingActive,
   setListingDeleted,
   setListingInactive,
-  DeleteListing,
   deleteListing,
 } from "../controllers/listingControllers.js";
 import { get } from "mongoose";

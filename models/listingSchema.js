@@ -6,7 +6,7 @@ const listingSchema = new mongoose.Schema({
     required: true,
   },
 
-  listingDesc: {
+  listingDescription: {
     type: String,
   },
 
@@ -62,6 +62,10 @@ const listingSchema = new mongoose.Schema({
   },
 
   type: {
+    type: String,
+  },
+
+  company: {
     type: String,
   },
 });

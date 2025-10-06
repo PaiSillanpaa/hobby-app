@@ -13,13 +13,12 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:3000", // frontend origin
     credentials: true, // allow cookies
   })
 );
 app.use(morgan("dev"));
-app.use("api/user", userRouter);
-app.use("api/listing", listingRouter);
+app.use("/api/user", userRouter);
+app.use("/api/listing", listingRouter);
 
 //server start function
 const startServer = async () => {

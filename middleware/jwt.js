@@ -2,8 +2,8 @@ import jwt from "jsonwebtoken";
 import { SECRET_KEY } from "../config/config.js";
 
 export const signJwt = (username, userId, email, rank) => {
-  const user = { name: username, userId: userId, email: email, rank: rank };
-  const accessToken = jwt.sign(user, SECRET_KEY);
+  const user = { username: username, userId: userId, email: email, rank: rank };
+  const accessToken = jwt.sign(user, SECRET_KEY, { expiresIn: "1h" });
 
   return accessToken;
 };

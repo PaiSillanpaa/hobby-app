@@ -4,7 +4,7 @@ import History from "../models/historySchema.js";
 import User from "../models/userSchema.js";
 
 export const createListing = async (request, response) => {
-  const { title, description, location, category, age, type, url } =
+  const { title, description, location, category, age, type, url, company } =
     request.body;
   const image = request.file;
   const user = request.user;
@@ -34,13 +34,14 @@ export const createListing = async (request, response) => {
       location: {
         address: parsedLocation.address,
         city: parsedLocation.city,
-        coordinates: parsedLocation.coords,
+        coordinates: parsedLocation.coordinates,
       },
       category: parsedCategory,
       age: parsedAge,
       type: type,
       url: url,
       image: base64Image,
+      company: company,
     });
 
     await newListing.save();
@@ -49,6 +50,7 @@ export const createListing = async (request, response) => {
       .status(201)
       .json({ message: "new listing created succesfully!" });
   } catch (error) {
+    console.error(error);
     return response
       .status(500)
       .json({ message: "error when creating a listing" });
@@ -77,17 +79,20 @@ export const getAllListings = async (request, response) => {
     }
 
     if (currentUser.rank === "admin") {
-      listings = await Listing.find();
+      listings = await Listing.find().populate("userId", "-password -__v");
     } else if (currentUser.rank === "company") {
-      listings = await Listing.find({ userId: currentUser._id });
+      listings = await Listing.find({ userId: currentUser._id }).populate(
+        "userId",
+        "-password -__v"
+      );
     } else {
       return response.status(403).json({ message: "denied" });
     }
 
-    return response.status.json({ listings });
+    return response.status(200).json({ listings });
   } catch (error) {
     console.log(error, "error retrieving listings");
-    return response.status(500).send("error retrieving listings!");
+    return response.status(500).json({ message: "error retrieving listings!" });
   }
 };
 
@@ -397,7 +402,9 @@ export const addToHistory = async (request, response) => {
 //---------------------------------------------------
 
 export const updateListing = async (request, response) => {
-  const { title, description, city, address, listingId } = request.body;
+  const { title, description, city, address } = request.body;
+
+  const listingId = request.params.id;
 
   const user = request.user;
 
@@ -430,12 +437,12 @@ export const updateListing = async (request, response) => {
     let shouldSave = false;
 
     if (title?.trim()) {
-      listing.title = title.trim();
+      listing.listingTitle = title.trim();
       shouldSave = true;
     }
 
     if (description?.trim()) {
-      listing.description = description.trim();
+      listing.listingDescription = description.trim();
       shouldSave = true;
     }
 
