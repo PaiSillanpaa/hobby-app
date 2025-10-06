@@ -208,18 +208,15 @@ export const getListingsByTags = async (request, response) => {
   console.log("tags from controller: ", tags);
   console.log(tags.length);
 
-  if (tags.length < 1) {
-    try {
-      const listings = await Listing.find();
-
-      return response.status(200).json({ listings });
-    } catch (error) {
-      console.error(error);
-      response.status(401).send("Internal server error");
-    }
-  }
   try {
+    if (!Array.isArray(tags) || tags.length === 0) {
+      // Return all active listings if no tags provided
+      const listings = await Listing.find({ status: "active" });
+      return response.status(200).json({ listings });
+    }
+
     const listings = await Listing.find({
+      status: "active",
       $or: [
         { location: { $in: tags } },
         { category: { $in: tags } },
@@ -232,7 +229,7 @@ export const getListingsByTags = async (request, response) => {
     return response.json(listings);
   } catch (error) {
     console.error("internal server error");
-    return response.status(400).send("internal server error");
+    return response.status(500).send("internal server error");
   }
 };
 
@@ -350,6 +347,34 @@ export const setFavourite = async (request, response) => {
     return response.status(201).send("added to favourites");
   } catch (error) {
     return response.status(500).send("error when applying favourite");
+  }
+};
+
+export const removeFavourite = async (request, response) => {
+  const { listingId } = request.body;
+  const user = request.user;
+
+  if (!listingId) {
+    return response.status(403).json({ message: "missing listing id" });
+  }
+
+  try {
+    const listing = await Favourites.findOne({
+      listingId: listingId,
+      userId: user.userId,
+    });
+
+    if (!listing) {
+      return response.status(404).json({ message: "could not find favourite" });
+    }
+
+    await Favourites.findByIdAndDelete(listing._id);
+
+    return response.status(200).json({ message: "favourite deleted" });
+  } catch (error) {
+    return response
+      .status(500)
+      .json({ message: "Server error when deleting favourite" });
   }
 };
 
