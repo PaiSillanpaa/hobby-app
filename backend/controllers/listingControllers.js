@@ -96,6 +96,22 @@ export const getAllListings = async (request, response) => {
   }
 };
 
+export const getAllActive2 = async (request, response) => {
+  try {
+    const listings = await Listing.find({ status: "active" });
+
+    if (listings.length < 1) {
+      return response.status(404).json({ message: "No listings currently" });
+    }
+
+    return response.status(200).json(listings);
+  } catch (error) {
+    return response
+      .status(500)
+      .json({ message: "error when retrieving listings" });
+  }
+};
+
 export const getInactiveListings = async (request, response) => {
   const user = request.user;
   let inactiveListings;

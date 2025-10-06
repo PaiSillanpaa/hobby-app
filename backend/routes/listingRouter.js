@@ -17,6 +17,7 @@ import {
   setListingDeleted,
   setListingInactive,
   deleteListing,
+  getAllActive2,
 } from "../controllers/listingControllers.js";
 import { get } from "mongoose";
 import { checkJwt } from "../middleware/jwt.js";
@@ -28,6 +29,7 @@ const listingRouter = express.Router();
 
 listingRouter.get("/all", checkJwt, getAllListings);
 listingRouter.get("/active", checkJwt, getActiveListings);
+listingRouter.get("/active2", getAllActive2);
 listingRouter.get("/inactive", checkJwt, getInactiveListings);
 listingRouter.get("/deleted", checkJwt, getDeletedListings);
 listingRouter.get("/categories", getCategories);
