@@ -62,7 +62,7 @@ export default function Register() {
       localStorage.setItem("username", loginData.username); // valinnainen
       localStorage.setItem("rank", loginData.rank);         // valinnainen
 
-      navigate("/homepage");
+      navigate("/user/homepage");
 
       setUsername("");
       setEmail("");
