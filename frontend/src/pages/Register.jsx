@@ -56,12 +56,6 @@ export default function Register() {
         throw new Error(errorData.message || "Automaattinen kirjautuminen epäonnistui");
       }
 
-      const loginData = await loginRes.json();
-
-      localStorage.setItem("token", loginData.token);
-      localStorage.setItem("username", loginData.username); // valinnainen
-      localStorage.setItem("rank", loginData.rank);         // valinnainen
-
       navigate("/user/homepage");
 
       setUsername("");

@@ -1,4 +1,4 @@
-const ProtectedRoute = async({ allowedRanks }) => {
+const ProtectedRoute = async({ children, allowedRanks }) => {
     try {
       const response = await fetch("/api/user/info", {
         method: "GET",
@@ -10,9 +10,10 @@ const ProtectedRoute = async({ allowedRanks }) => {
       const data = await response.json();
 
       const rank = data.rank;
+      console.log(rank);
 
       if (allowedRanks.icludes(rank)) {
-        return;
+        return children;
       }
       else {
         throw new Error("Ei oikeuksia tälle sivulle");
