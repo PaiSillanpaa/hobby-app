@@ -29,14 +29,15 @@ export default function Carousel({
         //setUserId(id);
         const favoritesResponse = await fetch(`/api/listing/favourites`);
         const favoritesData = await favoritesResponse.json();
-        setFavorites(favoritesData);
+        console.log("bäkkärist tulee lempparit:", favoritesData)
+        setFavorites(favoritesData.user?.favourites || []);
         //localStorage.setItem("favorites", JSON.stringify(favoritesData.map(f => f.id)));
       } catch (err) {
         console.error("No user found or backend error:", err);
         //const id = getUserIdFromToken();
         //setUserId(id);
-        //const savedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
-        //setFavorites(savedFavorites);
+        const savedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
+        setFavorites(savedFavorites);
       }
     };
 
@@ -51,7 +52,10 @@ export default function Carousel({
     if (isAlreadyFavorite) {
       updatedFavorites = favorites.filter(f => f.id !== hobby.id);
       try {
-        await fetch(`/api/listing/favourites/${hobby.id}`, { method: "DELETE" });
+        await fetch(`/api/user/remove-favourite`, { 
+          method: "DELETE",
+          body:JSON.stringify({ listingId: hobby.id })
+        });
       } catch (err) {
         console.error("Error removing favorite:", err);
       }

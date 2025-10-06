@@ -314,7 +314,7 @@ export const setFavourite = async (request, response) => {
   console.log(request.user);
   const user = request.user;
 
-  if (!username || !listingId) {
+  if (!user || !listingId) {
     return response.status(401).json({ message: "Unauthorized" });
   }
 
