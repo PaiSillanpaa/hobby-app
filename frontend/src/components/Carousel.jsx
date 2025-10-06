@@ -3,8 +3,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import hobbies from "../data/hobbies.json";
-import { fetchUserId } from "../utils/UserData";
-import { getUserIdFromToken } from "../utils/Token";
+//import { fetchUserId } from "../utils/UserData";
+//import { getUserIdFromToken } from "../utils/Token";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -20,23 +20,23 @@ export default function Carousel({
   const navigate = useNavigate();
   const location = useLocation();
   const [favorites, setFavorites] = useState([]);
-  const [userId, setUserId] = useState(null);
+  //const [userId, setUserId] = (null);
 
   useEffect(() => {
     const getUserId = async () => {
       try {
-        const id = await fetchUserId();
-        setUserId(id);
-        const favoritesResponse = await fetch(`/api/get-favorites/${id}`);
+        //const id = await fetchUserId();
+        //setUserId(id);
+        const favoritesResponse = await fetch(`/api/listing/favourites`);
         const favoritesData = await favoritesResponse.json();
         setFavorites(favoritesData);
-        localStorage.setItem("favorites", JSON.stringify(favoritesData.map(f => f.id)));
+        //localStorage.setItem("favorites", JSON.stringify(favoritesData.map(f => f.id)));
       } catch (err) {
         console.error("No user found or backend error:", err);
-        const id = getUserIdFromToken();
-        setUserId(id);
-        const savedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
-        setFavorites(savedFavorites);
+        //const id = getUserIdFromToken();
+        //setUserId(id);
+        //const savedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
+        //setFavorites(savedFavorites);
       }
     };
 
@@ -51,24 +51,24 @@ export default function Carousel({
     if (isAlreadyFavorite) {
       updatedFavorites = favorites.filter(f => f.id !== hobby.id);
       try {
-        await fetch(`/api/remove-favorite/${userId}/${hobby.id}`, { method: "DELETE" });
+        await fetch(`/api/listing/favourites/${hobby.id}`, { method: "DELETE" });
       } catch (err) {
         console.error("Error removing favorite:", err);
       }
     } else {
       updatedFavorites = [...favorites, hobby];
       try {
-        await fetch(`/api/add-favorite/${userId}`, {
+        await fetch(`/api/listing/favourite`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ hobbyId: hobby.id })
+          body: JSON.stringify({ listingId: hobby.id })
         });
       } catch (err) {
         console.error("Error adding favorite:", err);
       }
     }
 
-    localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+    //localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
     setFavorites(updatedFavorites);
   };
 

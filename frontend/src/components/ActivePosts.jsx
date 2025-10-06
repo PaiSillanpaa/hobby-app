@@ -11,7 +11,7 @@ const ActivePosts = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await fetch("/api/get-posts"); // backend endpoint
+        const res = await fetch("/api/listing/all"); // backend endpoint
         if (!res.ok) throw new Error("API error");
         const data = await res.json();
         setPosts(data.filter(p => p.status === "active"));

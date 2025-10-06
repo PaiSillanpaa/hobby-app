@@ -20,7 +20,7 @@ export default function CategoryPage() {
   useEffect(() => {
     const fetchHobbies = async () => {
       try {
-        const res = await fetch("/api/get-hobbies");
+        const res = await fetch("/api/listing/tags");
         if (!res.ok) throw new Error("API failed");
         const data = await res.json();
         setHobbies(data);

@@ -7,7 +7,7 @@ import "./Navbar.css";
 import { useNavigate } from "react-router-dom";
 import SearchModal from "./SearchModal";
 import { fetchUserId } from "../utils/UserData";
-import { getUserIdFromToken } from "../utils/Token";
+//import { getUserIdFromToken } from "../utils/Token";
 
 export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -22,9 +22,9 @@ export default function Navbar() {
         setUserId(id);
       } catch (err) {
         console.error(err);
-        const id = getUserIdFromToken(); // Poista tämä ja seuraava rivi, kun backend on yhdistetty
-        setUserId(id);
-        //setUserId(null); // Tämä käyttöön, kun backend on yhdistetty
+        //const id = getUserIdFromToken(); // Poista tämä ja seuraava rivi, kun backend on yhdistetty
+        //setUserId(id);
+        setUserId(null); // Tämä käyttöön, kun backend on yhdistetty
       }
     };
 

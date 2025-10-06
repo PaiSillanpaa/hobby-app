@@ -1,9 +1,10 @@
 import "./Search.css";
 import { useNavigate } from "react-router-dom";
+import { fetchUserId } from "../utils/UserData";
 
 export default function Search() {
   const navigate = useNavigate();
-  const isLoggedIn = localStorage.getItem("token");
+  const isLoggedIn = fetchUserId();
 
   const handleClick = () => {
     if (isLoggedIn) {
