@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { Outlet, Navigate } from "react-router-dom";
 
 const ProtectedRoute = ({ children, allowedRanks }) => {
-  const [isAuthorized, setIsAuthorized] = useState(null);  // Käyttäjän valtuutuksen tila
-  const [error, setError] = useState(null);                // Virhetila
+  const [isAuthorized, setIsAuthorized] = useState(null); // Käyttäjän valtuutuksen tila
+  const [error, setError] = useState(null); // Virhetila
 
   useEffect(() => {
     const checkUser = async () => {
@@ -21,17 +21,17 @@ const ProtectedRoute = ({ children, allowedRanks }) => {
 
         // Tarkistetaan, onko käyttäjällä oikeus (rank kuuluu allowedRanks:iin)
         if (allowedRanks.includes(rank)) {
-          setIsAuthorized(true);  // Käyttäjä on valtuutettu
+          setIsAuthorized(true); // Käyttäjä on valtuutettu
         } else {
-          setError(new Error("Ei oikeuksia tälle sivulle"));  // Ei oikeuksia
+          setError(new Error("Ei oikeuksia tälle sivulle")); // Ei oikeuksia
         }
       } catch (err) {
-        setError(err);  // Asetetaan virhe
+        setError(err); // Asetetaan virhe
       }
     };
 
-    checkUser();  // Käynnistetään käyttäjätarkistus
-  }, []);  // Tämä ajetaan aina, kun allowedRanks muuttuu
+    checkUser(); // Käynnistetään käyttäjätarkistus
+  }, []); // Tämä ajetaan aina, kun allowedRanks muuttuu
 
   // Odotetaan, että tarkistus valmistuu
   if (isAuthorized === null) {
@@ -40,13 +40,16 @@ const ProtectedRoute = ({ children, allowedRanks }) => {
 
   // Jos käyttäjällä ei ole oikeuksia tai on muu virhe
   if (error) {
-    if (error.message === "Käyttäjän tunnistus epäonnistui" || error.message === "Ei oikeuksia tälle sivulle") {
-      return <Navigate to="/login" replace />;  // Ohjataan käyttäjä pois
+    if (
+      error.message === "Käyttäjän tunnistus epäonnistui" ||
+      error.message === "Ei oikeuksia tälle sivulle"
+    ) {
+      return <Navigate to="/login" replace />; // Ohjataan käyttäjä pois
     }
-    return <Navigate to="/login" replace />;  // Muut virheet ohjaavat kirjautumissivulle
+    return <Navigate to="/login" replace />; // Muut virheet ohjaavat kirjautumissivulle
   }
 
-  return children;  // Jos käyttäjä on valtuutettu, renderöi lapset (protected content)
+  return <Outlet />; // Jos käyttäjä on valtuutettu, renderöi lapset (protected content)
 };
 
 export default ProtectedRoute;

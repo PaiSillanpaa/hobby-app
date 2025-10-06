@@ -29,11 +29,9 @@ export default function LogIn() {
     return () => window.removeEventListener("resize", handleResize);
   }, [navigate, showMobileAdminModal]);
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const isMobile = window.innerWidth < 768;
-
 
     try {
       const res = await fetch("/api/user/login", {
@@ -48,9 +46,15 @@ export default function LogIn() {
       }
 
       const data = await res.json();
+      console.log(data.rank);
 
       const isAdminOrCompany = data.rank === "admin" || data.rank === "company";
-      const targetPath = data.rank === "admin" ? "/admin" : data.rank === "company" ? "/company" : "/user/homepage";
+      const targetPath =
+        data.rank === "admin"
+          ? "/admin"
+          : data.rank === "company"
+          ? "/company"
+          : "/user/homepage";
 
       if (isMobile && isAdminOrCompany) {
         setShowMobileAdminModal(true);
