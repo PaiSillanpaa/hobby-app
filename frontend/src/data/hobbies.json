@@ -1,0 +1,322 @@
+[
+  {
+    "id": 1,
+    "category": ["sport", "team"],
+    "title": "Sailing",
+    "company": "Company1",
+    "url": "www.company1.com",
+    "image": "sailing.png",
+    "type": "team",
+    "age": ["adults"],
+    "location": [
+      {
+        "city": "Helsinki",
+        "coords": [60.17859942280214, 24.963403005645848],
+        "address": "Hakaniemenranta 17"
+      }
+    ],
+    "description": "Sailing in the beautiful waters of the Helsinki archipelago.",
+    "status": "active",
+    "userId": "1"
+  },
+  {
+    "id": 2,
+    "category": ["art"],
+    "title": "Painting",
+    "company": "Company2",
+    "url": "www.company2.com",
+    "image": "painting.png",
+    "type": "solo",
+    "age": ["seniors"],
+    "location": [
+      {
+        "city": "Helsinki",
+        "coords": [60.180654990191215, 24.911759496026793],
+        "address": "Merikannontie 8"
+      }
+    ],
+    "description": "Explore your creativity at painting workshops in Kallio.",
+    "status": "active",
+    "userId": "2"
+  },
+  {
+    "id": 3,
+    "category": ["sport"],
+    "title": "Basketball",
+    "company": "Company3",
+    "url": "www.company3.com",
+    "image": "basketball.png",
+    "type": "team",
+    "age": ["young"],
+    "location": [
+      {
+        "city": "Helsinki",
+        "coords": [60.19917321744108, 24.910343289675495],
+        "address": "Ratsastie 10"
+      }
+    ],
+    "description": "Join a game of basketball at Pasilan sports hall.",
+    "status": "pending",
+    "userId": "3"
+  },
+  {
+    "id": 4,
+    "category": ["art", "digital"],
+    "title": "Guitar Lessons",
+    "company": "Company4",
+    "url": "www.company4.com",
+    "image": "guitar.png",
+    "type": "solo",
+    "age": ["adults", "young"],
+    "location": [
+      {
+        "city": "Helsinki",
+        "coords": [60.20611728184733, 24.94107716429286],
+        "address": "Mäkelänkatu 72"
+      }
+    ],
+    "description": "Learn to play the guitar in Helsinki's music schools.",
+    "status": "active",
+    "userId": "4"
+  },
+  {
+    "id": 5,
+    "category": ["culture", "family"],
+    "title": "Theatre Club",
+    "company": "Company5",
+    "url": "www.company5.com",
+    "image": "guitar.png",
+    "type": "team",
+    "age": ["family"],
+    "location": [
+      {
+        "city": "Espoo",
+        "coords": [60.214663230217305, 24.782087092084957],
+        "address": "Kilonpurontie 3"
+      }
+    ],
+    "description": "Participate in amateur theatre productions.",
+    "status": "deleted",
+    "userId": "5"
+  },
+  {
+    "id": 6,
+    "category": ["cooking"],
+    "title": "Cooking Class",
+    "company": "Company1",
+    "url": "www.company1.com",
+    "image": "sailing.png",
+    "type": "solo",
+    "age": ["adults"],
+    "location": [
+      {
+        "city": "Espoo",
+        "coords": [60.22542285209911, 24.70932527624955],
+        "address": "Lippajärventie 1"
+      }
+    ],
+    "description": "Learn to cook authentic Italian meals.",
+    "status": "active",
+    "userId": "1"
+  },
+  {
+    "id": 7,
+    "category": ["sport"],
+    "title": "Football",
+    "company": "Company7",
+    "url": "www.company7.com",
+    "image": "basketball.png",
+    "type": "team",
+    "age": ["kids"],
+    "location": [
+      {
+        "city": "Vantaa",
+        "coords": [60.35296791489873, 25.076738146489998],
+        "address": "Urpiaisentie 14"
+      }
+    ],
+    "description": "Join kids' football teams in Myyrmäki.",
+    "status": "active",
+    "userId": "2"
+  },
+  {
+    "id": 8,
+    "category": ["handcraft", "art"],
+    "title": "Knitting Club",
+    "company": "Company1",
+    "url": "www.company1.com",
+    "image": "painting.png",
+    "type": "solo",
+    "age": ["seniors", "adults"],
+    "location": [
+      {
+        "city": "Vantaa",
+        "coords": [60.402537041795995, 25.103444021493633],
+        "address": "Kauppakaari 2"
+      }
+    ],
+    "description": "A calm and social environment for knitting lovers.",
+    "status": "pending",
+    "userId": "1"
+  },
+  {
+    "id": 9,
+    "category": ["digital"],
+    "title": "Game Development",
+    "company": "Company1",
+    "url": "www.company1.com",
+    "image": "guitar.png",
+    "type": "team",
+    "age": ["young"],
+    "location": [
+      {
+        "city": "Kauniainen",
+        "coords": [60.222094589980045, 24.690092830369295],
+        "address": "Glimsintie 1"
+      }
+    ],
+    "description": "Learn to build games from scratch with Unity and Godot.",
+    "status": "deleted",
+    "userId": "1"
+  },
+  {
+    "id": 10,
+    "category": ["culture", "photography"],
+    "title": "Photography",
+    "company": "Company10",
+    "url": "www.company10.com",
+    "image": "sailing.png",
+    "type": "solo",
+    "age": ["family"],
+    "location": [
+      {
+        "city": "Lohja",
+        "coords": [60.2591399349641, 24.09199319758383],
+        "address": "Rovastinkatu 1"
+      }
+    ],
+    "description": "Explore the city while taking amazing photos.",
+    "status": "deleted",
+    "userId": "5"
+  },
+  {
+    "id": 11,
+    "category": ["nature"],
+    "title": "Hiking Adventures",
+    "company": "CompanyNature",
+    "url": "www.naturecompany.com",
+    "image": "guitar.png",
+    "type": "solo",
+    "age": ["adults", "young"],
+    "location": [
+      {
+        "city": "Helsinki",
+        "coords": [60.193, 24.949],
+        "address": "Nuuksiontie 84"
+      }
+    ],
+    "description": "Join guided hikes in Nuuksio National Park.",
+    "status": "active",
+    "userId": "7"
+  },
+  {
+    "id": 12,
+    "category": ["sport", "nature"],
+    "title": "Trail Running",
+    "company": "TrailBlazers",
+    "url": "www.trailblazers.com",
+    "image": "guitar.png",
+    "type": "solo",
+    "age": ["adults"],
+    "location": [
+      {
+        "city": "Espoo",
+        "coords": [60.244, 24.753],
+        "address": "Luukintie 30"
+      }
+    ],
+    "description": "Run through scenic nature trails with a group.",
+    "status": "active",
+    "userId": "8"
+  },
+  {
+    "id": 13,
+    "category": ["nature", "team"],
+    "title": "Survival",
+    "company": "WildSkills",
+    "url": "www.wildskills.com",
+    "image": "guitar.png",
+    "type": "team",
+    "age": ["adults", "young"],
+    "location": [
+      {
+        "city": "Vantaa",
+        "coords": [60.312, 25.019],
+        "address": "Metsäpolku 1"
+      }
+    ],
+    "description": "Learn survival skills in a forest environment.",
+    "status": "active",
+    "userId": "9"
+  },
+  {
+    "id": 14,
+    "category": ["art"],
+    "title": "Sculpture",
+    "company": "CompanyArt",
+    "url": "www.sculptart.com",
+    "image": "guitar.png",
+    "type": "solo",
+    "age": ["adults"],
+    "location": [
+      {
+        "city": "Helsinki",
+        "coords": [60.173, 24.941],
+        "address": "Taiteilijantie 2"
+      }
+    ],
+    "description": "Create sculptures with professional guidance.",
+    "status": "active",
+    "userId": "10"
+  },
+  {
+    "id": 15,
+    "category": ["art", "digital"],
+    "title": "Illustration",
+    "company": "PixelArt",
+    "url": "www.pixelart.com",
+    "image": "guitar.png",
+    "type": "solo",
+    "age": ["young"],
+    "location": [
+      {
+        "city": "Espoo",
+        "coords": [60.207, 24.659],
+        "address": "Illustration Ave 3"
+      }
+    ],
+    "description": "Learn digital drawing and design with tablets.",
+    "status": "active",
+    "userId": "11"
+  },
+  {
+    "id": 16,
+    "category": ["nature", "family"],
+    "title": "Nature Photography",
+    "company": "NatureShots",
+    "url": "www.natureshots.com",
+    "image": "guitar.png",
+    "type": "solo",
+    "age": ["family", "adults"],
+    "location": [
+      {
+        "city": "Helsinki",
+        "coords": [60.202, 24.935],
+        "address": "Keskuspuisto entrance"
+      }
+    ],
+    "description": "Capture stunning photos in Helsinki's green areas.",
+    "status": "active",
+    "userId": "12"
+  }
+]

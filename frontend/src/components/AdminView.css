@@ -1,0 +1,17 @@
+.admin-layout {
+  display: flex;
+  height: 100vh;
+  font-family: 'Kanit', sans-serif;
+  font-weight: 400;
+  flex-direction: column;
+}
+
+.main-area {
+  display: flex;
+  overflow: hidden;
+}
+.content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}

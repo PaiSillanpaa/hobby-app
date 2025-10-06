@@ -1,0 +1,6 @@
+body{
+    background: linear-gradient(#073B3A, #021919);
+    min-height: 100vh;
+    font-family: 'Kanit', sans-serif;
+    color: white;
+}
