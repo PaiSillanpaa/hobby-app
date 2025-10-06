@@ -41,7 +41,7 @@ const ProtectedRoute = ({ children, allowedRanks }) => {
   // Jos käyttäjällä ei ole oikeuksia tai on muu virhe
   if (error) {
     if (error.message === "Käyttäjän tunnistus epäonnistui" || error.message === "Ei oikeuksia tälle sivulle") {
-      return <Navigate to="/" replace />;  // Ohjataan käyttäjä pois
+      return <Navigate to="/login" replace />;  // Ohjataan käyttäjä pois
     }
     return <Navigate to="/login" replace />;  // Muut virheet ohjaavat kirjautumissivulle
   }
