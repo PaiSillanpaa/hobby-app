@@ -39,7 +39,8 @@ export default function App() {
 
 
 
-        <Route path="/user/homepage" element={
+{/*
+         <Route path="/user/homepage" element={
           <ProtectedRoute allowedRanks={["user"]}>
             <HomePage />
           </ProtectedRoute>} />
@@ -117,6 +118,10 @@ export default function App() {
           <ProtectedRoute allowedRanks={["company"]}>
             <CompanySettings />
           </ProtectedRoute>} />
+
+
+
+ */}
 
       </Routes>
     </Router>
