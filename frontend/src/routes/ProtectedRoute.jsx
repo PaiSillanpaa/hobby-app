@@ -1,4 +1,4 @@
-ProtectedRoute = async({ allowedRanks }) => {
+const ProtectedRoute = async({ allowedRanks }) => {
     try {
       const response = await fetch("/api/user/info", {
         method: "GET",
