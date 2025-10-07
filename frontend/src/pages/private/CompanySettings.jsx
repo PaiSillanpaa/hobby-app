@@ -12,19 +12,19 @@ export default function Settings() {
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
-
-    const userId = fetchUserId();
-
     if (newPassword !== confirmPassword) {
       setMessage("Passwords do not match!");
       return;
     }
 
     try {
-      const res = await fetch("/api/change-password", {
-        method: "POST",
+      const res = await fetch("/api/user/change-password", {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, oldPassword, newPassword }),
+        body: JSON.stringify({ 
+          currentPassword: oldPassword,
+          newPassword1: newPassword,
+          newPassword2: confirmPassword}),
       });
 
       if (!res.ok) throw new Error("Password change failed");
@@ -44,12 +44,12 @@ export default function Settings() {
       return;
     }
 
-    const userId = fetchUserId();
+    const userId = await fetchUserId();
+    console.log(userId)
 
     try {
-      const res = await fetch("/api/delete-account", {
+      const res = await fetch(`/api/user/${userId}/delete`, {
         method: "DELETE",
-        body: JSON.stringify({ userId }),
       });
 
       if (!res.ok) throw new Error("Account deletion failed");

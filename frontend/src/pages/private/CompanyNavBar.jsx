@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import "../../components/AdminNavBar.css";
+import { deleteCookie } from "../../utils/UserData";
 
 export default function AdminNavBar () {
   const navigate = useNavigate();
@@ -32,7 +33,9 @@ export default function AdminNavBar () {
           </li>
         </ul>
 
-        <button className="logout-btn" onClick={() => navigate("/")}>
+        <button className="logout-btn" onClick={() => {
+          deleteCookie();
+          navigate("/")}}>
           <img src="/assets/logout.svg" className="admin-nav-icon" alt="Logout" />
           <span className="admin-nav-text">Log Out</span>
         </button>
