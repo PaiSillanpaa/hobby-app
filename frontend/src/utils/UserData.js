@@ -57,3 +57,34 @@ export const fetchUsername = async () => {
     return null;
   }
 };
+
+export const fetchRank = async () => {
+  try {
+    const response = await fetch("/api/user/info", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (!response.ok) throw new Error("Käyttäjän tunnistus epäonnistui");
+
+    const data = await response.json();
+    return data.rank;
+  } catch (err) {
+    console.error("Virhe käyttäjätiedon haussa:", err);
+    //const usernameFromToken = getUsernameFromToken(); // Tämän haun voi poistaa, kun backend on yhdistetty
+    
+    return null;
+  }
+};
+
+
+export const deleteCookie = async () => {
+  try {
+    await fetch(`/api/user/logout`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+  });
+  } catch(error) {
+    console.error("Error when deleting cookie", error)
+  }
+}

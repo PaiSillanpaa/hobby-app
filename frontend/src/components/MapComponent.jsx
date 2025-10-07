@@ -5,49 +5,57 @@ const MapComponent = ({ location, setCoords }) => {
   const [coords, setLocalCoords] = useState(null);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+useEffect(() => {
     if (!location) return;
 
-    const fetchCoords = async () => {
-      setLoading(true);
-      setError(null);
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-      try {
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`
-        );
+const fetchCoords = async () => {
+  setLoading(true);
+  setError(null);
 
-        if (!response.ok) {
-          throw new Error("Virhe haettaessa koordinaatteja");
-        }
-
-        const data = await response.json();
-
-        if (data.length > 0) {
-          const lat = parseFloat(data[0].lat);
-          const lon = parseFloat(data[0].lon);
-          const newCoords = [lat, lon];
-
-          if (
-            !coords ||
-            coords[0] !== newCoords[0] ||
-            coords[1] !== newCoords[1]
-          ) {
-            setLocalCoords(newCoords);
-            setCoords(newCoords);
-          }
-        } else {
-          setError("Ei löytynyt koordinaatteja annetulle sijainnille");
-        }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+  try {
+    await sleep(1000);
+    const response = await fetch(
+      `https://cors-anywhere.herokuapp.com/https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`,
+      {
+        headers: {
+          "User-Agent": "YourAppName/1.0 (your@email.com)", // Muista lisätä User-Agent
+        },
       }
-    };
+    );
+
+    if (!response.ok) {
+      throw new Error("Virhe haettaessa koordinaatteja");
+    }
+
+    const data = await response.json();
+
+    if (data.length > 0) {
+      const lat = parseFloat(data[0].lat);
+      const lon = parseFloat(data[0].lon);
+      const newCoords = [lat, lon];
+
+      if (
+        !coords ||
+        coords[0] !== newCoords[0] ||
+        coords[1] !== newCoords[1]
+      ) {
+        setLocalCoords(newCoords);
+        setCoords(newCoords);
+      }
+    } else {
+      setError("Ei löytynyt koordinaatteja annetulle sijainnille");
+    }
+  } catch (err) {
+    setError("Virhe haettaessa koordinaatteja: " + (err.message || "Tuntematon virhe"));
+  } finally {
+    setLoading(false);
+  }
+};
 
     fetchCoords();
-  }, [location, setCoords]);
+  }, [location]);
 
 
   return (

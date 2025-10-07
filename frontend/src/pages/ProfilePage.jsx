@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../components/NavBar";
 import FavouritesModal from "../components/FavouritesModal";
 import Carousel from "../components/Carousel";
-import { fetchUsername, fetchUserEmail } from "../utils/UserData";
+import { fetchUsername, fetchUserEmail, deleteCookie } from "../utils/UserData";
 //import { getUserIdFromToken, getUsernameFromToken, getEmailFromToken } from "../utils/Token";
 import "./ProfilePage.css";
 
@@ -39,17 +39,6 @@ export default function ProfilePage() {
   }, []);
 
   const closeModal = () => setActiveModal(null);
-
-  const deleteCookie = async () => {
-         try {
-        await fetch(`/api/user/logout`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-        });
-  } catch(error) {
-    console.error("Error when deleting cookie", error)
-  }
-}
 
   return (
     <div className="profilepage-container">

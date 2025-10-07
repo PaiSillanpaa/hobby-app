@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import AdminView from "./AdminView";
 import MobileAdminRedirectModal from "./MobileAdminRedirectModal";
+import { fetchRank, deleteCookie } from "../utils/UserData";
 
 export default function AdminRoute() {
   const [isAdmin, setIsAdmin] = useState(null);
@@ -9,8 +10,17 @@ export default function AdminRoute() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const userRole = localStorage.getItem("rank");
-    setIsAdmin(userRole === "admin");
+    // Hakee käyttäjän roolin ja päivittää isAdminin sen mukaan
+    const fetchUserRole = async () => {
+      const userRole = await fetchRank(); // Oletetaan, että fetchRank palauttaa lupauksen
+      if (userRole === "admin") {
+        setIsAdmin(true);
+      } else {
+        setIsAdmin(false);
+      }
+    };
+
+    fetchUserRole();
 
     const handleResize = () => {
       setIsDesktop(window.innerWidth >= 768);
@@ -24,17 +34,15 @@ export default function AdminRoute() {
     return <div>Loading...</div>;
   }
 
-  if (!isAdmin) {
-    return <Navigate to="/homepage" replace />;
+  if (isAdmin === false) {
+    return <Navigate to="/" replace />;
   }
 
   if (!isDesktop) {
     return (
       <MobileAdminRedirectModal
         onLogout={() => {
-          localStorage.removeItem("token");
-          localStorage.removeItem("username");
-          localStorage.removeItem("rank");
+          deleteCookie();
           navigate("/homepage");
         }}
       />

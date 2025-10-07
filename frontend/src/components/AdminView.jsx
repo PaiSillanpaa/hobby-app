@@ -1,12 +1,12 @@
 import { useState } from "react";
-import MapComponent from "./MapComponent";
+//import MapComponent from "./MapComponent";
 import "./AdminView.css";
 import "./Form.css";
 import AdminNavBar from "./AdminNavBar";
 import TopBar from "./TopBar";
 
 const AdminView = () => {
-  const [coords, setCoords] = useState([60.1300, 24.9240]); 
+  //const [coords, setCoords] = useState([60.1300, 24.9240]); 
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState([]);
   const [age, setAge] = useState([]);
@@ -24,21 +24,18 @@ const AdminView = () => {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append("id", Date.now());
     formData.append("title", title);
     formData.append("category", JSON.stringify(category));
     formData.append("age", JSON.stringify(age));
     formData.append("type", type);
     formData.append("company", company);
     formData.append("url", url);
-    formData.append("location", JSON.stringify([{ city, address, coords }]));
-    formData.append("coords", JSON.stringify(coords));
+    formData.append("location", JSON.stringify({ city, address }));
     formData.append("description", description);
     if(image) formData.append("image", image);
-    formData.append("status", "active");
 
     try {
-      const response = await fetch("/api/save-post", {
+      const response = await fetch("/api/listing/create", {
         method: "POST",
         body: formData,
       });
@@ -56,7 +53,7 @@ const AdminView = () => {
       setAddress("");
       setDescription("");
       setImage(null);
-      setCoords([60.1300, 24.9240]);
+      //setCoords([60.1300, 24.9240]);
     } catch (err) {
       console.error(err);
       alert("Tallenus epäonnistui");
@@ -131,7 +128,7 @@ const AdminView = () => {
             />
             <textarea placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
             <input type="file" onChange={(e) => setImage(e.target.files[0])} />
-            <MapComponent location={`${address}, ${city}`} setCoords={setCoords} />
+            {/*<MapComponent location={address} setCoords={setCoords} />*/}
             <button type="submit" className="submit-btn">Add Post</button>
           </form>
         </div>

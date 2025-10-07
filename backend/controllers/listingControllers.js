@@ -7,6 +7,7 @@ export const createListing = async (request, response) => {
   const { title, description, location, category, age, type, url, company } =
     request.body;
   const image = request.file;
+  console.log("location:;:", location)
   const user = request.user;
 
   if (!user) {
