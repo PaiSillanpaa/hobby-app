@@ -83,8 +83,8 @@ export function useFilteredHobbiesByLocation(userLocation, displayedHobbies) {
     distance: getDistance(
       userLocation.lat,
       userLocation.lon,
-      hobby.location[0].coords[0],
-      hobby.location[0].coords[1]
+      hobby.location.coordinates[0],
+      hobby.location.coordinates[1]
     ),
   }));
 

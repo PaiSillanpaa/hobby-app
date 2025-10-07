@@ -15,7 +15,7 @@ export default function Carousel({
   category = null,
   city = null,
   age = null,
-  type = null
+  type = null,
 }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -33,7 +33,7 @@ export default function Carousel({
         console.log("bäkkärist tulee lempparit:", favoritesData)
         setFavorites(favoritesData.user?.favourites || []);
 
-        const hobbiesResponse = await fetch("/api/listing/tags");
+        const hobbiesResponse = await fetch("/api/listing/active2");
         const hobbiesData = await hobbiesResponse.json();
         console.log("bäkkäristä harrastukset", hobbiesData)
         setHobbies(hobbiesData);
@@ -52,15 +52,15 @@ export default function Carousel({
 
   const handleFavoriteClick = async (e, hobby) => {
     e.stopPropagation();
-    const isAlreadyFavorite = favorites.some(f => f.id === hobby.id);
+    const isAlreadyFavorite = favorites.some(f => f.id === hobby._id);
     let updatedFavorites;
 
     if (isAlreadyFavorite) {
-      updatedFavorites = favorites.filter(f => f.id !== hobby.id);
+      updatedFavorites = favorites.filter(f => f.id !== hobby._id);
       try {
         await fetch(`/api/user/remove-favourite`, { 
           method: "DELETE",
-          body:JSON.stringify({ listingId: hobby.id })
+          body:JSON.stringify({ listingId: hobby._id })
         });
       } catch (err) {
         console.error("Error removing favorite:", err);
@@ -110,7 +110,7 @@ export default function Carousel({
     const scored = hobbies.map((hobby) => {
       let score = 0;
       if (appliedCategory && hobby.category.includes(appliedCategory)) score++;
-      if (city && hobby.location.toLowerCase().includes(city.toLowerCase())) score++;
+      if (city && hobby.location.city.toLowerCase().includes(city.toLowerCase())) score++;
       if (age && hobby.age.includes(age)) score++;
       if (appliedType && hobby.type === appliedType) score++;
       return { ...hobby, score };
@@ -132,18 +132,18 @@ export default function Carousel({
         loop={true}
       >
         {filteredHobbies.map((hobby) => (
-          <SwiperSlide key={hobby.id} style={{ width: "170px" }}>
-            <div className="card" onClick={() => navigate(`/${hobby.title}/${hobby.company}`)}>
+          <SwiperSlide key={hobby._id} style={{ width: "170px" }}>
+            <div className="card" onClick={() => navigate(`/${hobby.listingTitle}/${hobby.company}`)}>
               <div className="carousel-content">
-                <img src={`../assets/${hobby.image}`} alt={hobby.title} className="carousel-image" />
+                <img src={`../assets/${hobby.image}`} alt={hobby.listingTitle} className="carousel-image" />
                 <img
                   src={"../assets/Heart.svg"}
                   alt="favorite"
-                  className={`heart-icon ${favorites.some(f => f.id === hobby.id) ? "filled" : ""}`}
+                  className={`heart-icon ${favorites.some(f => f.id === hobby._id) ? "filled" : ""}`}
                   onClick={(e) => { e.stopPropagation(); handleFavoriteClick(e, hobby); }}
                 />
                 <div className="carousel-footer">
-                  <span className="carousel-title">{hobby.title}</span>
+                  <span className="carousel-title">{hobby.listingTitle}</span>
                   <img src="../assets/Info.png" className="info-image" />
                 </div>
               </div>

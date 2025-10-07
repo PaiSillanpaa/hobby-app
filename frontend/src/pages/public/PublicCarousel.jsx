@@ -1,8 +1,7 @@
-import { useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
-import hobbies from "../../data/hobbies.json";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -18,49 +17,74 @@ export default function Carousel({
   const navigate = useNavigate();
   const location = useLocation();
   const [showPopup, setShowPopup] = useState(false);
+  const [hobbies, setHobbies] = useState([]);
+  const [filteredHobbies, setFilteredHobbies] = useState([]);
+  const [loading, setLoading] = useState(true); // Lataustila
 
-  const handleFavoriteClick = async (e) => {
-    e.stopPropagation();
-      setShowPopup(true);
-      return;
-  }
+  // Haetaan harrastukset backendistä
+  useEffect(() => {
+    const getHobbies = async () => {
+      try {
+        const hobbiesResponse = await fetch("/api/listing/active2");
+        const hobbiesData = await hobbiesResponse.json();
+        setHobbies(hobbiesData); // Tallennetaan ladatut tiedot
+        setLoading(false); // Data ladattu
+      } catch (err) {
+        console.error("Error while fetching hobbies:", err);
+        setLoading(false);
+      }
+    };
 
-  const filteredHobbies = useMemo(() => {
-    let appliedCategory = category;
-    let appliedType = type;
+    getHobbies();
+  }, []);
 
-    if (!category && !type) {
-      if (title === "Wanna be part of a team?") {
-        appliedType = "group";
-      } else if (title === "Creating your own adventure") {
-        appliedType = "solo";
-      } else if (title === "Or something totally else?") {
-        const randomHobbies = hobbies.sort(() => Math.random() - 0.5).slice(0, 5);
-        return randomHobbies;
-      } else if (location.pathname.includes("/homepage")) {
-        if (title === "Recent top searched hobbies") {
-          const randomHobbies = hobbies.sort(() => Math.random() - 0.5).slice(0, 5);
-          return randomHobbies;
-        } else if (title === "New adventure in nature?") {
-          appliedCategory = "nature";
-        } else if (title === "Unleash your creativity") {
-          appliedCategory = "art";
+  // Suodatetaan harrastukset heti, kun `hobbies` muuttuu
+  useEffect(() => {
+    if (!loading) {
+      let appliedCategory = category;
+      let appliedType = type;
+
+      let filtered = [...hobbies]; // Kopioidaan alkuperäiset tiedot
+
+      // Käydään suodattimen logiikka läpi
+      if (!category && !type) {
+        if (title === "Wanna be part of a team?") {
+          appliedType = "group";
+        } else if (title === "Creating your own adventure") {
+          appliedType = "solo";
+        } else if (title === "Or something totally else?") {
+          filtered = filtered.sort(() => Math.random() - 0.5).slice(0, 5);
+        } else if (location.pathname.includes("/homepage")) {
+          if (title === "Recent top searched hobbies") {
+            filtered = filtered.sort(() => Math.random() - 0.5).slice(0, 5);
+          } else if (title === "New adventure in nature?") {
+            appliedCategory = "nature";
+          } else if (title === "Unleash your creativity") {
+            appliedCategory = "art";
+          }
         }
       }
+
+      // Suodatetaan listaa
+      filtered = filtered.filter(hobby => {
+        let match = true;
+        if (appliedCategory && !hobby.category.includes(appliedCategory)) match = false;
+        if (city && !hobby.location.city.toLowerCase().includes(city.toLowerCase())) match = false;
+        if (age && !hobby.age.includes(age)) match = false;
+        if (appliedType && hobby.type !== appliedType) match = false;
+        return match;
+      });
+
+      // Päivitetään suodatetut harrastukset
+      setFilteredHobbies(filtered);
     }
+  }, [category, city, age, type, title, location.pathname, hobbies, loading]); // Kun `hobbies` ja muut muuttuvat
 
-    const scored = hobbies.map((hobby) => {
-      let score = 0;
-      if (appliedCategory && hobby.category.includes(appliedCategory)) score++;
-      if (city && hobby.location.toLowerCase().includes(city.toLowerCase())) score++;
-      if (age && hobby.age.includes(age)) score++;
-      if (appliedType && hobby.type === appliedType) score++;
-      return { ...hobby, score };
-    });
-
-    scored.sort((a, b) => b.score - a.score);
-    return scored.slice(0, 5);
-  }, [category, city, age, type, title, location.pathname]);
+  // Käsitellään suosikiksi lisäämistä
+  const handleFavoriteClick = async (e) => {
+    e.stopPropagation();
+    setShowPopup(true);
+  };
 
   const handleClosePopup = () => {
     setShowPopup(false);
@@ -78,34 +102,38 @@ export default function Carousel({
         </div>
       )}
 
-      <Swiper
-        modules={[Navigation, Pagination]}
-        spaceBetween={40}
-        slidesPerView={3}
-        navigation
-        pagination={{ clickable: true }}
-        loop={true}
-      >
-        {filteredHobbies.map((hobby) => (
-          <SwiperSlide key={hobby.id} style={{ width: "170px" }}>
-            <div className="card" onClick={() => navigate(`/${hobby.title}/${hobby.company}`)}>
-              <div className="carousel-content">
-                <img src={`../assets/${hobby.image}`} alt={hobby.title} className="carousel-image" />
-                <img
-                  src={"../assets/Heart.svg"}
-                  alt="favorite"
-                  className="heart-icon"
-                  onClick={(e) => { e.stopPropagation(); handleFavoriteClick(e); }}
-                />
-                <div className="carousel-footer">
-                  <span className="carousel-title">{hobby.title}</span>
-                  <img src="../assets/Info.png" className="info-image" />
+      {loading ? (
+        <p>Loading hobbies...</p> // Latausviesti ennen kuin data on valmis
+      ) : (
+        <Swiper
+          modules={[Navigation, Pagination]}
+          spaceBetween={40}
+          slidesPerView={3}
+          navigation
+          pagination={{ clickable: true }}
+          loop={true}
+        >
+          {filteredHobbies.map((hobby) => (
+            <SwiperSlide key={hobby._id} style={{ width: "170px" }}>
+              <div className="card" onClick={() => navigate(`/${hobby.listingTitle}/${hobby.company}`)}>
+                <div className="carousel-content">
+                  <img src={`../assets/${hobby.category}.png`} alt={hobby.listingTitle} className="carousel-image" />
+                  <img
+                    src={"../assets/Heart.svg"}
+                    alt="favorite"
+                    className="heart-icon"
+                    onClick={(e) => { e.stopPropagation(); handleFavoriteClick(e); }}
+                  />
+                  <div className="carousel-footer">
+                    <span className="carousel-title">{hobby.listingTitle}</span>
+                    <img src="../assets/Info.png" className="info-image" />
+                  </div>
                 </div>
               </div>
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      )}
     </div>
   );
 }

@@ -2,34 +2,48 @@ import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import hobbies from "../data/hobbies.json";
+//import hobbies from "../data/hobbies.json";
 import NavBar from "../components/NavBar";
-import { useLocation } from "react-router-dom";
+//import { useLocation } from "react-router-dom";
 import Carousel from "../components/Carousel";
 import { useFilteredHobbiesByLocation } from "../utils/FilterHobbies";
 import "./MapPage.css";
 
 const MapPage = () => {
   const [userLocation, setUserLocation] = useState(null);
-  const location = useLocation();
+  const [hobbies, setHobbies] = useState([]);
+  //const location = useLocation();
 
   // Hakee käyttäjän sijainnin
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setUserLocation({
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
-        });
-      },
-      (error) => {
-        console.error("Geolocation error:", error);
-        setUserLocation({
-          lat: 60.1699,  // Helsingin Rautatieaseman leveysaste
-          lon: 24.9384,  // Helsingin Rautatieaseman pituusaste
-        });
+    const fetchData = async () => {
+      try {
+        // Get user location
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setUserLocation({
+              lat: position.coords.latitude,
+              lon: position.coords.longitude,
+            });
+          },
+          (error) => {
+            console.error("Geolocation error:", error);
+            setUserLocation({
+              lat: 60.1699,
+              lon: 24.9384,
+            });
+          }
+        );
+
+        const hobbiesResponse = await fetch("/api/listing/active2");
+        const hobbiesData = await hobbiesResponse.json();
+        setHobbies(hobbiesData);
+      } catch (error) {
+        console.error("Error fetching hobbies data:", error);
       }
-    );
+    };
+
+    fetchData();
   }, []);
 
   const closestHobbies = useFilteredHobbiesByLocation(userLocation, hobbies);
@@ -70,7 +84,7 @@ const MapPage = () => {
           {closestHobbies.map((business, idx) => (
             <Marker
               key={idx}
-              position={business.location[0].coords}
+              position={business.location.coordinates}
               icon={createHobbyIcon(business.title)}
             >
               <Popup>
@@ -81,19 +95,17 @@ const MapPage = () => {
           ))}
         </MapContainer>
       </div>
-
-      {(location.pathname === "/user/map" || location.pathname === "/map") && (
         <div className="info-box">
           <Carousel
-            title="Nearby Hobbies"
-            userLocation={userLocation}
-            displayedHobbies={closestHobbies}
+            title="Creating your own adventure"
           />
         </div>
-      )}
       <NavBar />
     </div>
   );
 };
 
 export default MapPage;
+
+// userLocation={userLocation}
+// displayedHobbies={closestHobbies}
