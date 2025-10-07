@@ -25,6 +25,27 @@ export const createListing = async (request, response) => {
     const parsedCategory = JSON.parse(category);
     const parsedAge = JSON.parse(age);
 
+    let coordinates = [0, 0]; // default
+    if (parsedLocation.address) {
+      const query = encodeURIComponent(parsedLocation.address);
+      const geoResponse = await axios.get(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${query}`,
+        {
+          headers: {
+            "User-Agent": "hobby-app/1.0 (s2401566@edu.bc.fi)", // Required by Nominatim usage policy
+          },
+        }
+      );
+
+      if (geoResponse.data.length > 0) {
+        const firstResult = geoResponse.data[0];
+        coordinates = [
+          parseFloat(firstResult.lon),
+          parseFloat(firstResult.lat),
+        ];
+      }
+    }
+
     const base64Image = image ? image.buffer.toString("base64") : null;
 
     const newListing = new Listing({
@@ -34,7 +55,7 @@ export const createListing = async (request, response) => {
       location: {
         address: parsedLocation.address,
         city: parsedLocation.city,
-        coordinates: parsedLocation.coordinates,
+        coordinates: coordinates,
       },
       category: parsedCategory,
       age: parsedAge,
