@@ -403,7 +403,7 @@ export const removeFavourite = async (request, response) => {
 
   try {
     const listing = await Favourites.findOne({
-      listingId: listingId,
+      _id: listingId,
       userId: user.userId,
     });
 
