@@ -45,7 +45,7 @@ export default function ProfilePage() {
       <div className="everything-wrapper">
         <div className="another-w">
           <div className="image-wrapper-pp">
-            <img src="../assets/guitar.png" alt="instruments" className="bgpicture" />
+            <img src="/assets/culture.png" alt="instruments" className="bgpicture" />
           </div>
           <h1 className="name">{username || "Name"}</h1>
           <h2 className="email">{email || "xxx@xx.com"}</h2>

@@ -19,7 +19,10 @@ export default function HobbyPage() {
     const getHobbies = async () => {
       try {
         const hobbiesResponse = await fetch("/api/listing/active2");
-        const hobbiesData = await hobbiesResponse.json();
+        if (!hobbiesResponse.ok) {
+          throw new Error(`API-vastausvirhe: ${hobbiesResponse.status}`);
+        }
+        const hobbiesData = await hobbiesResponse.json();        
         setHobbies(hobbiesData);
       } catch (err) {
         console.error("Error while fetching hobbies:", err);
@@ -30,26 +33,24 @@ export default function HobbyPage() {
   }, []);
 
   useEffect(() => {
-    const getHobby = async () => {
-      try {
-        const hobbyMatch = hobbies.find(h => h.listingTitle == title && h.company == company);
-        setHobby(hobbyMatch)
-      } catch (err) {
-        console.error("Error while fetching hobbies:", err);
-      }
+    const getHobby = () => {
+      if (hobbies.length === 0) return;
+      const hobbyMatch = hobbies.find(h => h.listingTitle === title && h.company === company);
+      setHobby(hobbyMatch);
     };
 
     getHobby();
   }, [hobbies, company, title]);
 
-
-  console.log("harrastus", hobbies)
+  if (!hobby) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="hobbypage-container">
       <div className="box-container">
         <div className="image-wrapper">
-            <img src={`../assets/${hobby.category[0]}.png`} alt="big-image" className="big-image" />
+            <img src={`/assets/${hobby.category[0]}.png`} alt="big-image" className="big-image" />
         </div>
             <h1 className="sport">{hobby.listingTitle.toUpperCase()}</h1>
             <h2 className="organization-name">{hobby.company}</h2>

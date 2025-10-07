@@ -77,7 +77,6 @@ const handleFavoriteClick = async (e, hobby) => {
       console.error("Error removing favorite:", err);
     }
   } else {
-    // 🔧 Tallennetaan yhtenäinen rakenne, jossa on listingId
     const newFav = { listingId: hobby._id };
     updatedfavourites = {
       ...favourites,
@@ -95,7 +94,6 @@ const handleFavoriteClick = async (e, hobby) => {
     }
   }
   
-  // 🔥 Tämä aiheuttaa välittömän re-renderin
   setfavourites(updatedfavourites);
 };
 
@@ -133,7 +131,7 @@ const handleFavoriteClick = async (e, hobby) => {
         return match;
       });
 
-      setFilteredHobbies(filtered);
+      setFilteredHobbies(filtered.slice(0, 5));
     }
   }, [category, city, age, type, title, location.pathname, hobbies, loading]);
 
@@ -150,18 +148,18 @@ const handleFavoriteClick = async (e, hobby) => {
       >
         {filteredHobbies.map((hobby) => (
           <SwiperSlide key={hobby._id} style={{ width: "170px" }}>
-            <div className="card" onClick={() => navigate(`/${hobby.listingTitle}/${hobby.company}`)}>
+            <div className="card" onClick={() => navigate(`/user/${hobby.listingTitle}/${hobby.company}`)}>
               <div className="carousel-content">
-                <img src={`../assets/${hobby.category[0]}.png`} alt={hobby.listingTitle} className="carousel-image" />
+                <img src={`/assets/${hobby.category[0]}.png`} alt={hobby.listingTitle} className="carousel-image" />
                 <img
-                  src={"../assets/Heart.svg"}
+                  src={"/assets/Heart.svg"}
                   alt="favorite"
                   className={`heart-icon ${favourites.favourites.some(f => f.listingId === hobby._id) ? "filled" : ""}`}
                   onClick={(e) => { e.stopPropagation(); handleFavoriteClick(e, hobby); }}
                 />
                 <div className="carousel-footer">
                   <span className="carousel-title">{hobby.listingTitle}</span>
-                  <img src="../assets/Info.png" className="info-image" />
+                  <img src="/assets/Info.png" className="info-image" />
                 </div>
               </div>
             </div>

@@ -4,20 +4,25 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 //import hobbies from "../data/hobbies.json";
 import NavBar from "../components/NavBar";
-//import { useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Carousel from "../components/Carousel";
 import { useFilteredHobbiesByLocation } from "../utils/FilterHobbies";
+import { fetchUserId } from "../utils/UserData";
 import "./MapPage.css";
 
 const MapPage = () => {
   const [userLocation, setUserLocation] = useState(null);
   const [hobbies, setHobbies] = useState([]);
+  const [userId, setUserId] = useState(null);
   //const location = useLocation();
 
   // Hakee käyttäjän sijainnin
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const id = await fetchUserId();
+        setUserId(id);
+        
         // Get user location
         navigator.geolocation.getCurrentPosition(
           (position) => {
@@ -81,18 +86,28 @@ const MapPage = () => {
             <Popup>You are here</Popup>
           </Marker>
 
-          {closestHobbies.map((business, idx) => (
-            <Marker
-              key={idx}
-              position={business.location.coordinates}
-              icon={createHobbyIcon(business.title)}
-            >
-              <Popup>
-                <h4>{business.title}</h4>
-                <p>{business.description}</p>
-              </Popup>
-            </Marker>
-          ))}
+          {closestHobbies.map((business, idx) => {
+            const title = encodeURIComponent(business.listingTitle);
+            const company = encodeURIComponent(business.company);
+            const path = userId != null
+              ? `/user/${title}/${company}`
+              : `/${title}/${company}`;
+
+            return (
+              <Marker
+                key={idx}
+                position={business.location.coordinates}
+                icon={createHobbyIcon(business.listingTitle)}
+              >
+                <Popup>
+                  <h4>{business.listingTitle}</h4>
+                  <p>{business.listingDescription}</p>
+                  <Link to={path}>Go to hobby info page
+                  </Link>
+                </Popup>
+              </Marker>
+            );
+          })}
         </MapContainer>
       </div>
         <div className="info-box">

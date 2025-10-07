@@ -1,87 +1,107 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchUserId } from "../utils/UserData";
-import { getUserIdFromToken } from "../utils/Token";
+//import { getUserIdFromToken } from "../utils/Token";
 import "./FavouritesModal.css";
 
 export default function FavouritesModal({ onClose }) {
-  const [favourites, setFavourites] = useState([]);
+  const [favourites, setFavourites] = useState({ favourites: [] });
   const [loading, setLoading] = useState(true);
-  const [userId, setUserId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const getUserFavorites = async () => {
+    const getUserfavourites = async () => {
       try {
-        const id = await fetchUserId();
-        setUserId(id);
-
-        const res = await fetch(`/api/get-favorites/${id}`);
+        const res = await fetch(`/api/listing/favourites`);
         if (!res.ok) throw new Error("Failed to fetch favourites");
-
         const data = await res.json();
         setFavourites(data);
       } catch (err) {
         console.error("Error fetching favourites:", err);
 
         // DEV fallback
-        const id = getUserIdFromToken();
-        setUserId(id);
-        const savedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
-        setFavourites(savedFavorites);
+        //const id = getUserIdFromToken();
+        //setUserId(id);
+        //const savedfavourites = JSON.parse(localStorage.getItem("favourites")) || [];
+       // setFavourites(savedfavourites);
       } finally {
         setLoading(false);
       }
     };
 
-    getUserFavorites();
+    getUserfavourites();
   }, []);
 
-  const handleFavoriteClick = async (e, hobby) => {
-    e.stopPropagation();
+const handleFavoriteClick = async (e, hobby) => {
+  e.stopPropagation();
+  
+  const isAlreadyFavorite = favourites.favourites.some(
+    f => (f.listingId || f._id) === hobby._id
+  );
+  
+  let updatedfavourites;
 
-    const isAlreadyFavorite = favourites.some(f => f.id === hobby.id);
+  if (isAlreadyFavorite) {
+    try {
+      await fetch(`/api/user/remove-favourite`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ listingId: hobby._id })
+      });
+      updatedfavourites = {
+        ...favourites,
+        favourites: favourites.favourites.filter(
+          f => (f.listingId || f._id) !== hobby._id
+        )
+      };
+    } catch (err) {
+      console.error("Error removing favorite:", err);
+    }
+  } else {
+    const newFav = { listingId: hobby._id };
+    updatedfavourites = {
+      ...favourites,
+      favourites: [...favourites.favourites, newFav]
+    };
 
     try {
-      if (isAlreadyFavorite) {
-        await fetch(`/api/remove-favorite/${userId}/${hobby.id}`, { method: "DELETE" });
-      } else {
-        await fetch(`/api/add-favorite/${userId}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ hobbyId: hobby.id }),
-        });
-      }
+      await fetch(`/api/listing/favourite`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ listingId: hobby._id })
+      });
     } catch (err) {
-      console.error("Error toggling favorite:", err);
+      console.error("Error adding favorite:", err);
     }
-  };
-
+  }
+  
+  setFavourites(updatedfavourites);
+};
+console.log(favourites.favourites)
   return (
     <div className="favourites-modal">
       <h2>Your Favourites</h2>
 
       {loading ? (
         <p>Loading...</p>
-      ) : favourites.length === 0 ? (
+      ) : favourites.favourites.length === 0 ? (
         <p>No favourites yet.</p>
       ) : (
         <div className="favourites-list">
-          {favourites.map((item) => (
+          {favourites.favourites.map((item) => (
             <div
-              key={item.id}
+              key={item._id}
               className="favourites-row"
-              onClick={() => navigate(`/user/${item.title}/${item.company}`)}
+              onClick={() => navigate(`/user/${item.listingTitle}/${item.company}`)}
             >
               <div className="favourites-info">
                 <p className="favourites-title">
-                  {item.title} - {item.company} - {item.location[0]?.city}
+                  {item.listingTitle} - {item.company}
                 </p>
               </div>
               <img
                 src={"../assets/Heart.svg"}
                 alt="favorite"
-                className={`favourites-heart ${favourites.some(f => f.id === item.id) ? "favourites-heart-filled" : ""}`}
+                className={`favourites-heart ${favourites.favourites.some(f => f.listingId === item._id) ? "favourites-heart-filled" : ""}`}
                 onClick={(e) => handleFavoriteClick(e, item)}
               />
             </div>

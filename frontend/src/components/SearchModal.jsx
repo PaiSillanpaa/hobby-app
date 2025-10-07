@@ -1,9 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./SearchModal.css";
+import { fetchUserId } from "../utils/UserData";
 
 const SearchModal = ({ searchOpen, setSearchOpen }) => {
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(null);
+
+  useEffect(() => {
+  const checkUserStatus = async () => {
+    const userId = await fetchUserId();
+    setIsLoggedIn(userId);
+  };
+
+  checkUserStatus();
+  }, []);
+
 
   const areaFilters = ["Helsinki", "Espoo", "Vantaa", "Kauniainen", "Lohja"];
   const groupFilters = ["kids", "young", "adults", "seniors", "family activity"];
@@ -36,8 +48,7 @@ const SearchModal = ({ searchOpen, setSearchOpen }) => {
 
     setSearchOpen(false);
 
-    const isLoggedIn = !!localStorage.getItem("token"); 
-    const basePath = isLoggedIn ? "/user/categories" : "/categories";
+    const basePath = isLoggedIn != null ? "/user/categories" : "/categories";
 
     const queryString = queryParams.toString();
     const fullPath = queryString ? `${basePath}?${queryString}` : basePath;

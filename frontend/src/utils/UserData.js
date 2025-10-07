@@ -1,4 +1,4 @@
-import { getEmailFromToken, getUsernameFromToken } from "./Token";
+//import { getEmailFromToken, getUsernameFromToken } from "./Token";
 
 export const fetchUserId = async () => {
   try {
@@ -29,12 +29,12 @@ export const fetchUserEmail = async () => {
     if (!response.ok) throw new Error("Käyttäjän tunnistus epäonnistui");
 
     const data = await response.json();
-    return data.user.email;
+    return data.email;
   } catch (err) {
     console.error("Virhe käyttäjätiedon haussa:", err);
-    const userEmailFromToken = getEmailFromToken(); // Tämän haun voi poistaa, kun backend on yhdistetty
+    //const userEmailFromToken = getEmailFromToken(); // Tämän haun voi poistaa, kun backend on yhdistetty
     
-    return userEmailFromToken || null;
+    return  null;
   }
 };
 
@@ -48,11 +48,12 @@ export const fetchUsername = async () => {
     if (!response.ok) throw new Error("Käyttäjän tunnistus epäonnistui");
 
     const data = await response.json();
-    return data.user.username;
+    console.log("userdata",data)
+    return data.username;
   } catch (err) {
     console.error("Virhe käyttäjätiedon haussa:", err);
-    const usernameFromToken = getUsernameFromToken(); // Tämän haun voi poistaa, kun backend on yhdistetty
+    //const usernameFromToken = getUsernameFromToken(); // Tämän haun voi poistaa, kun backend on yhdistetty
     
-    return usernameFromToken || null;
+    return null;
   }
 };

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "../components/NavBar";
 import Carousel from "../components/Carousel";
-import hobbiesFallback from "../data/hobbies.json";
+//import hobbiesFallback from "../data/hobbies.json";
 import { filterHobbies, createFilterTitle } from "../utils/FilterHobbies";
 import "./CategoryPage.css";
 
@@ -20,19 +20,19 @@ export default function CategoryPage() {
   useEffect(() => {
     const fetchHobbies = async () => {
       try {
-        const res = await fetch("/api/listing/tags");
+        const res = await fetch("/api/listing/active2");
         if (!res.ok) throw new Error("API failed");
         const data = await res.json();
         setHobbies(data);
       } catch (err) {
         console.error(err);
-        setHobbies(hobbiesFallback);
+        //setHobbies(hobbiesFallback);
       } finally {
         setLoading(false);
       }
     };
     fetchHobbies();
-  }, []);
+  }, [locationSearch]);
 
   if (loading) return <p>Loading...</p>;
 
@@ -52,7 +52,7 @@ export default function CategoryPage() {
         {carousels.length > 0 && carousels[0].items.length > 0 && (
           <div className="box-container">
             <div className="image-wrapper">
-              <img src={`../assets/${carousels[0].items[0].image}`} alt="main" className="big-image" />
+              <img src={`../assets/${carousels[0].items[0].category[0]}.png`} alt="main" className="big-image" />
             </div>
             <h1 className="sport">{carousels[0].title}</h1>
           </div>
@@ -72,7 +72,7 @@ export default function CategoryPage() {
         {mainHobby && (
           <div className="box-container">
             <div className="image-wrapper">
-              <img src={`../assets/${mainHobby.image}`} alt="main" className="big-image" />
+              <img src={`../assets/${mainHobby.category[0]}.png`} alt="main" className="big-image" />
             </div>
             <h1 className="sport">{mainHobby.category[0].toUpperCase()}</h1>
           </div>
@@ -92,7 +92,7 @@ export default function CategoryPage() {
         {mainHobby && (
           <div className="box-container">
             <div className="image-wrapper">
-              <img src={`../assets/${mainHobby.image}`} alt="main" className="big-image" />
+              <img src={`../assets/${mainHobby.category[0]}.png`} alt="main" className="big-image" />
             </div>
             <h1 className="sport">{mainHobby.category[0].toUpperCase()}</h1>
           </div>
