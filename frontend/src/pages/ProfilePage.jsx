@@ -3,14 +3,14 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../components/NavBar";
 import FavouritesModal from "../components/FavouritesModal";
 import Carousel from "../components/Carousel";
-import { fetchUserId, fetchUsername, fetchUserEmail } from "../utils/UserData";
-import { getUserIdFromToken, getUsernameFromToken, getEmailFromToken } from "../utils/Token";
+import { fetchUsername, fetchUserEmail } from "../utils/UserData";
+//import { getUserIdFromToken, getUsernameFromToken, getEmailFromToken } from "../utils/Token";
 import "./ProfilePage.css";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
 
-  const [userId, setUserId] = useState(null);
+  ////const [userId, setUserId] = useState(null);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [activeModal, setActiveModal] = useState(null);
@@ -18,20 +18,20 @@ export default function ProfilePage() {
   useEffect(() => {
     async function loadUserData() {
       try {
-        const id = await fetchUserId();
+        //const id = await fetchUserId();
         const name = await fetchUsername();
         const mail = await fetchUserEmail();
-        setUserId(id);
+        //setUserId(id);
         setUsername(name);
         setEmail(mail);
       } catch (err) {
         console.error("Virhe backend-haussa, haetaan tokenista:", err);
-        const tokenId = getUserIdFromToken();
-        const tokenName = getUsernameFromToken();
-        const tokenEmail = getEmailFromToken();
-        if (tokenId) setUserId(tokenId);
-        if (tokenName) setUsername(tokenName);
-        if (tokenEmail) setEmail(tokenEmail);
+        // const tokenId = getUserIdFromToken();
+        // const tokenName = getUsernameFromToken();
+        // const tokenEmail = getEmailFromToken();
+        // if (tokenId) setUserId(tokenId);
+        // if (tokenName) setUsername(tokenName);
+        // if (tokenEmail) setEmail(tokenEmail);
       }
     }
 
@@ -39,6 +39,17 @@ export default function ProfilePage() {
   }, []);
 
   const closeModal = () => setActiveModal(null);
+
+  const deleteCookie = async () => {
+         try {
+        await fetch(`/api/user/logout`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        });
+  } catch(error) {
+    console.error("Error when deleting cookie", error)
+  }
+}
 
   return (
     <div className="profilepage-container">
@@ -73,7 +84,7 @@ export default function ProfilePage() {
               <button
                 className="logout-button"
                 onClick={() => {
-                  localStorage.clear();
+                  deleteCookie();
                   navigate("/");
                 }}
               >
@@ -97,7 +108,7 @@ export default function ProfilePage() {
       {activeModal === "changePassword" && (
         <Modal onClose={closeModal}>
           <h2>Change Password</h2>
-          <ChangePasswordForm userId={userId} onClose={closeModal} />
+          <ChangePasswordForm onClose={closeModal} />
         </Modal>
       )}
     </div>
@@ -114,7 +125,7 @@ function Modal({ children, onClose }) {
   );
 }
 
-function ChangePasswordForm({ userId, onClose }) {
+function ChangePasswordForm({ onClose }) {
   const [oldPass, setOldPass] = useState("");
   const [newPass1, setNewPass1] = useState("");
   const [newPass2, setNewPass2] = useState("");
@@ -126,13 +137,10 @@ const handleSubmit = async (e) => {
       return;
     }
     try {
-      const res = await fetch(`/api/user/${userId}/change-password`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({ oldPassword: oldPass, newPassword: newPass1 }),
+      const res = await fetch(`/api/user/change-password`, {
+        method: "PATCH",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ currentPassword: oldPass, newPassword1: newPass1, newPassword2: newPass2 }),
       });
 
       if (!res.ok) throw new Error("Salasanan vaihto epäonnistui");
@@ -179,4 +187,4 @@ const handleSubmit = async (e) => {
       <button type="submit">Change Password</button>
     </form>
   );
-}
+} 
