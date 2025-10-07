@@ -139,6 +139,7 @@ const handleFavoriteClick = async (e, hobby) => {
     <div className="carousel-wrapper">
       {title && <h3 className="carousel-title-header">{title}</h3>}
       <Swiper
+        key={filteredHobbies.length} 
         modules={[Navigation, Pagination]}
         spaceBetween={40}
         slidesPerView={3}

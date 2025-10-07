@@ -31,30 +31,25 @@ export default function FavouritesModal({ onClose }) {
     getUserfavourites();
   }, []);
 
-  const handleFavoriteClick = async (e, hobby) => {
+  const handlefavouriteClick = async (e, hobby) => {
     e.stopPropagation();
 
-    let updatedfavourites;
+    try {
+      // Poistetaan suosikki
+      await fetch(`/api/listing/remove-favourite`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ listingId: hobby._id }),
+      });
 
-      try {
-        await fetch(`/api/listing/remove-favourite`, {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ listingId: hobby._id }),
-        });
-
-        // Poistetaan suosikki tilasta
-        updatedfavourites = {
-          ...favourites,
-          favourites: favourites.favourites.filter(
-            (f) => (f.listingId || f._id) !== hobby._id
-          ),
-        };
-        setFavourites(updatedfavourites);
-      } catch (err) {
-        console.error("Error removing favorite:", err);
-      }
-    } 
+      const res = await fetch(`/api/listing/favourites`);
+      if (!res.ok) throw new Error("Failed to fetch favourites");
+      const data = await res.json();
+      setFavourites(data); // Päivitetään suosikit heti poiston jälkeen
+    } catch (err) {
+      console.error("Error removing favourite:", err);
+    }
+  };
 
   return (
     <div className="favourites-modal">
@@ -79,9 +74,9 @@ export default function FavouritesModal({ onClose }) {
               </div>
               <img
                 src={"/assets/Heart.svg"}
-                alt="favorite"
+                alt="favourite"
                 className={`favourites-heart ${favourites.favourites.some(f => f.listingId === item.listingId) ? "favourites-heart-filled" : ""}`}
-                onClick={(e) => handleFavoriteClick(e, item)}
+                onClick={(e) => handlefavouriteClick(e, item)}
               />
             </div>
           ))}

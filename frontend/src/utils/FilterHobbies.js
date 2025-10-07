@@ -79,16 +79,19 @@ const getDistance = (lat1, lon1, lat2, lon2) => {
 export function useFilteredHobbiesByLocation(userLocation, displayedHobbies) {
   if (!userLocation || !displayedHobbies || displayedHobbies.length === 0) return [];
 
-  const filteredHobbies = displayedHobbies.map((hobby) => ({
-    ...hobby,
-    distance: getDistance(
-      userLocation.lat,
-      userLocation.lon,
-      hobby.location.coordinates[0],
-      hobby.location.coordinates[1]
-    ),
-  }));
+  // Suodatetaan pois ne, joilla ei ole koordinaatteja
+  const filteredHobbies = displayedHobbies
+    .filter((hobby) => hobby.location && hobby.location.coordinates && hobby.location.coordinates.length === 2)
+    .map((hobby) => ({
+      ...hobby,
+      distance: getDistance(
+        userLocation.lat,
+        userLocation.lon,
+        hobby.location.coordinates[0],
+        hobby.location.coordinates[1]
+      ),
+    }));
 
   filteredHobbies.sort((a, b) => a.distance - b.distance);
-  return filteredHobbies.slice(0, 5);
+  return filteredHobbies; 
 }
