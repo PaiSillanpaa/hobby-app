@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 //import { getUserIdFromToken } from "../utils/Token";
 import "./FavouritesModal.css";
+const baseurl = "https://hobbly-app.onrender.com";
 
 export default function FavouritesModal({ onClose }) {
   const [favourites, setFavourites] = useState({ favourites: [] });
@@ -11,7 +12,7 @@ export default function FavouritesModal({ onClose }) {
   useEffect(() => {
     const getUserfavourites = async () => {
       try {
-        const res = await fetch(`/api/listing/favourites`);
+        const res = await fetch(`${baseurl}/api/listing/favourites`);
         if (!res.ok) throw new Error("Failed to fetch favourites");
         const data = await res.json();
         setFavourites(data);
@@ -36,13 +37,13 @@ export default function FavouritesModal({ onClose }) {
 
     try {
       // Poistetaan suosikki
-      await fetch(`/api/listing/remove-favourite`, {
+      await fetch(`${baseurl}/api/listing/remove-favourite`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ listingId: hobby._id }),
       });
 
-      const res = await fetch(`/api/listing/favourites`);
+      const res = await fetch(`${baseurl}/api/listing/favourites`);
       if (!res.ok) throw new Error("Failed to fetch favourites");
       const data = await res.json();
       setFavourites(data); // Päivitetään suosikit heti poiston jälkeen

@@ -4,6 +4,7 @@ import "./AdminView.css";
 import "./Form.css";
 import AdminNavBar from "./AdminNavBar";
 import TopBar from "./TopBar";
+const baseurl = "https://hobbly-app.onrender.com";
 
 const AdminView = () => {
   //const [coords, setCoords] = useState([60.1300, 24.9240]); 
@@ -35,7 +36,7 @@ const AdminView = () => {
     if(image) formData.append("image", image);
 
     try {
-      const response = await fetch("/api/listing/create", {
+      const response = await fetch(`${baseurl}/api/listing/create`, {
         method: "POST",
         body: formData,
       });

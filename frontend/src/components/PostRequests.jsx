@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import "./AllPosts.css";
 import TopBar from "./TopBar";
 import AdminNavBar from "./AdminNavBar";
+const baseurl = "https://hobbly-app.onrender.com";
 
 export default function PostRequests() {
   const [posts, setPosts] = useState([]);
@@ -11,7 +12,7 @@ export default function PostRequests() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await fetch("/api/listing/all"); // backend endpoint
+        const res = await fetch(`${baseurl}/api/listing/all`); // backend endpoint
         if (!res.ok) throw new Error("API error");
         const data = await res.json();
         setPosts(data.listings.filter(p => p.status === "inactive"));
@@ -58,7 +59,7 @@ export default function PostRequests() {
 
     try {
       const id = editData._id
-      const res = await fetch(`/api/listing/${id}/update`, {
+      const res = await fetch(`${baseurl}/api/listing/${id}/update`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -86,13 +87,13 @@ export default function PostRequests() {
       let res;
 
       if (newStatus === "active") {
-        res = await fetch(`/api/listing/status/active`, {
+        res = await fetch(`${baseurl}/api/listing/status/active`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ listingId: updatedPost._id }),
         });
       } else if (newStatus === "deleted") {
-        res = await fetch(`/api/listing/status/deleted`, {
+        res = await fetch(`${baseurl}/api/listing/status/deleted`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ listingId: updatedPost._id }),

@@ -5,7 +5,7 @@ import Carousel from "../components/Carousel";
 import "./HobbyPage.css";
 import star from "../assets/star.png";
 import { useEffect, useState } from "react";
-const baseurl = "https://hobbly-app.onrender.com/";
+const baseurl = "https://hobbly-app.onrender.com";
 
 
 export default function HobbyPage() {

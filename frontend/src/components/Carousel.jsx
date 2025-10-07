@@ -9,7 +9,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "./Carousel.css";
-const baseurl = "https://hobbly-app.onrender.com/";
+const baseurl = "https://hobbly-app.onrender.com";
 
 export default function Carousel({
   title = "",

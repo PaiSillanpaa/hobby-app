@@ -5,7 +5,7 @@ import Carousel from "../components/Carousel";
 //import hobbiesFallback from "../data/hobbies.json";
 import { filterHobbies, createFilterTitle } from "../utils/FilterHobbies";
 import "./CategoryPage.css";
-const baseurl = "https://hobbly-app.onrender.com/";
+const baseurl = "https://hobbly-app.onrender.com";
 
 export default function CategoryPage() {
   const locationSearch = useLocation().search;

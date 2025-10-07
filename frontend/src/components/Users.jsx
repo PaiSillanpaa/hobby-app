@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import "./AllPosts.css";
 import TopBar from "./TopBar";
 import AdminNavBar from "./AdminNavBar";
-const baseurl = "https://hobbly-app.onrender.com/";
+const baseurl = "https://hobbly-app.onrender.com";
 export default function Users () {
   const [users, setUsers] = useState([]);
   const [editingId, setEditingId] = useState(null);
