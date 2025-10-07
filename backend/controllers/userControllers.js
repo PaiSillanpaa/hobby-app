@@ -93,8 +93,8 @@ export const loginUser = async (request, response) => {
 
     response.cookie("token", accessToken, {
       httpOnly: true, // Prevent access from JS
-      sameSite: "strict", // Prevent CSRF
-      secure: false, // false = http, true = https
+      sameSite: "none", // Prevent CSRF
+      secure: true, // false = http, true = https
       maxAge: 1000 * 60 * 60 * 1, // 1 hour
     });
 
@@ -208,7 +208,7 @@ export const getUserInfo = async (request, response) => {
 
 export const updateUser = async (request, response) => {
   const { newUsername, newEmail, newRank } = request.body;
-  console.log(newUsername, newEmail, newRank)
+  console.log(newUsername, newEmail, newRank);
   const id = request.params.id;
   const user = request.user;
 
@@ -310,8 +310,8 @@ export const logoutUser = async (request, response) => {
 
     response.cookie("token", "", {
       httpOnly: true, // unaccessable for js
-      secure: false, // false = http, true = https
-      sameSite: "strict",
+      secure: true, // false = http, true = https
+      sameSite: "none",
       expires: new Date(0), // expires now
     });
 
