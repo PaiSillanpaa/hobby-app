@@ -125,7 +125,7 @@ const Trash = () => {
                 {editingId === post._id ? (
                   <div className="edit-form">
                     <input
-                      name="title"
+                      name="listingTitle"
                       value={editData.listingTitle}
                       onChange={handleChange}
                     />
@@ -148,7 +148,7 @@ const Trash = () => {
                       placeholder="Address"
                     />
                     <textarea
-                      name="description"
+                      name="listingDescription"
                       value={editData.listingDescription}
                       onChange={handleChange}
                     />
