@@ -11,24 +11,20 @@ export default function PostRequests() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await fetch("/api/get-posts"); // backend endpoint
+        const res = await fetch("/api/listing/all"); // backend endpoint
         if (!res.ok) throw new Error("API error");
         const data = await res.json();
-        // Filtteröidään pending-statuksen mukaan
-        setPosts(data.filter(p => p.status === "pending"));
+        setPosts(data.listings.filter(p => p.status === "inactive"));
       } catch (err) {
         console.error(err);
-        // fallback JSON
-        const fallbackData = await import("../data/hobbies.json");
-        setPosts(fallbackData.default.filter(p => p.status === "pending"));
       }
     };
     fetchPosts();
   }, []);
 
   const handleEditClick = (post) => {
-    setEditingId(post.id);
-    setEditData(post);
+    setEditingId(post._id);
+    setEditData(post); // Asetetaan postin tiedot muokattavaksi
   };
 
   const handleChange = (e) => {
@@ -36,8 +32,8 @@ export default function PostRequests() {
 
     if (name.startsWith("location.")) {
       const [, key] = name.split(".");
-      const updatedLocation = [...editData.location];
-      updatedLocation[0] = { ...updatedLocation[0], [key]: value };
+      // Muutetaan location objekti ja päivitetään sen avaimet
+      const updatedLocation = { ...editData.location, [key]: value };
 
       setEditData({ ...editData, location: updatedLocation });
     } else {
@@ -46,55 +42,36 @@ export default function PostRequests() {
   };
 
   const handleUpdate = async () => {
-    const city = editData.location?.[0]?.city;
-    const address = editData.location?.[0]?.address;
+    const { city, address } = editData.location || {};
 
     if (!city || !address) {
       alert("Anna sekä kaupunki että osoite");
       return;
     }
 
-    const fullAddress = `${address}, ${city}`;
+    const updatedData = {
+      ...editData,
+      listingDescription: editData.listingDescription || "",
+      listingTitle: editData.listingTitle || "",
+      location: { city, address }, // Tämä on nyt objekti
+    };
 
     try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}`
-      );
-
-      if (!response.ok) throw new Error("Koordinaattien haku epäonnistui");
-
-      const data = await response.json();
-
-      if (data.length === 0) {
-        alert("Koordinaatteja ei löytynyt annetulle osoitteelle");
-        return;
-      }
-
-      const lat = parseFloat(data[0].lat);
-      const lon = parseFloat(data[0].lon);
-
-      const updatedLocation = [...(editData.location || [{}])];
-      updatedLocation[0] = {
-        ...updatedLocation[0],
-        coords: [lat, lon],
-      };
-
-      const updatedEditData = {
-        ...editData,
-        location: updatedLocation,
-      };
-
-      // Lähetetään backendille päivitetty data
-      const res = await fetch(`/api/update-post/${editData.id}`, {
+      const id = editData._id
+      const res = await fetch(`/api/listing/${id}/update`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedEditData),
+        body: JSON.stringify({
+          title: updatedData.listingTitle, 
+          description: updatedData.listingDescription,
+          city: updatedData.location.city,
+          address: updatedData.location.address}),
       });
 
       if (!res.ok) throw new Error("Päivitys epäonnistui");
 
-      setPosts(posts.map(p => (p.id === editData.id ? updatedEditData : p)));
-      setEditingId(null);
+      setPosts(posts.map(p => (p._id === editData._id ? updatedData : p)));
+      setEditingId(null); // Suljetaan muokkausnäkymä
     } catch (err) {
       console.error(err);
       alert(err.message || "Päivitys epäonnistui");
@@ -102,19 +79,29 @@ export default function PostRequests() {
   };
 
   const updateStatus = async (postId, newStatus) => {
-    const updatedPost = posts.find(p => p.id === postId);
+    const updatedPost = posts.find(p => p._id === postId);
     updatedPost.status = newStatus;
 
     try {
-      const res = await fetch(`/api/update-post/${postId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedPost),
-      });
+      let res;
+
+      if (newStatus === "active") {
+        res = await fetch(`/api/listing/status/active`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ listingId: updatedPost._id }),
+        });
+      } else if (newStatus === "deleted") {
+        res = await fetch(`/api/listing/status/deleted`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ listingId: updatedPost._id }),
+        });
+      }
+
       if (!res.ok) throw new Error("Status update failed");
 
-      // Poistetaan listasta koska se ei enää ole pending
-      setPosts(posts.filter(p => p.id !== postId));
+      setPosts(posts.filter(p => p._id !== postId)); // Poistetaan post statusin mukaan
     } catch (err) {
       console.error(err);
       alert("Status update failed");
@@ -126,59 +113,52 @@ export default function PostRequests() {
       <TopBar />
       <div className="main-area">
         <AdminNavBar />
-
-        {/* Content */}
         <div className="content">
           <h1>Post Requests</h1>
           <div className="all-posts">
-            {posts.map(post => (
-              <div key={post.id} className="post-card">
-                {editingId === post.id ? (
+            {posts.map((post) => (
+              <div key={post._id} className="post-card">
+                {editingId === post._id ? (
                   <div className="edit-form">
                     <input
-                      name="title"
-                      value={editData.title}
+                      name="listingTitle"
+                      value={editData.listingTitle || ""}
                       onChange={handleChange}
                     />
                     <input
                       name="company"
-                      value={editData.company}
+                      value={editData.company || ""}
                       onChange={handleChange}
                     />
                     <input
                       name="location.city"
-                      value={editData.location?.[0]?.city || ""}
+                      value={editData.location?.city || ""}
                       onChange={handleChange}
                       placeholder="City"
                     />
-
                     <input
                       name="location.address"
-                      value={editData.location?.[0]?.address || ""}
+                      value={editData.location?.address || ""}
                       onChange={handleChange}
                       placeholder="Address"
                     />
                     <textarea
-                      name="description"
-                      value={editData.description}
+                      name="listingDescription"
+                      value={editData.listingDescription || ""}
                       onChange={handleChange}
                     />
                     <button onClick={handleUpdate}>Update</button>
                     <button onClick={() => setEditingId(null)}>Cancel</button>
                   </div>
                 ) : (
-                  <div
-                    className="post-summary"
-                    onClick={() => handleEditClick(post)}
-                  >
-                    <p>
-                      {post.company} - {post.title}
-                    </p>
+                  <div className="post-summary" onClick={() => handleEditClick(post)}>
+                    <p>{post.company}</p>
                     <div className="actions">
-                      <button id="accept-button"
+                      <button
+                        id="accept-button"
                         onClick={(e) => {
                           e.stopPropagation();
-                          updateStatus(post.id, "active");
+                          updateStatus(post._id, "active");
                         }}
                       >
                         Accept
@@ -186,7 +166,7 @@ export default function PostRequests() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          updateStatus(post.id, "deleted");
+                          updateStatus(post._id, "deleted");
                         }}
                       >
                         Delete

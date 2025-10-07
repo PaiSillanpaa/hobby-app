@@ -11,21 +11,21 @@ const Trash = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await fetch("/api/get-posts");
+        const res = await fetch("/api/listing/all");
         if (!res.ok) throw new Error("API error");
         const data = await res.json();
-        setPosts(data.filter(p => p.status === "deleted"));
+        setPosts(data.listings.filter(p => p.status === "deleted"));
       } catch (err) {
         console.error(err);
-        const fallbackData = await import("../data/hobbies.json");
-        setPosts(fallbackData.default.filter(p => p.status === "deleted"));
+        //const fallbackData = await import("../data/hobbies.json");
+        //setPosts(fallbackData.default.filter(p => p.status === "deleted"));
       }
     };
     fetchPosts();
   }, []);
 
   const handleEditClick = (post) => {
-    setEditingId(post.id);
+    setEditingId(post._id);
     setEditData(post);
   };
 
@@ -34,8 +34,8 @@ const Trash = () => {
 
     if (name.startsWith("location.")) {
       const [, key] = name.split(".");
-      const updatedLocation = [...editData.location];
-      updatedLocation[0] = { ...updatedLocation[0], [key]: value };
+      // Muutetaan location objekti ja päivitetään sen avaimet
+      const updatedLocation = { ...editData.location, [key]: value };
 
       setEditData({ ...editData, location: updatedLocation });
     } else {
@@ -44,55 +44,36 @@ const Trash = () => {
   };
 
   const handleUpdate = async () => {
-    const city = editData.location?.[0]?.city;
-    const address = editData.location?.[0]?.address;
+    const { city, address } = editData.location || {};
 
     if (!city || !address) {
       alert("Anna sekä kaupunki että osoite");
       return;
     }
 
-    const fullAddress = `${address}, ${city}`;
+    const updatedData = {
+      ...editData,
+      listingDescription: editData.listingDescription || "",
+      listingTitle: editData.listingTitle || "",
+      location: { city, address }, // Tämä on nyt objekti
+    };
 
     try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}`
-      );
-
-      if (!response.ok) throw new Error("Koordinaattien haku epäonnistui");
-
-      const data = await response.json();
-
-      if (data.length === 0) {
-        alert("Koordinaatteja ei löytynyt annetulle osoitteelle");
-        return;
-      }
-
-      const lat = parseFloat(data[0].lat);
-      const lon = parseFloat(data[0].lon);
-
-      const updatedLocation = [...(editData.location || [{}])];
-      updatedLocation[0] = {
-        ...updatedLocation[0],
-        coords: [lat, lon],
-      };
-
-      const updatedEditData = {
-        ...editData,
-        location: updatedLocation,
-      };
-
-      // Lähetetään backendille päivitetty data
-      const res = await fetch(`/api/update-post/${editData.id}`, {
+      const id = editData._id
+      const res = await fetch(`/api/listing/${id}/update`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedEditData),
+        body: JSON.stringify({
+          title: updatedData.listingTitle, 
+          description: updatedData.listingDescription,
+          city: updatedData.location.city,
+          address: updatedData.location.address}),
       });
 
       if (!res.ok) throw new Error("Päivitys epäonnistui");
 
-      setPosts(posts.map(p => (p.id === editData.id ? updatedEditData : p)));
-      setEditingId(null);
+      setPosts(posts.map(p => (p._id === editData._id ? updatedData : p)));
+      setEditingId(null); // Suljetaan muokkausnäkymä
     } catch (err) {
       console.error(err);
       alert(err.message || "Päivitys epäonnistui");
@@ -100,18 +81,17 @@ const Trash = () => {
   };
 
   const handleRestore = async (postId) => {
-    const updatedPost = posts.find(p => p.id === postId);
-    updatedPost.status = "active";
+    const updatedPost = posts.find(p => p._id === postId);
 
     try {
-      const res = await fetch(`/api/update-post/${postId}`, {
-        method: "PUT",
+      const res = await fetch(`/api/listing/status/inactive`, {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedPost),
+        body: JSON.stringify({listingId: updatedPost._id}),
       });
       if (!res.ok) throw new Error("Restore failed");
 
-      setPosts(posts.filter(p => p.id !== postId)); // poistetaan trashista
+      setPosts(posts.filter(p => p._id !== postId)); // poistetaan trashista
     } catch (err) {
       console.error(err);
       alert("Restore failed");
@@ -120,12 +100,12 @@ const Trash = () => {
 
   const handlePermanentDelete = async (postId) => {
     try {
-      const res = await fetch(`/api/delete-post/${postId}`, {
+      const res = await fetch(`/api/listing/${postId}/delete`, {
         method: "DELETE",
       });
       if (!res.ok) throw new Error("Permanent delete failed");
 
-      setPosts(posts.filter(p => p.id !== postId));
+      setPosts(posts.filter(p => p._id !== postId));
     } catch (err) {
       console.error(err);
       alert("Permanent delete failed");
@@ -141,12 +121,12 @@ const Trash = () => {
           <h1>Trash</h1>
           <div className="all-posts">
             {posts.map(post => (
-              <div key={post.id} className="post-card">
-                {editingId === post.id ? (
+              <div key={post._id} className="post-card">
+                {editingId === post._id ? (
                   <div className="edit-form">
                     <input
                       name="title"
-                      value={editData.title}
+                      value={editData.listingTitle}
                       onChange={handleChange}
                     />
                     <input
@@ -156,20 +136,20 @@ const Trash = () => {
                     />
                     <input
                       name="location.city"
-                      value={editData.location?.[0]?.city || ""}
+                      value={editData.location.city || ""}
                       onChange={handleChange}
                       placeholder="City"
                     />
 
                     <input
                       name="location.address"
-                      value={editData.location?.[0]?.address || ""}
+                      value={editData.location.address || ""}
                       onChange={handleChange}
                       placeholder="Address"
                     />
                     <textarea
                       name="description"
-                      value={editData.description}
+                      value={editData.listingDescription}
                       onChange={handleChange}
                     />
                     <button onClick={handleUpdate}>Update</button>
@@ -180,14 +160,14 @@ const Trash = () => {
                     className="post-summary"
                     onClick={() => handleEditClick(post)}
                   >
-                    <p>{post.company} - {post.title}</p>
+                    <p>{post.company}</p>
                     <button
-                      onClick={(e) => { e.stopPropagation(); handleRestore(post.id); }}
+                      onClick={(e) => { e.stopPropagation(); handleRestore(post._id); }}
                     >
                       Restore
                     </button>
                     <button
-                      onClick={(e) => { e.stopPropagation(); handlePermanentDelete(post.id); }}
+                      onClick={(e) => { e.stopPropagation(); handlePermanentDelete(post._id); }}
                     >
                       Delete Permanently
                     </button>

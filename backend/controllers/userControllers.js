@@ -208,6 +208,7 @@ export const getUserInfo = async (request, response) => {
 
 export const updateUser = async (request, response) => {
   const { newUsername, newEmail, newRank } = request.body;
+  console.log(newUsername, newEmail, newRank)
   const id = request.params.id;
   const user = request.user;
 

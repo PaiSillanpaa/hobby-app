@@ -472,6 +472,8 @@ export const addToHistory = async (request, response) => {
 export const updateListing = async (request, response) => {
   const { title, description, city, address } = request.body;
 
+  console.log(title, description, city, address)
+
   const listingId = request.params.id;
 
   const user = request.user;

@@ -11,22 +11,22 @@ export default function Users () {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await fetch("/api/get-users"); // backend endpoint
+        const res = await fetch("/api/user/users"); // backend endpoint
         if (!res.ok) throw new Error("API error");
         const data = await res.json();
-        setUsers(data);
+        setUsers(data.users);
       } catch (err) {
         console.error(err);
         // fallback JSON
-        const fallbackData = await import("../data/users.json");
-        setUsers(fallbackData.default);
+        //const fallbackData = await import("../data/users.json");
+        //setUsers(fallbackData.default);
       }
     };
     fetchUsers();
   }, []);
 
   const handleEditClick = (user) => {
-    setEditingId(user.id);
+    setEditingId(user._id);
     setEditData(user);
   };
 
@@ -37,14 +37,17 @@ export default function Users () {
 
   const handleUpdate = async () => {
     try {
-      const res = await fetch(`/api/update-user/${editData.id}`, {
+      const res = await fetch(`/api/user/${editData._id}/update`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editData),
+        body: JSON.stringify({
+          newUsername: editData.username,
+          newEmail: editData.email,
+          newRank: editData.rank}),
       });
       if (!res.ok) throw new Error("Update failed");
 
-      setUsers(users.map(u => (u.id === editData.id ? editData : u)));
+      setUsers(users.map(u => (u.id === editData._id ? editData : u)));
       setEditingId(null);
     } catch (err) {
       console.error(err);
@@ -53,18 +56,14 @@ export default function Users () {
   };
 
   const handleDelete = async (userId) => {
-    const updatedUser = users.find(u => u.id === userId);
-    updatedUser.status = "deleted";
-
     try {
-      const res = await fetch(`/api/update-user/${userId}`, {
-        method: "PUT",
+      const res = await fetch(`/api/user/${userId}/delete/`, {
+        method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedUser),
       });
       if (!res.ok) throw new Error("Delete failed");
 
-      setUsers(users.map(u => (u.id === userId ? updatedUser : u)));
+      setUsers(users.filter(u => u._id !== userId));    
     } catch (err) {
       console.error(err);
       alert("Delete failed");
@@ -81,11 +80,11 @@ export default function Users () {
           <h1>All Users</h1>
           <div className="all-posts">
             {users.map(user => (
-              <div key={user.id} className="post-card">
-                {editingId === user.id ? (
+              <div key={user._id} className="post-card">
+                {editingId === user._id ? (
                   <div className="edit-form">
                     <input
-                      name="name"
+                      name="username"
                       value={editData.username}
                       onChange={handleChange}
                     />
@@ -95,7 +94,7 @@ export default function Users () {
                       onChange={handleChange}
                     />
                     <input
-                      name="role"
+                      name="rank"
                       value={editData.rank}
                       onChange={handleChange}
                     />
@@ -108,7 +107,7 @@ export default function Users () {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleDelete(user.id);
+                        handleDelete(user._id);
                       }}
                     >
                       Delete

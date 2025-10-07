@@ -46,9 +46,9 @@ listingRouter.post("/history", checkJwt, addToHistory);
 listingRouter.post("/tags", getListingsByTags);
 
 listingRouter.put("/:id/update", checkJwt, updateListing);
-listingRouter.patch("/:id/status/active", checkJwt, setListingActive);
-listingRouter.patch("/:id/status/inactive", checkJwt, setListingInactive);
-listingRouter.patch("/:id/status/deleted", checkJwt, setListingDeleted);
+listingRouter.patch("/status/active", checkJwt, setListingActive);
+listingRouter.patch("/status/inactive", checkJwt, setListingInactive);
+listingRouter.patch("/status/deleted", checkJwt, setListingDeleted);
 
 listingRouter.delete("/:id/delete", checkJwt, deleteListing);
 

@@ -56,7 +56,13 @@ export default function Register() {
         throw new Error(errorData.message || "Automaattinen kirjautuminen epäonnistui");
       }
 
-      navigate("/user/homepage");
+      if (userData.rank === "admin") {
+        navigate("/admin");
+      } else if (userData.rank === "company") {
+        navigate("/company");
+      } else {
+        navigate("/user/homepage")
+      }
 
       setUsername("");
       setEmail("");
