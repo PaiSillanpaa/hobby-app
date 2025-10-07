@@ -9,6 +9,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "./Carousel.css";
+const baseurl = "https://hobbly-app.onrender.com/";
 
 export default function Carousel({
   title = "",
@@ -30,11 +31,11 @@ export default function Carousel({
       try {
         //const id = await fetchUserId();
         //setUserId(id);
-        const favouritesResponse = await fetch(`/api/listing/favourites`);
+        const favouritesResponse = await fetch(`${baseurl}/api/listing/favourites`);
         const favouritesData = await favouritesResponse.json();
         setfavourites(favouritesData);
 
-        const hobbiesResponse = await fetch("/api/listing/active2");
+        const hobbiesResponse = await fetch(`${baseurl}/api/listing/active2`);
         const hobbiesData = await hobbiesResponse.json();
         setHobbies(hobbiesData);
         setLoading(false);
@@ -61,7 +62,7 @@ const handleFavoriteClick = async (e, hobby) => {
 
   if (isAlreadyFavorite) {
     try {
-      await fetch(`/api/listing/remove-favourite`, {
+      await fetch(`${baseurl}/api/listing/remove-favourite`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ listingId: hobby._id })
@@ -84,7 +85,7 @@ const handleFavoriteClick = async (e, hobby) => {
     setfavourites(updatedfavourites)
 
     try {
-      await fetch(`/api/listing/favourite`, {
+      await fetch(`${baseurl}/api/listing/favourite`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ listingId: hobby._id })
