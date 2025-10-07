@@ -31,51 +31,31 @@ export default function FavouritesModal({ onClose }) {
     getUserfavourites();
   }, []);
 
-const handleFavoriteClick = async (e, hobby) => {
-  e.stopPropagation();
-  
-  const isAlreadyFavorite = favourites.favourites.some(
-    f => (f.listingId || f._id) === hobby._id
-  );
-  
-  let updatedfavourites;
+  const handleFavoriteClick = async (e, hobby) => {
+    e.stopPropagation();
 
-  if (isAlreadyFavorite) {
-    try {
-      await fetch(`/api/user/remove-favourite`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ listingId: hobby._id })
-      });
-      updatedfavourites = {
-        ...favourites,
-        favourites: favourites.favourites.filter(
-          f => (f.listingId || f._id) !== hobby._id
-        )
-      };
-    } catch (err) {
-      console.error("Error removing favorite:", err);
-    }
-  } else {
-    const newFav = { listingId: hobby._id };
-    updatedfavourites = {
-      ...favourites,
-      favourites: [...favourites.favourites, newFav]
-    };
+    let updatedfavourites;
 
-    try {
-      await fetch(`/api/listing/favourite`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ listingId: hobby._id })
-      });
-    } catch (err) {
-      console.error("Error adding favorite:", err);
-    }
-  }
-  
-  setFavourites(updatedfavourites);
-};
+      try {
+        await fetch(`/api/listing/remove-favourite`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ listingId: hobby._id }),
+        });
+
+        // Poistetaan suosikki tilasta
+        updatedfavourites = {
+          ...favourites,
+          favourites: favourites.favourites.filter(
+            (f) => (f.listingId || f._id) !== hobby._id
+          ),
+        };
+        setFavourites(updatedfavourites);
+      } catch (err) {
+        console.error("Error removing favorite:", err);
+      }
+    } 
+
   return (
     <div className="favourites-modal">
       <h2>Your Favourites</h2>
@@ -98,9 +78,9 @@ const handleFavoriteClick = async (e, hobby) => {
                 </p>
               </div>
               <img
-                src={"../assets/Heart.svg"}
+                src={"/assets/Heart.svg"}
                 alt="favorite"
-                className={`favourites-heart ${favourites.favourites.some(f => f.listingId === item._id) ? "favourites-heart-filled" : ""}`}
+                className={`favourites-heart ${favourites.favourites.some(f => f.listingId === item.listingId) ? "favourites-heart-filled" : ""}`}
                 onClick={(e) => handleFavoriteClick(e, item)}
               />
             </div>
