@@ -330,7 +330,6 @@ export const setFavourite = async (request, response) => {
   console.log(request.user);
   const user = request.user;
 
-  console.log("listingid:::user:::", listingId, user)
   if (!user || !listingId) {
     return response.status(401).json({ message: "Unauthorized" });
   }
@@ -338,9 +337,6 @@ export const setFavourite = async (request, response) => {
   try {
     const listingToFavourite = await Listing.findOne({ _id: listingId });
     const currentUser = await User.findOne({ _id: user.userId });
-
-    console.log("listingtofav::",listingToFavourite)
-    console.log("currentuser:::", currentUser)
 
     if (!listingToFavourite || !currentUser) {
       return response
@@ -355,8 +351,6 @@ export const setFavourite = async (request, response) => {
 
     if (existing) {
       return response.status(200).send("Already in favourites");
-    } else {
-      console.log("täääsä virheeee!");
     }
 
     const newFavourite = new Favourites({
@@ -368,7 +362,7 @@ export const setFavourite = async (request, response) => {
 
     return response.status(201).send("added to favourites");
   } catch (error) {
-    console.error("ERROR MESSAGE:::::", error);
+    console.error("ERROR MESSAGE:", error);
     return response.status(500).send("error when applying favourite");
   }
 };

@@ -3,7 +3,7 @@ import homeIcon from "../../assets/home.png";
 import searchIcon from "../../assets/search.png";
 import mapIcon from "../../assets/map.png";
 import profileIcon from "../../assets/profile.png";
-import "./Navbar.css";
+import "../../components/NavBar.css";
 import { useNavigate } from "react-router-dom";
 import SearchModal from "../../components/SearchModal";
 
@@ -40,7 +40,7 @@ export default function Navbar() {
           <span>Map</span>
         </button>
 
-        <button onClick={() => handleNavigation("/")} className="nav-item">
+        <button onClick={() => handleNavigation("")} className="nav-item">
           <img src={profileIcon} alt="Profile" className="nav-icon" />
           <span>Profile</span>
         </button>

@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
@@ -19,8 +19,10 @@ export default function Carousel({
 }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const [favorites, setFavorites] = useState([]);
+  const [favourites, setfavourites] = useState({ favourites: [] });
   const [hobbies, setHobbies] = useState([]);
+  const [filteredHobbies, setFilteredHobbies] = useState([]);
+  const [loading, setLoading] = useState(true);
   //const [userId, setUserId] = (null);
 
   useEffect(() => {
@@ -28,97 +30,112 @@ export default function Carousel({
       try {
         //const id = await fetchUserId();
         //setUserId(id);
-        const favoritesResponse = await fetch(`/api/listing/favourites`);
-        const favoritesData = await favoritesResponse.json();
-        console.log("bäkkärist tulee lempparit:", favoritesData)
-        setFavorites(favoritesData.user?.favourites || []);
+        const favouritesResponse = await fetch(`/api/listing/favourites`);
+        const favouritesData = await favouritesResponse.json();
+        setfavourites(favouritesData);
 
         const hobbiesResponse = await fetch("/api/listing/active2");
         const hobbiesData = await hobbiesResponse.json();
-        console.log("bäkkäristä harrastukset", hobbiesData)
         setHobbies(hobbiesData);
-        //localStorage.setItem("favorites", JSON.stringify(favoritesData.map(f => f.id)));
+        setLoading(false);
+        //localStorage.setItem("favourites", JSON.stringify(favouritesData.map(f => f.id)));
       } catch (err) {
         console.error("No user found or backend error:", err);
         //const id = getUserIdFromToken();
         //setUserId(id);
-        const savedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
-        setFavorites(savedFavorites);
+        //const savedfavourites = JSON.parse(localStorage.getItem("favourites")) || [];
+        setfavourites(null);
       }
     };
 
     getUserId();
   }, []);
 
-  const handleFavoriteClick = async (e, hobby) => {
-    e.stopPropagation();
-    const isAlreadyFavorite = favorites.some(f => f.id === hobby._id);
-    let updatedFavorites;
+const handleFavoriteClick = async (e, hobby) => {
+  e.stopPropagation();
+  
+  const isAlreadyFavorite = favourites.favourites.some(
+    f => (f.listingId || f._id) === hobby._id
+  );
+  
+  let updatedfavourites;
 
-    if (isAlreadyFavorite) {
-      updatedFavorites = favorites.filter(f => f.id !== hobby._id);
-      try {
-        await fetch(`/api/user/remove-favourite`, { 
-          method: "DELETE",
-          body:JSON.stringify({ listingId: hobby._id })
-        });
-      } catch (err) {
-        console.error("Error removing favorite:", err);
-      }
-    } else {
-      updatedFavorites = [...favorites, hobby];
-      try {
-        console.log(hobby)
-        await fetch(`/api/listing/favourite`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ listingId: hobby._id })
-        });
-      } catch (err) {
-        console.error("Error adding favorite:", err);
-      }
+  if (isAlreadyFavorite) {
+    try {
+      await fetch(`/api/user/remove-favourite`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ listingId: hobby._id })
+      });
+      updatedfavourites = {
+        ...favourites,
+        favourites: favourites.favourites.filter(
+          f => (f.listingId || f._id) !== hobby._id
+        )
+      };
+    } catch (err) {
+      console.error("Error removing favorite:", err);
     }
+  } else {
+    // 🔧 Tallennetaan yhtenäinen rakenne, jossa on listingId
+    const newFav = { listingId: hobby._id };
+    updatedfavourites = {
+      ...favourites,
+      favourites: [...favourites.favourites, newFav]
+    };
 
-    //localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
-    setFavorites(updatedFavorites);
-  };
+    try {
+      await fetch(`/api/listing/favourite`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ listingId: hobby._id })
+      });
+    } catch (err) {
+      console.error("Error adding favorite:", err);
+    }
+  }
+  
+  // 🔥 Tämä aiheuttaa välittömän re-renderin
+  setfavourites(updatedfavourites);
+};
 
-  const filteredHobbies = useMemo(() => {
-    let appliedCategory = category;
-    let appliedType = type;
+  useEffect(() => {
+    if (!loading) {
+      let appliedCategory = category;
+      let appliedType = type;
 
-    if (!category && !type) {
-      if (title === "Wanna be part of a team?") {
-        appliedType = "group";
-      } else if (title === "Creating your own adventure") {
-        appliedType = "solo";
-      } else if (title === "Or something totally else?") {
-        const randomHobbies = hobbies.sort(() => Math.random() - 0.5).slice(0, 5);
-        return randomHobbies;
-      } else if (location.pathname.includes("/user/homepage")) {
-        if (title === "Recent top searched hobbies") {
-          const randomHobbies = hobbies.sort(() => Math.random() - 0.5).slice(0, 5);
-          return randomHobbies;
-        } else if (title === "New adventure in nature?") {
-          appliedCategory = "nature";
-        } else if (title === "Unleash your creativity") {
-          appliedCategory = "art";
+      let filtered = [...hobbies];
+
+      if (!category && !type) {
+        if (title === "Wanna be part of a team?") {
+          appliedType = "group";
+        } else if (title === "Creating your own adventure") {
+          appliedType = "solo";
+        } else if (title === "Or something totally else?") {
+          filtered = filtered.sort(() => Math.random() - 0.5).slice(0, 5);
+        } else if (location.pathname.includes("/homepage")) {
+          if (title === "Recent top searched hobbies") {
+            filtered = filtered.sort(() => Math.random() - 0.5).slice(0, 5);
+          } else if (title === "New adventure in nature?") {
+            appliedCategory = "nature";
+          } else if (title === "Unleash your creativity") {
+            appliedCategory = "art";
+          }
         }
       }
-    }
-    
-    const scored = hobbies.map((hobby) => {
-      let score = 0;
-      if (appliedCategory && hobby.category.includes(appliedCategory)) score++;
-      if (city && hobby.location.city.toLowerCase().includes(city.toLowerCase())) score++;
-      if (age && hobby.age.includes(age)) score++;
-      if (appliedType && hobby.type === appliedType) score++;
-      return { ...hobby, score };
-    });
 
-    scored.sort((a, b) => b.score - a.score);
-    return scored.slice(0, 5);
-  }, [category, city, age, type, title, location.pathname]);
+      filtered = filtered.filter(hobby => {
+        let match = true;
+        if (appliedCategory && !hobby.category.includes(appliedCategory)) match = false;
+        if (city && !hobby.location.city.toLowerCase().includes(city.toLowerCase())) match = false;
+        if (age && !hobby.age.includes(age)) match = false;
+        if (appliedType && hobby.type !== appliedType) match = false;
+        return match;
+      });
+
+      setFilteredHobbies(filtered);
+    }
+  }, [category, city, age, type, title, location.pathname, hobbies, loading]);
 
   return (
     <div className="carousel-wrapper">
@@ -135,11 +152,11 @@ export default function Carousel({
           <SwiperSlide key={hobby._id} style={{ width: "170px" }}>
             <div className="card" onClick={() => navigate(`/${hobby.listingTitle}/${hobby.company}`)}>
               <div className="carousel-content">
-                <img src={`../assets/${hobby.image}`} alt={hobby.listingTitle} className="carousel-image" />
+                <img src={`../assets/${hobby.category[0]}.png`} alt={hobby.listingTitle} className="carousel-image" />
                 <img
                   src={"../assets/Heart.svg"}
                   alt="favorite"
-                  className={`heart-icon ${favorites.some(f => f.id === hobby._id) ? "filled" : ""}`}
+                  className={`heart-icon ${favourites.favourites.some(f => f.listingId === hobby._id) ? "filled" : ""}`}
                   onClick={(e) => { e.stopPropagation(); handleFavoriteClick(e, hobby); }}
                 />
                 <div className="carousel-footer">

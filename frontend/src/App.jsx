@@ -23,6 +23,9 @@ import CompanyAllPosts from "./pages/private/CompanyAllPosts.jsx";
 import CompanyTrash from "./pages/private/CompanyTrash.jsx";
 import CompanySettings from "./pages/private/CompanySettings.jsx";
 import PublicHomePage from "./pages/public/PublicHomePage.jsx";
+import PublicCategoryPage from "./pages/public/PublicCategoryPage.jsx"
+import PublicHobbyPage from "./pages/public/PublicHobbyPage.jsx"
+import PublicMapPage from "./pages/public/PublicMapPage.jsx"
 
 export default function App() {
   return (
@@ -33,9 +36,9 @@ export default function App() {
         <Route path="/login" element={<LogIn />} />
         <Route path="/register" element={<Register />} />
         <Route path="/homepage" element={<PublicHomePage />} />
-        <Route path="/map" element={<MapPage />} />
-        <Route path="/categories" element={<CategoryPage />} />
-        <Route path="/:title/:company" element={<HobbyPage />} />
+        <Route path="/map" element={<PublicMapPage />} />
+        <Route path="/categories" element={<PublicCategoryPage />} />
+        <Route path="/:title/:company" element={<PublicHobbyPage />} />
         <Route path="/profile" element={<LandingPage />} />
 
         {/* =================== USER PROTECTED ROUTES =================== */}

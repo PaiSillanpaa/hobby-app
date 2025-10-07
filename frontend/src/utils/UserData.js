@@ -1,4 +1,4 @@
-import { getEmailFromToken, getUserIdFromToken, getUsernameFromToken } from "./Token";
+import { getEmailFromToken, getUsernameFromToken } from "./Token";
 
 export const fetchUserId = async () => {
   try {
@@ -13,9 +13,9 @@ export const fetchUserId = async () => {
     return data.userId; // Oletetaan että backend palauttaa { userId: "abc123" }
   } catch (err) {
     console.error("Virhe käyttäjätiedon haussa:", err);
-    const userIdFromToken = getUserIdFromToken(); // Tämän haun voi poistaa, kun backend on yhdistetty
+    //const userIdFromToken = getUserIdFromToken(); // Tämän haun voi poistaa, kun backend on yhdistetty
     
-    return userIdFromToken || null; // Palautetaan null, jos ei löydy
+    return null; // Palautetaan null, jos ei löydy
   }
 };
 

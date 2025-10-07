@@ -11,7 +11,7 @@ export function filterHobbies(hobbies, filters) {
 
   const bestMatchScores = hobbies.map(hobby => {
     let score = 0;
-    if (locations.some(loc => hobby.location.some(locObj => locObj.city === loc))) score++;
+    if (locations.some(loc => hobby.location.city === loc)) score++;
     if (ages.some(a => hobby.age.includes(a))) score++;
     if (categories.some(c => hobby.category.includes(c))) score++;
     return { hobby, score };
@@ -22,11 +22,12 @@ export function filterHobbies(hobbies, filters) {
   const mainHobby = bestMatchScores[0]?.hobby || hobbies[0];
 
   const topMatches = bestMatchScores.filter(b => b.score > 0).map(b => b.hobby);
+  console.log("parhaat matchit",topMatches)
 
   const carousels = [];
 
   locations.forEach(loc => {
-    const items = hobbies.filter(h => h.location.some(locObj => locObj.city === loc));
+    const items = hobbies.filter(h => h.location.city === loc);
     if (items.length) carousels.push({ title: loc, items });
   });
 

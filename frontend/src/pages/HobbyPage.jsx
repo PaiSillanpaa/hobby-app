@@ -1,24 +1,57 @@
 import { useParams } from "react-router-dom";
 import Navbar from "../components/NavBar";
 import Carousel from "../components/Carousel";
-import hobbies from "../data/hobbies.json";
+//import hobbies from "../data/hobbies.json";
 import "./HobbyPage.css";
 import star from "../assets/star.png";
+import { useEffect, useState } from "react";
 
 
 
 export default function HobbyPage() {
+  const [hobbies, setHobbies] = useState([]);
+  const [hobby, setHobby] = useState(null);
   const { title } = useParams();
   const { company } = useParams();
-  const hobby = hobbies.find(h => h.title === title && h.company === company);
+
+
+  useEffect(() => {
+    const getHobbies = async () => {
+      try {
+        const hobbiesResponse = await fetch("/api/listing/active2");
+        const hobbiesData = await hobbiesResponse.json();
+        setHobbies(hobbiesData);
+      } catch (err) {
+        console.error("Error while fetching hobbies:", err);
+      }
+    };
+
+    getHobbies();
+  }, []);
+
+  useEffect(() => {
+    const getHobby = async () => {
+      try {
+        const hobbyMatch = hobbies.find(h => h.listingTitle == title && h.company == company);
+        setHobby(hobbyMatch)
+      } catch (err) {
+        console.error("Error while fetching hobbies:", err);
+      }
+    };
+
+    getHobby();
+  }, [hobbies, company, title]);
+
+
+  console.log("harrastus", hobbies)
 
   return (
     <div className="hobbypage-container">
       <div className="box-container">
         <div className="image-wrapper">
-            <img src={`../assets/${hobby.image}`} alt="big-image" className="big-image" />
+            <img src={`../assets/${hobby.category[0]}.png`} alt="big-image" className="big-image" />
         </div>
-            <h1 className="sport">{hobby.title.toUpperCase()}</h1>
+            <h1 className="sport">{hobby.listingTitle.toUpperCase()}</h1>
             <h2 className="organization-name">{hobby.company}</h2>
             <p className="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin placerat mollis metus. Curabitur porta posuere libero mattis tempus. Suspendisse quis tortor a lorem dapibus hendrerit. Pellentesque vitae metus molestie turpis lobortis ornare. Sed porta diam in tellus sodales ullamcorper. Vestibulum vehicula porta aliquet. Integer nec hendrerit lectus.</p>
             <div className="s-box">
@@ -45,7 +78,7 @@ export default function HobbyPage() {
                 </div>
             </div>
         </div>
-      <div>
+      <div className="carousel-bottom">
         <Carousel title="You might also be interested in"></Carousel>
       </div>
       <Navbar></Navbar>

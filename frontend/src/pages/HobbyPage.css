@@ -19,6 +19,7 @@
 
 .big-image {
     width: 335px;
+    max-height: 225px;
     border-radius: 10px;
 }
 
@@ -84,5 +85,9 @@ p {
 
 .s-box {
     padding-bottom: 40px;
+}
+
+.carousel-bottom {
+    margin-bottom: 200px;
 }
 

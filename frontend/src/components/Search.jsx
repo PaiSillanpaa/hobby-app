@@ -1,13 +1,24 @@
 import "./Search.css";
 import { useNavigate } from "react-router-dom";
 import { fetchUserId } from "../utils/UserData";
+import { useState, useEffect } from "react";
 
 export default function Search() {
+  const [isLoggedIn, setIsLoggedIn] = useState(null);
   const navigate = useNavigate();
-  const isLoggedIn = fetchUserId();
+
+
+  useEffect(() => {
+  const checkUserStatus = async () => {
+    const userId = await fetchUserId();
+    setIsLoggedIn(userId);
+  };
+
+  checkUserStatus();
+  }, []);
 
   const handleClick = () => {
-    if (isLoggedIn) {
+    if (isLoggedIn != null) {
       navigate("/user/categories");
     } else {
       navigate("/categories");

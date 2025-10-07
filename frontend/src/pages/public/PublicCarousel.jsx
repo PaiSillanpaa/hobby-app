@@ -19,16 +19,15 @@ export default function Carousel({
   const [showPopup, setShowPopup] = useState(false);
   const [hobbies, setHobbies] = useState([]);
   const [filteredHobbies, setFilteredHobbies] = useState([]);
-  const [loading, setLoading] = useState(true); // Lataustila
+  const [loading, setLoading] = useState(true);
 
-  // Haetaan harrastukset backendistä
   useEffect(() => {
     const getHobbies = async () => {
       try {
         const hobbiesResponse = await fetch("/api/listing/active2");
         const hobbiesData = await hobbiesResponse.json();
-        setHobbies(hobbiesData); // Tallennetaan ladatut tiedot
-        setLoading(false); // Data ladattu
+        setHobbies(hobbiesData);
+        setLoading(false);
       } catch (err) {
         console.error("Error while fetching hobbies:", err);
         setLoading(false);
@@ -38,15 +37,14 @@ export default function Carousel({
     getHobbies();
   }, []);
 
-  // Suodatetaan harrastukset heti, kun `hobbies` muuttuu
+
   useEffect(() => {
     if (!loading) {
       let appliedCategory = category;
       let appliedType = type;
 
-      let filtered = [...hobbies]; // Kopioidaan alkuperäiset tiedot
+      let filtered = [...hobbies];
 
-      // Käydään suodattimen logiikka läpi
       if (!category && !type) {
         if (title === "Wanna be part of a team?") {
           appliedType = "group";
@@ -65,7 +63,6 @@ export default function Carousel({
         }
       }
 
-      // Suodatetaan listaa
       filtered = filtered.filter(hobby => {
         let match = true;
         if (appliedCategory && !hobby.category.includes(appliedCategory)) match = false;
@@ -75,12 +72,11 @@ export default function Carousel({
         return match;
       });
 
-      // Päivitetään suodatetut harrastukset
-      setFilteredHobbies(filtered);
+      setFilteredHobbies(filtered.slice(0, 5));
     }
-  }, [category, city, age, type, title, location.pathname, hobbies, loading]); // Kun `hobbies` ja muut muuttuvat
+  }, [category, city, age, type, title, location.pathname, hobbies, loading]);
 
-  // Käsitellään suosikiksi lisäämistä
+  
   const handleFavoriteClick = async (e) => {
     e.stopPropagation();
     setShowPopup(true);
@@ -103,7 +99,7 @@ export default function Carousel({
       )}
 
       {loading ? (
-        <p>Loading hobbies...</p> // Latausviesti ennen kuin data on valmis
+        <p>Loading hobbies...</p>
       ) : (
         <Swiper
           modules={[Navigation, Pagination]}
@@ -117,7 +113,7 @@ export default function Carousel({
             <SwiperSlide key={hobby._id} style={{ width: "170px" }}>
               <div className="card" onClick={() => navigate(`/${hobby.listingTitle}/${hobby.company}`)}>
                 <div className="carousel-content">
-                  <img src={`../assets/${hobby.category}.png`} alt={hobby.listingTitle} className="carousel-image" />
+                  <img src={`../assets/${hobby.category[0]}.png`} alt={hobby.listingTitle} className="carousel-image" />
                   <img
                     src={"../assets/Heart.svg"}
                     alt="favorite"
