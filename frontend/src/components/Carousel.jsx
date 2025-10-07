@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
-import hobbies from "../data/hobbies.json";
+//import hobbies from "../data/hobbies.json";
 //import { fetchUserId } from "../utils/UserData";
 //import { getUserIdFromToken } from "../utils/Token";
 import "swiper/css";
@@ -20,6 +20,7 @@ export default function Carousel({
   const navigate = useNavigate();
   const location = useLocation();
   const [favorites, setFavorites] = useState([]);
+  const [hobbies, setHobbies] = useState([]);
   //const [userId, setUserId] = (null);
 
   useEffect(() => {
@@ -31,6 +32,11 @@ export default function Carousel({
         const favoritesData = await favoritesResponse.json();
         console.log("bäkkärist tulee lempparit:", favoritesData)
         setFavorites(favoritesData.user?.favourites || []);
+
+        const hobbiesResponse = await fetch("/api/listing/tags");
+        const hobbiesData = await hobbiesResponse.json();
+        console.log("bäkkäristä harrastukset", hobbiesData)
+        setHobbies(hobbiesData);
         //localStorage.setItem("favorites", JSON.stringify(favoritesData.map(f => f.id)));
       } catch (err) {
         console.error("No user found or backend error:", err);
@@ -62,10 +68,11 @@ export default function Carousel({
     } else {
       updatedFavorites = [...favorites, hobby];
       try {
+        console.log(hobby)
         await fetch(`/api/listing/favourite`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ listingId: hobby.id })
+          body: JSON.stringify({ listingId: hobby._id })
         });
       } catch (err) {
         console.error("Error adding favorite:", err);
