@@ -8,7 +8,7 @@ export const createListing = async (request, response) => {
   const { title, description, location, category, age, type, url, company } =
     request.body;
   const image = request.file;
-  console.log("location:;:", location)
+  console.log("location:;:", location);
   const user = request.user;
 
   if (!user) {
@@ -472,8 +472,6 @@ export const addToHistory = async (request, response) => {
 export const updateListing = async (request, response) => {
   const { title, description, city, address } = request.body;
 
-  console.log(title, description, city, address)
-
   const listingId = request.params.id;
 
   const user = request.user;
@@ -719,7 +717,7 @@ export const deleteListing = async (request, response) => {
     }
 
     if (
-      currentUser._id !== currentListing.userId &&
+      !currentUser._id.equals(currentListing.userId) &&
       currentUser.rank !== "admin"
     ) {
       return response
