@@ -372,7 +372,7 @@ export const setFavourite = async (request, response) => {
 export const removeFavourite = async (request, response) => {
   const { listingId } = request.body;
   const user = request.user;
-  console.log("listingid + userid", listingId, user.userId)
+  console.log("listingid + userid", listingId, user.userId);
 
   if (!listingId) {
     return response.status(403).json({ message: "missing listing id" });
@@ -473,7 +473,10 @@ export const updateListing = async (request, response) => {
       return response.status(404).json({ message: "User not found" });
     }
 
-    if (currentUser._id !== listing.userId && currentUser.rank !== "admin") {
+    if (
+      !currentUser._id.equals(listing.userId) &&
+      currentUser.rank !== "admin"
+    ) {
       return response
         .status(403)
         .json({ message: "Unauthorized to change listing" });
@@ -585,7 +588,7 @@ export const setListingDeleted = async (request, response) => {
     if (currentUser.rank === "admin") {
       currentListing.status = "deleted";
     } else if (currentUser.rank === "company") {
-      if (currentUser._id !== currentListing.userId) {
+      if (!currentUser._id.equals(currentListing.userId)) {
         return response
           .status(403)
           .json({ message: "unauthorized to set listing to deleted" });
@@ -595,7 +598,7 @@ export const setListingDeleted = async (request, response) => {
     } else {
       return response
         .status(403)
-        .json({ message: "unathorized to change listing's status" });
+        .json({ message: "unauthorized to change listing's status" });
     }
 
     await currentListing.save();
@@ -637,7 +640,7 @@ export const setListingInactive = async (request, response) => {
     }
 
     if (
-      currentUser._id !== currentListing.userId &&
+      !currentUser._id.equals(currentListing.userId) &&
       currentUser.rank !== "admin"
     ) {
       return response
