@@ -2,6 +2,7 @@ import Listing from "../models/listingSchema.js";
 import Favourites from "../models/favouritesSchema.js";
 import History from "../models/historySchema.js";
 import User from "../models/userSchema.js";
+import axios from "axios";
 
 export const createListing = async (request, response) => {
   const { title, description, location, category, age, type, url, company } =
