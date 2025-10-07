@@ -41,7 +41,7 @@ listingRouter.get("/history", checkJwt, getHistory);
 
 listingRouter.post("/create", checkJwt, upload.single("image"), createListing);
 listingRouter.post("/favourite", checkJwt, setFavourite);
-listingRouter.post("/remove-favourite", checkJwt, removeFavourite);
+listingRouter.delete("/remove-favourite", checkJwt, removeFavourite);
 listingRouter.post("/history", checkJwt, addToHistory);
 listingRouter.post("/tags", getListingsByTags);
 

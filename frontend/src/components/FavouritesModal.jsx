@@ -76,7 +76,6 @@ const handleFavoriteClick = async (e, hobby) => {
   
   setFavourites(updatedfavourites);
 };
-console.log(favourites.favourites)
   return (
     <div className="favourites-modal">
       <h2>Your Favourites</h2>

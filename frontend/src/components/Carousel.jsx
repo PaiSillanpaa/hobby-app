@@ -44,7 +44,7 @@ export default function Carousel({
         //const id = getUserIdFromToken();
         //setUserId(id);
         //const savedfavourites = JSON.parse(localStorage.getItem("favourites")) || [];
-        setfavourites(null);
+        setfavourites([]);
       }
     };
 
@@ -55,14 +55,13 @@ const handleFavoriteClick = async (e, hobby) => {
   e.stopPropagation();
   
   const isAlreadyFavorite = favourites.favourites.some(
-    f => (f.listingId || f._id) === hobby._id
-  );
+    f => (f.listingId === hobby._id));
   
   let updatedfavourites;
 
   if (isAlreadyFavorite) {
     try {
-      await fetch(`/api/user/remove-favourite`, {
+      await fetch(`/api/listing/remove-favourite`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ listingId: hobby._id })
@@ -70,9 +69,9 @@ const handleFavoriteClick = async (e, hobby) => {
       updatedfavourites = {
         ...favourites,
         favourites: favourites.favourites.filter(
-          f => (f.listingId || f._id) !== hobby._id
-        )
+          f => (f.listingId !== hobby._id))
       };
+      setfavourites(updatedfavourites)
     } catch (err) {
       console.error("Error removing favorite:", err);
     }
@@ -82,6 +81,7 @@ const handleFavoriteClick = async (e, hobby) => {
       ...favourites,
       favourites: [...favourites.favourites, newFav]
     };
+    setfavourites(updatedfavourites)
 
     try {
       await fetch(`/api/listing/favourite`, {
