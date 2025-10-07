@@ -6,7 +6,7 @@ import Carousel from "../components/Carousel";
 import { fetchUsername, fetchUserEmail, deleteCookie } from "../utils/UserData";
 //import { getUserIdFromToken, getUsernameFromToken, getEmailFromToken } from "../utils/Token";
 import "./ProfilePage.css";
-const baseurl = "https://hobbly-app.onrender.com/";
+const baseurl = "https://hobbly-app.onrender.com";
 
 export default function ProfilePage() {
   const navigate = useNavigate();

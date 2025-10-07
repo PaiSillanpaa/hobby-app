@@ -9,7 +9,7 @@ import Carousel from "../components/Carousel";
 import { useFilteredHobbiesByLocation } from "../utils/FilterHobbies";
 import { fetchUserId } from "../utils/UserData";
 import "./MapPage.css";
-const baseurl = "https://hobbly-app.onrender.com/";
+const baseurl = "https://hobbly-app.onrender.com";
 
 const MapPage = () => {
   const [userLocation, setUserLocation] = useState(null);

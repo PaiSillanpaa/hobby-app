@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import MobileAdminRedirectModal from "../components/MobileAdminRedirectModal";
 
-const baseurl = "https://hobbly-app.onrender.com/";
+const baseurl = "https://hobbly-app.onrender.com";
 
 export default function LogIn() {
   const [username, setUsername] = useState("");
