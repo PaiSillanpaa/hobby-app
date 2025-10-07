@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import MobileAdminRedirectModal from "../components/MobileAdminRedirectModal";
 
+const baseurl = "https://";
+
 export default function LogIn() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -34,11 +36,15 @@ export default function LogIn() {
     const isMobile = window.innerWidth < 768;
 
     try {
-      const res = await fetch("/api/user/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
+      const res = await fetch(
+        "https://hobbly-app.onrender.com/api/user/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include", // <--- important for cookies
+          body: JSON.stringify({ username, password }),
+        }
+      );
 
       if (!res.ok) {
         const errData = await res.json();
