@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Outlet, Navigate } from "react-router-dom";
-const baseurl = "https://hobbly-app.onrender.com/";
+const baseurl = "https://hobbly-app.onrender.com";
 const ProtectedRoute = ({ allowedRanks }) => {
   const [isAuthorized, setIsAuthorized] = useState(null); // Käyttäjän valtuutuksen tila
   const [error, setError] = useState(null); // Virhetila

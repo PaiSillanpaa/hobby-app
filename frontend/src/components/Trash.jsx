@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import "./AllPosts.css";
 import TopBar from "./TopBar";
 import AdminNavBar from "./AdminNavBar";
-
+const baseurl = "https://hobbly-app.onrender.com/";
 const Trash = () => {
   const [posts, setPosts] = useState([]);
   const [editingId, setEditingId] = useState(null);
@@ -11,7 +11,7 @@ const Trash = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await fetch("/api/listing/all");
+        const res = await fetch(`${baseurl}/api/listing/all`);
         if (!res.ok) throw new Error("API error");
         const data = await res.json();
         setPosts(data.listings.filter(p => p.status === "deleted"));
@@ -60,7 +60,7 @@ const Trash = () => {
 
     try {
       const id = editData._id
-      const res = await fetch(`/api/listing/${id}/update`, {
+      const res = await fetch(`${baseurl}/api/listing/${id}/update`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -84,7 +84,7 @@ const Trash = () => {
     const updatedPost = posts.find(p => p._id === postId);
 
     try {
-      const res = await fetch(`/api/listing/status/inactive`, {
+      const res = await fetch(`${baseurl}/api/listing/status/inactive`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({listingId: updatedPost._id}),
@@ -100,7 +100,7 @@ const Trash = () => {
 
   const handlePermanentDelete = async (postId) => {
     try {
-      const res = await fetch(`/api/listing/${postId}/delete`, {
+      const res = await fetch(`${baseurl}/api/listing/${postId}/delete`, {
         method: "DELETE",
       });
       if (!res.ok) throw new Error("Permanent delete failed");

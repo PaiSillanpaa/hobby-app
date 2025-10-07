@@ -1,5 +1,5 @@
 //import { getEmailFromToken, getUsernameFromToken } from "./Token";
-const baseurl = "https://hobbly-app.onrender.com/";
+const baseurl = "https://hobbly-app.onrender.com";
 export const fetchUserId = async () => {
   try {
     const response = await fetch(`${baseurl}/api/user/info`, {
