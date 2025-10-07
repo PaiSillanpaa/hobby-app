@@ -6,6 +6,7 @@ import Carousel from "../components/Carousel";
 import { fetchUsername, fetchUserEmail, deleteCookie } from "../utils/UserData";
 //import { getUserIdFromToken, getUsernameFromToken, getEmailFromToken } from "../utils/Token";
 import "./ProfilePage.css";
+const baseurl = "https://hobbly-app.onrender.com/";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -126,7 +127,7 @@ const handleSubmit = async (e) => {
       return;
     }
     try {
-      const res = await fetch(`/api/user/change-password`, {
+      const res = await fetch(`${baseurl}/api/user/change-password`, {
         method: "PATCH",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({ currentPassword: oldPass, newPassword1: newPass1, newPassword2: newPass2 }),
