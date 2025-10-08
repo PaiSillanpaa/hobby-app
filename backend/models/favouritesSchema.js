@@ -17,14 +17,6 @@ const favouritesSchema = mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-
-  listingTitle: {
-    type: String,
-  },
-
-  company: {
-    type: String,
-  }
 });
 
 favouritesSchema.index({ userId: 1, listingId: 1 }, { unique: true });

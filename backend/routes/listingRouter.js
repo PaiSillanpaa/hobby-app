@@ -10,14 +10,12 @@ import {
   getFavourites,
   getHistory,
   setFavourite,
-  removeFavourite,
   addToHistory,
   updateListing,
   setListingActive,
   setListingDeleted,
   setListingInactive,
   deleteListing,
-  getAllActive2,
 } from "../controllers/listingControllers.js";
 import { get } from "mongoose";
 import { checkJwt } from "../middleware/jwt.js";
@@ -29,10 +27,6 @@ const listingRouter = express.Router();
 
 listingRouter.get("/all", checkJwt, getAllListings);
 listingRouter.get("/active", checkJwt, getActiveListings);
-
-// tällä saa kaikki aktiiviset ei kirjautuneille
-listingRouter.get("/active2", getAllActive2);
-
 listingRouter.get("/inactive", checkJwt, getInactiveListings);
 listingRouter.get("/deleted", checkJwt, getDeletedListings);
 listingRouter.get("/categories", getCategories);
@@ -41,7 +35,6 @@ listingRouter.get("/history", checkJwt, getHistory);
 
 listingRouter.post("/create", checkJwt, upload.single("image"), createListing);
 listingRouter.post("/favourite", checkJwt, setFavourite);
-listingRouter.delete("/remove-favourite", checkJwt, removeFavourite);
 listingRouter.post("/history", checkJwt, addToHistory);
 listingRouter.post("/tags", getListingsByTags);
 
