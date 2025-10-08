@@ -8,7 +8,7 @@ export default defineConfig({
     proxy: {
       // Tämä ohjaa kaikki pyynnöt /api/... backendille
       "/api": {
-        target: "localhost:3001", // Backendin URL
+        target: "http://localhost:3001", // Backendin URL
         changeOrigin: true, // Vaihda alkuperä, jos palvelin vaatii sen
         secure: false, // Ei käytetä HTTPS:ää (kehityksessä)
       },

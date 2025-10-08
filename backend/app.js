@@ -13,7 +13,6 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "https://hobbly-app-front.onrender.com",
     credentials: true, // allow cookies
   })
 );
