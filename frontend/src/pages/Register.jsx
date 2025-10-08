@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 
-const baseurl = "https://hobbly-app.onrender.com";
+//const baseurl = "https://hobbly-app.onrender.com";
 
 export default function Register() {
   const [username, setUsername] = useState("");
@@ -32,7 +32,7 @@ export default function Register() {
     console.log("Rekisteröinti:", userData);
 
     try {
-      const res = await fetch(`${baseurl}/api/user/register`, {
+      const res = await fetch(`/api/user/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

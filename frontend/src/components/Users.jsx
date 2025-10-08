@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import "./AllPosts.css";
 import TopBar from "./TopBar";
 import AdminNavBar from "./AdminNavBar";
-const baseurl = "https://hobbly-app.onrender.com";
+//const baseurl = "https://hobbly-app.onrender.com";
 export default function Users () {
   const [users, setUsers] = useState([]);
   const [editingId, setEditingId] = useState(null);
@@ -11,7 +11,7 @@ export default function Users () {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await fetch(`${baseurl}/api/user/users`); // backend endpoint
+        const res = await fetch(`/api/user/users`); // backend endpoint
         if (!res.ok) throw new Error("API error");
         const data = await res.json();
         setUsers(data.users);
@@ -37,7 +37,7 @@ export default function Users () {
 
   const handleUpdate = async () => {
     try {
-      const res = await fetch(`${baseurl}/api/user/${editData._id}/update`, {
+      const res = await fetch(`/api/user/${editData._id}/update`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -57,7 +57,7 @@ export default function Users () {
 
   const handleDelete = async (userId) => {
     try {
-      const res = await fetch(`${baseurl}/api/user/${userId}/delete/`, {
+      const res = await fetch(`/api/user/${userId}/delete/`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
       });

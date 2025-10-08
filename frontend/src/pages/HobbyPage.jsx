@@ -5,7 +5,7 @@ import Carousel from "../components/Carousel";
 import "./HobbyPage.css";
 import star from "../assets/star.png";
 import { useEffect, useState } from "react";
-const baseurl = "https://hobbly-app.onrender.com";
+//const baseurl = "https://hobbly-app.onrender.com";
 
 
 export default function HobbyPage() {
@@ -18,7 +18,7 @@ export default function HobbyPage() {
   useEffect(() => {
     const getHobbies = async () => {
       try {
-        const hobbiesResponse = await fetch(`${baseurl}/api/listing/active2`);
+        const hobbiesResponse = await fetch(`/api/listing/active2`);
         if (!hobbiesResponse.ok) {
           throw new Error(`API-vastausvirhe: ${hobbiesResponse.status}`);
         }

@@ -6,7 +6,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "../../components/Carousel.css";
-const baseurl = "https://hobbly-app.onrender.com";
+//const baseurl = "https://hobbly-app.onrender.com";
 
 export default function Carousel({
   title = "",
@@ -25,7 +25,7 @@ export default function Carousel({
   useEffect(() => {
     const getHobbies = async () => {
       try {
-        const hobbiesResponse = await fetch(`${baseurl}/api/listing/active2`);
+        const hobbiesResponse = await fetch(`/api/listing/active2`);
         const hobbiesData = await hobbiesResponse.json();
         setHobbies(hobbiesData);
         setLoading(false);

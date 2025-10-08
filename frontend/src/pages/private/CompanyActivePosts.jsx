@@ -3,7 +3,7 @@ import "../../components/AllPosts.css";
 import TopBar from "../../components/TopBar";
 import AdminNavBar from "./CompanyNavBar";
 import { fetchUserId } from "../../utils/UserData";
-const baseurl = "https://hobbly-app.onrender.com";
+//const baseurl = "https://hobbly-app.onrender.com";
 
 const ActivePosts = () => {
   const [posts, setPosts] = useState([]);
@@ -13,7 +13,7 @@ const ActivePosts = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await fetch(`${baseurl}/api/listing/active`); // backend endpoint
+        const res = await fetch(`/api/listing/active`); // backend endpoint
         if (!res.ok) throw new Error("API error");
         const data = await res.json();
         console.log("data", data)
@@ -68,7 +68,7 @@ const ActivePosts = () => {
 
     try {
       const id = editData._id
-      const res = await fetch(`${baseurl}/listing/${id}/update`, {
+      const res = await fetch(`/listing/${id}/update`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -92,7 +92,7 @@ const ActivePosts = () => {
     const updatedPost = posts.find((p) => p._id === postId);
 
     try {
-      const res = await fetch(`${baseurl}/api/listing/status/deleted`, {
+      const res = await fetch(`/api/listing/status/deleted`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ listingId: updatedPost._id }),
