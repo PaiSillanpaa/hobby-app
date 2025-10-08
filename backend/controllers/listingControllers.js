@@ -376,10 +376,6 @@ export const setFavourite = async (request, response) => {
 export const removeFavourite = async (request, response) => {
   const { listingId } = request.body;
   const user = request.user;
-<<<<<<< HEAD
-  console.log("listingid + userid", listingId, user.userId);
-=======
->>>>>>> 43b9dc4 (jotain?)
 
   if (!listingId) {
     return response.status(403).json({ message: "missing listing id" });

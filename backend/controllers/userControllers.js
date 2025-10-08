@@ -94,7 +94,7 @@ export const loginUser = async (request, response) => {
     response.cookie("token", accessToken, {
       httpOnly: true, // Prevent access from JS
       sameSite: "none", // Prevent CSRF
-      secure: true, // false = http, true = https
+      secure: false, // false = http, true = https
       maxAge: 1000 * 60 * 60 * 1, // 1 hour
     });
 
@@ -310,7 +310,7 @@ export const logoutUser = async (request, response) => {
 
     response.cookie("token", "", {
       httpOnly: true, // unaccessable for js
-      secure: true, // false = http, true = https
+      secure: false, // false = http, true = https
       sameSite: "none",
       expires: new Date(0), // expires now
     });

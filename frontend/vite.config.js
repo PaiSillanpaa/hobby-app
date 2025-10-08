@@ -8,7 +8,7 @@ export default defineConfig({
     proxy: {
       // Tämä ohjaa kaikki pyynnöt /api/... backendille
       "/api": {
-        target: "https://hobbly-app.onrender.com", // Backendin URL
+        target: "localhost:3001", // Backendin URL
         changeOrigin: true, // Vaihda alkuperä, jos palvelin vaatii sen
         secure: true, // Ei käytetä HTTPS:ää (kehityksessä)
       },
