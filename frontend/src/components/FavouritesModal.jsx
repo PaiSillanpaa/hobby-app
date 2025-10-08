@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 //import { getUserIdFromToken } from "../utils/Token";
 import "./FavouritesModal.css";
-//const baseurl = "https://hobbly-app.onrender.com";
 
 export default function FavouritesModal({ onClose }) {
   const [favourites, setFavourites] = useState({ favourites: [] });

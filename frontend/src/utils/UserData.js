@@ -1,8 +1,8 @@
 //import { getEmailFromToken, getUsernameFromToken } from "./Token";
-//const baseurl = "https://hobbly-app.onrender.com";
+
 export const fetchUserId = async () => {
   try {
-    const response = await fetch(`/api/user/info`, {
+    const response = await fetch("/api/user/info", {
       method: "GET",
       credentials: "include", // tärkeää! jotta HttpOnly-cookie menee mukana
     });
@@ -21,7 +21,7 @@ export const fetchUserId = async () => {
 
 export const fetchUserEmail = async () => {
   try {
-    const response = await fetch(`/api/user/info`, {
+    const response = await fetch("/api/user/info", {
       method: "GET",
       credentials: "include",
     });
@@ -40,7 +40,7 @@ export const fetchUserEmail = async () => {
 
 export const fetchUsername = async () => {
   try {
-    const response = await fetch(`/api/user/info`, {
+    const response = await fetch("/api/user/info", {
       method: "GET",
       credentials: "include",
     });
@@ -60,7 +60,7 @@ export const fetchUsername = async () => {
 
 export const fetchRank = async () => {
   try {
-    const response = await fetch(`/api/user/info`, {
+    const response = await fetch("/api/user/info", {
       method: "GET",
       credentials: "include",
     });

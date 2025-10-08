@@ -9,7 +9,6 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "./Carousel.css";
-//const baseurl = "https://hobbly-app.onrender.com";
 
 export default function Carousel({
   title = "",
@@ -35,7 +34,7 @@ export default function Carousel({
         const favouritesData = await favouritesResponse.json();
         setfavourites(favouritesData);
 
-        const hobbiesResponse = await fetch(`/api/listing/active2`);
+        const hobbiesResponse = await fetch("/api/listing/active2");
         const hobbiesData = await hobbiesResponse.json();
         setHobbies(hobbiesData);
         setLoading(false);

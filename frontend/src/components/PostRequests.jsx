@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import "./AllPosts.css";
 import TopBar from "./TopBar";
 import AdminNavBar from "./AdminNavBar";
-//const baseurl = "https://hobbly-app.onrender.com";
 
 export default function PostRequests() {
   const [posts, setPosts] = useState([]);
@@ -12,7 +11,7 @@ export default function PostRequests() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await fetch(`/api/listing/all`); // backend endpoint
+        const res = await fetch("/api/listing/all"); // backend endpoint
         if (!res.ok) throw new Error("API error");
         const data = await res.json();
         setPosts(data.listings.filter(p => p.status === "inactive"));

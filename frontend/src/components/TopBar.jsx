@@ -1,6 +1,6 @@
 import { getEmailFromToken } from "../utils/Token";
 import { useState, useEffect } from "react";
-import "./TopBar.css";
+import "./Topbar.css";
 import { fetchUserEmail } from "../utils/UserData";
 
 export default function TopBar () {

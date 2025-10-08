@@ -3,7 +3,6 @@ import "../../components/AllPosts.css";
 import TopBar from "../../components/TopBar.jsx"
 import AdminNavBar from "./CompanyNavBar";
 import { fetchUserId } from "../../utils/UserData"; // Hae kirjautuneen käyttäjän ID
-//const baseurl = "https://hobbly-app.onrender.com";
 
 export default function PostRequests() {
   const [posts, setPosts] = useState([]);
@@ -13,7 +12,7 @@ export default function PostRequests() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await fetch(`/api/listing/all`); // backend endpoint
+        const res = await fetch("/api/listing/all"); // backend endpoint
         if (!res.ok) throw new Error("API error");
         const data = await res.json();
         setPosts(data.listings);

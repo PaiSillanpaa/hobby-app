@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import "./AllPosts.css"
 import TopBar from "./TopBar";
 import AdminNavBar from "./AdminNavBar";
-//const baseurl = "https://hobbly-app.onrender.com";
 
 const AllPosts = () => {
   const [posts, setPosts] = useState([]);
@@ -12,7 +11,7 @@ const AllPosts = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await fetch(`/api/listing/all`); // backend endpoint
+        const res = await fetch("/api/listing/all"); // backend endpoint
         if (!res.ok) throw new Error("API error");
         const data = await res.json();
         setPosts(data.listings);

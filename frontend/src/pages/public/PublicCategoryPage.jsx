@@ -5,7 +5,6 @@ import Carousel from "./PublicCarousel";
 //import hobbiesFallback from "../data/hobbies.json";
 import { filterHobbies, createFilterTitle } from "../../utils/FilterHobbies";
 import "../CategoryPage.css";
-//const baseurl = "https://hobbly-app.onrender.com";
 
 export default function CategoryPage() {
   const locationSearch = useLocation().search;
@@ -21,7 +20,7 @@ export default function CategoryPage() {
   useEffect(() => {
     const fetchHobbies = async () => {
       try {
-        const res = await fetch(`/api/listing/active2`);
+        const res = await fetch("/api/listing/active2");
         if (!res.ok) throw new Error("API failed");
         const data = await res.json();
         setHobbies(data);

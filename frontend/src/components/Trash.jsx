@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import "./AllPosts.css";
 import TopBar from "./TopBar";
 import AdminNavBar from "./AdminNavBar";
-//const baseurl = "https://hobbly-app.onrender.com";
+
 const Trash = () => {
   const [posts, setPosts] = useState([]);
   const [editingId, setEditingId] = useState(null);
@@ -11,7 +11,7 @@ const Trash = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await fetch(`/api/listing/all`);
+        const res = await fetch("/api/listing/all");
         if (!res.ok) throw new Error("API error");
         const data = await res.json();
         setPosts(data.listings.filter(p => p.status === "deleted"));

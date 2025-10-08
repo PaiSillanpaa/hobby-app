@@ -3,7 +3,7 @@ import homeIcon from "../assets/home.png";
 import searchIcon from "../assets/search.png";
 import mapIcon from "../assets/map.png";
 import profileIcon from "../assets/profile.png";
-import "./NavBar.css";
+import "./Navbar.css";
 import { useNavigate } from "react-router-dom";
 import SearchModal from "./SearchModal";
 import { fetchUserId } from "../utils/UserData";

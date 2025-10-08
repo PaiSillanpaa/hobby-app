@@ -4,7 +4,6 @@ import "../../components/AdminView.css";
 import "../../components/Form.css";
 import AdminNavBar from "./CompanyNavBar"
 import TopBar from "../../components/TopBar";
-//const baseurl = "https://hobbly-app.onrender.com";
 
 const AdminView = () => {
   const [title, setTitle] = useState("");
@@ -35,7 +34,7 @@ const AdminView = () => {
     if(image) formData.append("image", image);
 
     try {
-      const response = await fetch(`/api/listing/create`, {
+      const response = await fetch("/api/listing/create", {
         method: "POST",
         body: formData,
       });

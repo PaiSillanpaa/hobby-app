@@ -9,7 +9,6 @@ import Carousel from "../components/Carousel";
 import { useFilteredHobbiesByLocation } from "../utils/FilterHobbies";
 import { fetchUserId } from "../utils/UserData";
 import "./MapPage.css";
-//const baseurl = "https://hobbly-app.onrender.com";
 
 const MapPage = () => {
   const [userLocation, setUserLocation] = useState(null);
@@ -41,7 +40,7 @@ const MapPage = () => {
           }
         );
 
-        const hobbiesResponse = await fetch(`/api/listing/active2`);
+        const hobbiesResponse = await fetch("/api/listing/active2");
         const hobbiesData = await hobbiesResponse.json();
         setHobbies(hobbiesData);
       } catch (error) {

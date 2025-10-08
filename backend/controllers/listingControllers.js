@@ -119,6 +119,22 @@ export const getAllListings = async (request, response) => {
   }
 };
 
+export const getAllActive2 = async (request, response) => {
+  try {
+    const listings = await Listing.find({ status: "active" });
+
+    if (listings.length < 1) {
+      return response.status(404).json({ message: "No listings currently" });
+    }
+
+    return response.status(200).json(listings);
+  } catch (error) {
+    return response
+      .status(500)
+      .json({ message: "error when retrieving listings" });
+  }
+};
+
 export const getInactiveListings = async (request, response) => {
   const user = request.user;
   let inactiveListings;
@@ -337,7 +353,7 @@ export const setFavourite = async (request, response) => {
   console.log(request.user);
   const user = request.user;
 
-  if (!username || !listingId) {
+  if (!user || !listingId) {
     return response.status(401).json({ message: "Unauthorized" });
   }
 
@@ -363,12 +379,15 @@ export const setFavourite = async (request, response) => {
     const newFavourite = new Favourites({
       userId: currentUser._id,
       listingId: listingToFavourite._id,
+      listingTitle: listingToFavourite.listingTitle,
+      company: listingToFavourite.company,
     });
 
     await newFavourite.save();
 
     return response.status(201).send("added to favourites");
   } catch (error) {
+    console.error("ERROR MESSAGE:", error);
     return response.status(500).send("error when applying favourite");
   }
 };
@@ -376,6 +395,7 @@ export const setFavourite = async (request, response) => {
 export const removeFavourite = async (request, response) => {
   const { listingId } = request.body;
   const user = request.user;
+  console.log("listingid + userid", listingId, user.userId);
 
   if (!listingId) {
     return response.status(403).json({ message: "missing listing id" });

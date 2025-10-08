@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import "./AllPosts.css";
 import TopBar from "./TopBar";
 import AdminNavBar from "./AdminNavBar";
-//const baseurl = "https://hobbly-app.onrender.com";
+
 export default function Users () {
   const [users, setUsers] = useState([]);
   const [editingId, setEditingId] = useState(null);
@@ -11,7 +11,7 @@ export default function Users () {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await fetch(`/api/user/users`); // backend endpoint
+        const res = await fetch("/api/user/users"); // backend endpoint
         if (!res.ok) throw new Error("API error");
         const data = await res.json();
         setUsers(data.users);

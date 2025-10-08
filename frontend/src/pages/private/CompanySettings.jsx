@@ -3,7 +3,6 @@ import "../../components/Settings.css";
 import TopBar from "../../components/TopBar";
 import AdminNavBar from "./CompanyNavBar";
 import { fetchUserId } from "../../utils/UserData";
-//const baseurl = "https://hobbly-app.onrender.com";
 
 export default function Settings() {
   const [oldPassword, setOldPassword] = useState("");
@@ -19,7 +18,7 @@ export default function Settings() {
     }
 
     try {
-      const res = await fetch(`/api/user/change-password`, {
+      const res = await fetch("/api/user/change-password", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
