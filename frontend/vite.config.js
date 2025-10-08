@@ -10,7 +10,7 @@ export default defineConfig({
       "/api": {
         target: "localhost:3001", // Backendin URL
         changeOrigin: true, // Vaihda alkuperä, jos palvelin vaatii sen
-        secure: true, // Ei käytetä HTTPS:ää (kehityksessä)
+        secure: false, // Ei käytetä HTTPS:ää (kehityksessä)
       },
     },
   },
